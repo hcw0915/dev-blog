@@ -47,7 +47,7 @@ const {
         @apply text-lg
       }
       img {
-        @apply border border-slate-300 dark:border-zinc-700 rounded-xl mb-6
+        @apply border border-slate-300 dark:border-zinc-700 rounded-xl mb-6 w-full 
       }
       p {
         @apply mb-6
@@ -84,9 +84,7 @@ const {
           {
             heroImage && (
               <img
-                class="border border-slate-300 dark:border-zinc-700 rounded-xl"
-                width={720}
-                height={360}
+                class="border border-slate-300 dark:border-zinc-700 rounded-xl aspect-[15/6] w-full"
                 src={heroImage}
                 alt=""
               />
