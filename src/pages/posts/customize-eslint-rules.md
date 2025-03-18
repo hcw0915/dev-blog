@@ -3,14 +3,14 @@ public: true
 layout: ../../layouts/BlogPost.astro
 title: Customize Eslint Rules
 createdAt: 1742228979125
-updatedAt: 1742229051893
+updatedAt: 1742275034661
 tags:
   - General
   - Performance
+  - Blog
 heroImage: /placeholder-hero.png
 slug: customize-eslint-rules
 ---
-
 # [筆記] Customize Eslint Rules 專案內客製化規則
 
 客製化新的 eslint 規則, 僅在專案內部使用, 不會影響到其他專案, 也不需要發布到 NPM .

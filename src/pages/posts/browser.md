@@ -4,7 +4,9 @@ layout: ../../layouts/BlogPost.astro
 title: Browser - 強協商, 協商緩存
 createdAt: 1741833628423
 updatedAt: 1741944222956
-tags: []
+tags:
+  - General
+  - Blog
 heroImage: /placeholder-hero.png
 slug: browser
 ---

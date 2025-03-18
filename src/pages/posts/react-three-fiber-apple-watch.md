@@ -5,9 +5,9 @@ title: React-three-fiber(apple watch)
 createdAt: 1741921494688
 updatedAt: 1742194274263
 tags:
-  - Javascript
   - Three.js
   - Blog
+  - React
 heroImage: /placeholder-hero.png
 slug: react-three-fiber-apple-watch
 ---
