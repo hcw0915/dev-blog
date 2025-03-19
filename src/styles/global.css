@@ -41,3 +41,27 @@ pre.astro-code {
 .markdown-content li > p {
   margin-bottom: 0 !important;
 }
+
+.marquee-container {
+  width: 100%;
+  overflow: hidden;
+  background: black;
+  color: white;
+  white-space: nowrap;
+  display: flex;
+}
+
+.marquee-content {
+  display: flex;
+  gap: 30px; /* 文字間隔 */
+  animation: marquee 15s linear alternate-reverse;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-20%);
+  }
+}

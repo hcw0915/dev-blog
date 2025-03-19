@@ -11,7 +11,6 @@ import {
 import Body from '../../components/Body.astro'
 import Content from '../../components/Content.astro'
 import { IoArrowForward } from 'react-icons/io5'
-import { Image } from 'astro:assets'
 
 const posts = (await Astro.glob('../posts/*.md')).sort(
   (a: any, b: any) =>
@@ -38,6 +37,7 @@ const getGradientStyle = (tagArray: string[]) => {
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
   </head>
+
   <Body>
     <Header title={SITE_TITLE} />
     <main class="pt-[64px]">

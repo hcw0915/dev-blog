@@ -12,5 +12,6 @@ export const COLOR_MAP: Record<string, string> = {
   react: '#61DAFB',
   general: '#42B883',
   blog: '#D4A5E6',
-  rust: '#DEA584'
+  rust: '#DEA584',
+  next: '#3E3F5B'
 } as const
