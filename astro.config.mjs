@@ -9,7 +9,7 @@ export default defineConfig({
   integrations: [sitemap(), react(), tailwind()],
   markdown: {
     shikiConfig: {
-      theme: 'dark-plus'
+      theme: 'aurora-x'
     },
     extendDefaultPlugins: true
   }
