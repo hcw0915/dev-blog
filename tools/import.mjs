@@ -13,6 +13,7 @@ const liveExport = new LiveExporter({
 
 const basePath = `./src/pages/posts`
 const publicPath = `./public/posts`
+let pngCount = 0
 
 if (!fs.existsSync(publicPath)) {
   fs.mkdirSync(publicPath, { recursive: true })
@@ -43,7 +44,8 @@ await liveExport.start({
   },
   pathForFile: ({ mdastNode, /* note, file, */ extension, frontmatter }) => {
     if (mdastNode.alt) {
-      const fn = `${frontmatter.slug}_${toKebabCase(mdastNode.alt)}${extension}`
+      const uniqueIdentifier = pngCount++ // 使用唯一標識符
+      const fn = `${frontmatter.slug}_${uniqueIdentifier}.png`
       const res = {
         filePath: `${publicPath}/${fn}`,
         url: `/posts/${fn}`

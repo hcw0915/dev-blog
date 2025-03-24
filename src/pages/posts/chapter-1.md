@@ -12,7 +12,7 @@ heroImage: /placeholder-hero.png
 slug: chapter-1
 ---
 
-![clipboard.png](/posts/chapter-1_clipboard-png.png)
+![clipboard.png](/posts/chapter-1_14.png)
 
 - Unit Tests：針對最小範圍進行邏輯驗證
 - Integration Tests：驗證特定功能

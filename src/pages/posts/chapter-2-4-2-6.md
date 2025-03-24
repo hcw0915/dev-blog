@@ -3,7 +3,7 @@ public: true
 layout: ../../layouts/BlogPost.astro
 title: 前端測試指南 - 策略與實踐 (Chapter 2-4 ~ 2~6)
 createdAt: 1742050081131
-updatedAt: 1742357492693
+updatedAt: 1742797679078
 tags:
   - Testing
   - Javascript
@@ -21,7 +21,7 @@ slug: chapter-2-4-2-6
 
 行為部分, 著重在 `{count}` 變數在畫面上的數值變化是否如預期
 
-```js:class counter
+```js
 import React, { Component } from "react";
 
 class Counter extends Component {
@@ -50,7 +50,7 @@ class Counter extends Component {
 export default Counter;
 ```
 
-```js:function counter
+```js
 import React, { useState } from "react";
 
 const Counter: React.FC = () => {
@@ -115,7 +115,7 @@ React Testing Library 測試行為的做法會比 Enzyme 著重於測試實作�
 > [!WARNING]
 > react-test-renderer 已經暫停維護了
 > [`@testing-library/react`](https://testing-library.com/docs/react-testing-library/intro) 目前主要使用這個
-> ![clipboard.png](/posts/chapter-2-4-2-6_clipboard-png.png)
+> ![clipboard.png](/posts/chapter-2-4-2-6_0.png)
 > [Migrate from Enzyme | Testing Library](https://testing-library.com/docs/react-testing-library/migrate-from-enzyme/#how-to-shallow-render-a-component)
 > RTL 說明盡可能避免如果真的需要則使用 `jest.mock` 做模擬。
 
