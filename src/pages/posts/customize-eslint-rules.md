@@ -6,7 +6,6 @@ createdAt: 1742228979125
 updatedAt: 1742275034661
 tags:
   - General
-  - Performance
   - Blog
 heroImage: /placeholder-hero.png
 slug: customize-eslint-rules

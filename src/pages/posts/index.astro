@@ -12,20 +12,25 @@ import Body from '../../components/Body.astro'
 import Content from '../../components/Content.astro'
 import { IoArrowForward } from 'react-icons/io5'
 
+// 獲取所有文章
 const posts = (await Astro.glob('../posts/*.md')).sort(
   (a: any, b: any) =>
     new Date(b.frontmatter.createdAt).valueOf() -
     new Date(a.frontmatter.createdAt).valueOf()
 )
 
+// 獲取唯一標籤
+const tags = posts.map(p => p.frontmatter.tags).flat()
+const uniqueTags = ['All', ...new Set(tags)]
+
 const getGradientStyle = (tagArray: string[]) => {
   const colors = tagArray
     .map(tag => COLOR_MAP[tag.toLowerCase()])
     .sort()
-    .filter(Boolean) // 過濾掉 undefined 的值，避免無效顏色
+    .filter(Boolean)
 
   if (colors.length === 0) {
-    return { background: `linear-gradient(135deg, #f0f0f0, #d9d9d9)` } // 預設灰色
+    return { background: `linear-gradient(135deg, #f0f0f0, #d9d9d9)` }
   }
 
   return { background: `linear-gradient(135deg, ${colors.join(', ')})` }
@@ -42,12 +47,35 @@ const getGradientStyle = (tagArray: string[]) => {
     <Header title={SITE_TITLE} />
     <main class="pt-[64px]">
       <Content>
+        {/* 標籤篩選按鈕 */}
+        <section class="mb-8">
+          <div
+            class="flex flex-wrap gap-2"
+            id="tags"
+            data-tags={uniqueTags.join(',')}
+          >
+            {
+              uniqueTags.map(tag => (
+                <button
+                  data-type={tag}
+                  id="blogFilter"
+                  class="text-primary border-gray-300 border rounded-full px-3"
+                >
+                  {tag}
+                </button>
+              ))
+            }
+          </div>
+        </section>
+
+        {/* 文章列表 */}
         <section>
           <ul class="grid grid-cols-3 gap-4">
             {
               posts.map(post => {
+                const tags = post.frontmatter.tags?.join(' ') || ''
                 return (
-                  <li class="">
+                  <li class={tags}>
                     <a href={post.url}>
                       <div class="mt-3 opacity-50 text-sm flex items-center gap-3">
                         <span class="inline-block h-4 w-0.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
@@ -69,13 +97,6 @@ const getGradientStyle = (tagArray: string[]) => {
                         >
                           {post.frontmatter.title}
                         </div>
-                        // <Image
-                        //   class="border border-slate-300 dark:border-zinc-700 rounded-xl"
-                        //   src={post.frontmatter.heroImage}
-                        //   width={720}
-                        //   height={720 / 1.777}
-                        //   alt="Thumbnail"
-                        // />
                       )}
                     </a>
                   </li>
@@ -84,18 +105,87 @@ const getGradientStyle = (tagArray: string[]) => {
             }
           </ul>
         </section>
+
         <section>
           <p class="mb-8 indent-4">
             This is a blog written with Inkdrop.
             <a
               class="inline-flex items-center gap-1 indent-1 text-indigo-600 dark:text-indigo-400 decoration-indigo-400 dark:decoration-indigo-600 underline underline-offset-2"
               href={HOMEPAGE_URL}
-              >Learn more <IoArrowForward className="inline" />
+            >
+              Learn more <IoArrowForward className="inline" />
             </a>
           </p>
         </section>
       </Content>
     </main>
     <Footer />
+
+    <script is:inline>
+      const input = document.querySelectorAll('#blogFilter')
+
+      function hideBlogs(evt) {
+        let selectedTag = evt.currentTarget.getAttribute('data-type')
+        let tagElement = document.getElementById('tags')
+        let tags = tagElement.dataset.tags
+        tags = tags.split(',')
+        tags.splice(tags.indexOf(selectedTag), 1)
+
+        if (selectedTag === 'All') {
+          history.pushState({ tag: selectedTag }, '', window.location.pathname)
+        } else {
+          history.pushState(
+            { tag: selectedTag },
+            '',
+            `?c=${selectedTag.toLowerCase()}`
+          )
+        }
+
+        // 修改 Tags 樣式, 剩下沒被選中的 tags 樣式
+        input.forEach(e => {
+          e.style.background =
+            e.getAttribute('data-type') !== selectedTag
+              ? 'transparent'
+              : '#3178C6'
+        })
+
+        // 顯示選擇的標籤
+        let elementsToShow = document.getElementsByClassName(selectedTag)
+        for (let i = 0; i < elementsToShow.length; i++) {
+          elementsToShow[i].style.display = 'block'
+        }
+
+        if (selectedTag !== 'All') {
+          // 隱藏未選擇的標籤
+          tags.forEach(t => {
+            const elementsToHide = document.getElementsByClassName(t)
+            for (let i = 0; i < elementsToHide.length; i++) {
+              elementsToHide[i].style.display = 'none'
+            }
+          })
+        }
+
+        const elementsToHide = document.getElementsByClassName(selectedTag)
+        for (let i = 0; i < elementsToHide.length; i++) {
+          elementsToHide[i].style.display = 'block'
+        }
+
+        if (selectedTag === 'All') {
+          // 隱藏未選擇的標籤
+          console.log(tags)
+          tags.forEach(t => {
+            const elementsToHide = document.getElementsByClassName(t)
+            for (let i = 0; i < elementsToHide.length; i++) {
+              elementsToHide[i].style.display = 'block'
+            }
+          })
+        }
+      }
+
+      // 為每個篩選按鈕添加點擊事件監聽器
+      input.forEach(e => {
+        e.addEventListener('click', hideBlogs)
+      })
+    </script>
   </Body>
 </html>
