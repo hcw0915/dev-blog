@@ -19,7 +19,7 @@ slug: galaxy-generator
 
 > [!WARNING]
 > bufferAttribute 是需要搭配 TypedArray 做使用的, 否則會報錯 
-> ![clipboard.png](/posts/galaxy-generator_9.png)
+> ![clipboard.png](/posts/galaxy-generator_14.png)
 
 - **性能**：`TypedArray` 提供比普通 JavaScript 陣列更高效的內存管理和數據訪問方式，這對於渲染大量的幾何體（如頂點）是非常重要的。
 
@@ -73,7 +73,7 @@ generatorGalaxy();
 
 > 可以看到全部粒子分佈長寬高被限定在 -1.5 ~ +1.5 的立方體中
 
-![clipboard.png](/posts/galaxy-generator_8.png)
+![clipboard.png](/posts/galaxy-generator_13.png)
 
 ### dispose / remove 
 
@@ -107,7 +107,7 @@ if (points !== null) {
 
 `θ` 在 `0 - 2π` 的區間都會產生 `r = 1` 的圓
 
-![clipboard.png](/posts/galaxy-generator_7.png)
+![clipboard.png](/posts/galaxy-generator_12.png)
 
 ```js
 
@@ -155,7 +155,7 @@ const radius = Math.random() * parameters.radius;
 const branchAngle =
   ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
 ```
-![clipboard.png](/posts/galaxy-generator_6.png)
+![clipboard.png](/posts/galaxy-generator_11.png)
 
 
 計算粒子所在的分支角度。這裡：
@@ -175,7 +175,7 @@ const branchAngle =
 const spinAngle = radius * parameters.spin;
 ```
 
-![clipboard.png](/posts/galaxy-generator_5.png)
+![clipboard.png](/posts/galaxy-generator_10.png)
 
 計算旋轉角度，隨著半徑增加而增加。這創建了星系的旋轉效果，`parameters.spin` 控制旋轉的程度。
 
@@ -208,7 +208,7 @@ const randomZ =
 2. `parameters.randomness` 控制總體隨機性的強度
 3. `radius` 使隨機性隨著距離中心的增加而增加
 
-![clipboard.png](/posts/galaxy-generator_4.png)
+![clipboard.png](/posts/galaxy-generator_9.png)
 
 **例子**：如果 `parameters.randomnessPower = 3`，大多數值會更靠近 0（而非均勻分佈），創造出更集中的星系分支。
 
@@ -228,7 +228,7 @@ positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
 這創建了螺旋狀的星系分支，`branchAngle + spinAngle` 組合使較遠的粒子沿著螺旋更多地旋轉。
 
-![clipboard.png](/posts/galaxy-generator_3.png)
+![clipboard.png](/posts/galaxy-generator_8.png)
 
 
 ### Color
@@ -257,10 +257,10 @@ colors[i3 + 1] = mixedColor.g;
 colors[i3 + 2] = mixedColor.b;
 ```
 
-![clipboard.png](/posts/galaxy-generator_2.png)
+![clipboard.png](/posts/galaxy-generator_7.png)
 
 ---
 
 #### 調整參數後樣式
 
-![clipboard.png](/posts/galaxy-generator_1.png)
+![clipboard.png](/posts/galaxy-generator_6.png)
