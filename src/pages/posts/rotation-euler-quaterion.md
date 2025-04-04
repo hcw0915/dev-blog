@@ -5,12 +5,11 @@ title: Rotation / Euler / Quaterion 比較
 createdAt: 1743397454231
 updatedAt: 1743397499692
 tags:
-  - Three.js
+  - Three
   - Blog
 heroImage: /placeholder-hero.png
 slug: rotation-euler-quaterion
 ---
-
 
 # Three.js 旋轉方式：Quaternion vs Euler
 
@@ -24,7 +23,7 @@ slug: rotation-euler-quaterion
   如果只需要繞單一軸（X、Y、Z）旋轉，且不需要考慮複雜的旋轉組合，`Euler` 是簡單直觀的選擇。例如，繞 X 軸旋轉 45 度、Y 軸旋轉 30 度，使用 `Euler` 會非常直覺。
 
   ```js
-  object.rotation.set(Math.PI / 4, Math.PI / 6, 0); // 旋轉 45° 和 30°（繞 X 和 Y 軸）
+  object.rotation.set(Math.PI / 4, Math.PI / 6, 0) // 旋轉 45° 和 30°（繞 X 和 Y 軸）
   ```
 
 - **動畫和場景中的簡單旋轉**：  
@@ -54,10 +53,14 @@ slug: rotation-euler-quaterion
   當需要結合多個旋轉（例如先繞 X 軸旋轉，再繞 Y 軸旋轉）時，Quaternion 可以有效避免不同軸間的互相影響。
 
   ```js
-  const q1 = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 4, 0, 0)); // 旋轉 45°（繞 X 軸）
-  const q2 = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.PI / 4, 0)); // 旋轉 45°（繞 Y 軸）
+  const q1 = new THREE.Quaternion().setFromEuler(
+    new THREE.Euler(Math.PI / 4, 0, 0)
+  ) // 旋轉 45°（繞 X 軸）
+  const q2 = new THREE.Quaternion().setFromEuler(
+    new THREE.Euler(0, Math.PI / 4, 0)
+  ) // 旋轉 45°（繞 Y 軸）
 
-  object.quaternion.multiplyQuaternions(q1, q2); // 組合旋轉
+  object.quaternion.multiplyQuaternions(q1, q2) // 組合旋轉
   ```
 
 - **動態或插值動畫**：  
@@ -90,7 +93,7 @@ slug: rotation-euler-quaterion
 
 ## 4. 結論
 
-- **Euler角**是較為簡單直觀的方法，適合用於單軸或少量旋轉，並且可以快速實現簡單的旋轉邏輯。
+- **Euler 角**是較為簡單直觀的方法，適合用於單軸或少量旋轉，並且可以快速實現簡單的旋轉邏輯。
 
 - **Quaternion**是用於避免萬向鎖且能夠處理複雜多軸旋轉的理想選擇。它適用於需要平滑過渡和高效控制的情境，尤其是在處理 3D 物件動畫和多軸旋轉時。
 
