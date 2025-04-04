@@ -13,5 +13,7 @@ export const COLOR_MAP: Record<string, string> = {
   general: '#42B883',
   blog: '#D4A5E6',
   rust: '#DEA584',
-  next: '#3E3F5B'
+  next: '#3E3F5B',
+  three: '#4D55CC',
+  shader: '#F9AFAF'
 } as const
