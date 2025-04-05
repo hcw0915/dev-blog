@@ -3,7 +3,7 @@ public: true
 layout: ../../layouts/BlogPost.astro
 title: Shader template
 createdAt: 1743657255679
-updatedAt: 1743736668022
+updatedAt: 1743870643893
 tags:
   - Three
   - Shader
@@ -13,12 +13,12 @@ slug: shader-template
 ---
 
 ```js
-import waterVertexShader from "./shaders/water/vertex.glsl";
-import waterFragmentShader from "./shaders/water/fragment.glsl";
+import vertexShader from "./shaders/vertex.glsl";
+import fragmentShader from "./shaders/fragment.glsl";
 
 const waterMaterial = new THREE.ShaderMaterial({
-  vertexShader: waterVertexShader,
-  fragmentShader: waterFragmentShader,
+  vertexShader: vertexShader,
+  fragmentShader: fragmentShader,
 });
 ```
 
@@ -37,9 +37,7 @@ void main(){
 ```js
 // fragment.glsl
 void main(){
-
-    // vec3 color => 可以對顏色進行一連串操作變化
-    gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(1,0, 1.0, 1.0, 1.0);
 
     // 確保顏色渲染正確
     #include <colorspace_fragment>
