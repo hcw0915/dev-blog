@@ -1,9 +1,9 @@
 ---
 public: true
 layout: ../../layouts/BlogPost.astro
-title: 'Shader ColorOffset '
+title: 'Shader - ColorOffset '
 createdAt: 1743735776014
-updatedAt: 1743736351770
+updatedAt: 1744088112316
 tags:
   - Three
   - Shader
@@ -39,7 +39,7 @@ void main() {
 }
 ```
 
-![clipboard.png](/posts/shader-color-offset_0.png)
+![clipboard.png](/posts/shader-color-offset_3.png)
 
 # GLSL 顏色混合與 `mixStrength` 計算解析
 

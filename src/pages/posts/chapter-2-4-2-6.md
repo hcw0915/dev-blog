@@ -3,7 +3,7 @@ public: true
 layout: ../../layouts/BlogPost.astro
 title: 前端測試指南 - 策略與實踐 (Chapter 2-4 ~ 2~6)
 createdAt: 1742050081131
-updatedAt: 1742797679078
+updatedAt: 1744167745360
 tags:
   - Testing
   - Javascript
@@ -115,7 +115,7 @@ React Testing Library 測試行為的做法會比 Enzyme 著重於測試實作�
 > [!WARNING]
 > react-test-renderer 已經暫停維護了
 > [`@testing-library/react`](https://testing-library.com/docs/react-testing-library/intro) 目前主要使用這個
-> ![clipboard.png](/posts/chapter-2-4-2-6_6.png)
+> ![clipboard.png](/posts/chapter-2-4-2-6_2.png)
 > [Migrate from Enzyme | Testing Library](https://testing-library.com/docs/react-testing-library/migrate-from-enzyme/#how-to-shallow-render-a-component)
 > RTL 說明盡可能避免如果真的需要則使用 `jest.mock` 做模擬。
 
