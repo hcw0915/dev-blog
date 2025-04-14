@@ -12,7 +12,7 @@ slug: blob-file
 ---
 
 # Blob & File
-![clipboard.png](/posts/blob-file_33.png)
+![clipboard.png](/posts/blob-file_50.png)
 ## Blob (binary large object)
 本質是一個二進制編碼格式數據, 不可修改, 讀取唯一方法是透過 `FileReader` 
 
@@ -44,7 +44,7 @@ reader.readAsText(blobSlice)
 
 ## File
 🤔 File 是特殊類型的 Blob (繼承了 Blob), 也有更多 Blob 沒有的屬性
-![clipboard.png](/posts/blob-file_32.png)
+![clipboard.png](/posts/blob-file_49.png)
  - 可以透過 `<input type="file" />`
  - 透過文件 D&D 操作產生的 `dataTransfer` 
    - `onDrop` `e.dataTransfer.files`
@@ -95,7 +95,7 @@ reader.result
 ## Object URL
 `Object URL` 是一種代表本地文件或數據的 URL，它可以讓你在網頁中使用這些本地資源。這些 URL 通常是由瀏覽器生成的，用來引用本地檔案，而不需要先將文件上傳到伺服器。
 
-![clipboard.png](/posts/blob-file_31.png)
+![clipboard.png](/posts/blob-file_48.png)
 
 ```js
 // 假設你有一個 <input> 來選擇文件
@@ -129,4 +129,4 @@ let canvasToDataUrl = canvas.toDataURL()
 
 ArrayBuffer 主要可以修改內容或是對二進制文件進行操作. 
 > 所以可以透過建立 Buffer 然後透過 blob + FileReader 將二進制數據讀取.
-> ![clipboard.png](/posts/blob-file_30.png)
+> ![clipboard.png](/posts/blob-file_47.png)

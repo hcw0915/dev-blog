@@ -20,18 +20,18 @@ slug: anti-three-5-monitor-bunny
 
 > - [codesandbox.io/p/sandbox/bst0cy](https://codesandbox.io/p/sandbox/bst0cy)
 
-![clipboard.png](/posts/anti-three-5-monitor-bunny_6.png)
+![clipboard.png](/posts/anti-three-5-monitor-bunny_23.png)
 
 - `<hemisphereLight intensity={9} groundColor="black" />`
   用來模擬自然環境中天空與地面的光照效果。它不像點光源或聚光燈那樣有明確的方向，而是從上面（天空）與下面（地面）發出光，來營造一種柔和且自然的環境光效果。
 
   `intensity={9}`
 
-  ![clipboard.png](/posts/anti-three-5-monitor-bunny_5.png)
+  ![clipboard.png](/posts/anti-three-5-monitor-bunny_22.png)
 
   `intensity={0.15}`
 
-  ![clipboard.png](/posts/anti-three-5-monitor-bunny_4.png)
+  ![clipboard.png](/posts/anti-three-5-monitor-bunny_21.png)
 
 - `MeshReflectorMaterial`: 讓一個表面（比如地板、水面、鏡子）**看起來像真的會反射環境或物體**，比基本的 `MeshStandardMaterial` 或 `MeshPhysicalMaterial` 的反射更進一步 —— 帶有模糊、模擬光照、景深、甚至波紋等效果。 (不用的時候, 需要拿別的材質取代否則 `Three.js` 預設會把 `planeGeometry` 的 `mesh` 使用標準材質渲染，但你沒有手動指定材質，**Three.js 就用一個非常基礎、明亮的 `MeshBasicMaterial` 來渲染這個地板**, 會變超亮）
 
@@ -99,7 +99,7 @@ const { nodes } = useGLTF(Suzi);
 
 [codesandbox.io/p/sandbox/0z8i2c](https://codesandbox.io/p/sandbox/0z8i2c)
 
-![clipboard.png](/posts/anti-three-5-monitor-bunny_3.png)
+![clipboard.png](/posts/anti-three-5-monitor-bunny_20.png)
 
 ```js
 <mesh>
@@ -148,11 +148,11 @@ function Screen({ frame, panel, children, ...props }) {
 
 `aspect={1/1}`
 
-![clipboard.png](/posts/anti-three-5-monitor-bunny_2.png)
+![clipboard.png](/posts/anti-three-5-monitor-bunny_19.png)
 
 `aspect={1.5}`
 
-![clipboard.png](/posts/anti-three-5-monitor-bunny_1.png)
+![clipboard.png](/posts/anti-three-5-monitor-bunny_18.png)
 
 ```js
 /* Renders a monitor with some text */
@@ -190,7 +190,7 @@ function ScreenText({ invert, x = 0, y = 1.2, ...props }) {
 }
 ```
 
-![clipboard.png](/posts/anti-three-5-monitor-bunny_0.png)
+![clipboard.png](/posts/anti-three-5-monitor-bunny_17.png)
 
 - `SpinningBox`:
 

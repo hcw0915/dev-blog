@@ -22,7 +22,7 @@ slug: anti-three-3-lusion
 
 > - https://codesandbox.io/p/sandbox/xy8c8z
 
-![clipboard.png](/posts/anti-three-3-lusion_10.png)
+![clipboard.png](/posts/anti-three-3-lusion_27.png)
 
 - `MeshTransmissionMaterial`: 透明感材質
 - `CuboidCollider`: 方塊狀碰撞體（高效能）

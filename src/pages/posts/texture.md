@@ -19,17 +19,17 @@ slug: texture
 紋理是覆蓋幾何體表面的圖像，不僅影響顏色，還能產生多種視覺效果：
 
 -  **顏色/反照率(Albedo)紋理**：最基本的紋理，直接應用圖像顏色
-![clipboard.png](/posts/texture_20.png)
+![clipboard.png](/posts/texture_37.png)
 
 - **透明度(Alpha)紋理**：灰度圖像，白色部分可見，黑色部分不可見
-![clipboard.png](/posts/texture_19.png)
+![clipboard.png](/posts/texture_36.png)
 
 -  **高度(Height)紋理**：灰度圖像，移動頂點創建浮雕效果
-![clipboard.png](/posts/texture_18.png)
+![clipboard.png](/posts/texture_35.png)
 - **法線(Normal)紋理**：添加細節，不移動頂點但改變光照方向
- ![clipboard.png](/posts/texture_17.png)
+ ![clipboard.png](/posts/texture_34.png)
 -  **環境遮蔽(Ambient Occlusion)紋理**：灰度圖像，模擬凹處陰影
--  ![clipboard.png](/posts/texture_16.png)
+-  ![clipboard.png](/posts/texture_33.png)
 -  **金屬度(Metalness)紋理**：灰度圖像，指定金屬(白色)和非金屬(黑色)部分
 -  **粗糙度(Roughness)紋理**：灰度圖像，指定粗糙(白色)和光滑(黑色)部分
 

@@ -21,7 +21,7 @@ slug: anti-three-2-banana
 
 > - https://codesandbox.io/p/sandbox/2ycs3
 
-![clipboard.png](/posts/anti-three-2-banana_13.png)
+![clipboard.png](/posts/anti-three-2-banana_30.png)
  
 - `<Suspense>`: 提供 3D model loading 的過程, 此處 `fallback={null}`, 配合 `<FadeIn/>` 自己控制顯示畫面
 

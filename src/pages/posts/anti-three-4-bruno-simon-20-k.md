@@ -18,7 +18,7 @@ slug: anti-three-4-bruno-simon-20-k
 
 - 
 
-![clipboard.png](/posts/anti-three-4-bruno-simon-20-k_41.png)
+![clipboard.png](/posts/anti-three-4-bruno-simon-20-k_26.png)
 
 - `<Canvas flat />`
   - 關閉色彩管理: Three.js 預設 sRGB 色彩空間, 自動將顏色做校正, 對於模擬真實光影有效, 且畫面較為自然
@@ -61,11 +61,11 @@ slug: anti-three-4-bruno-simon-20-k
 
     (有 `Accumlative`)
 
-    ![clipboard.png](/posts/anti-three-4-bruno-simon-20-k_40.png)
+    ![clipboard.png](/posts/anti-three-4-bruno-simon-20-k_25.png)
 
     (沒有 `Accumlative`)
 
-    ![clipboard.png](/posts/anti-three-4-bruno-simon-20-k_39.png)
+    ![clipboard.png](/posts/anti-three-4-bruno-simon-20-k_24.png)
 
 ```js
 const instances = Array.from({ length: count }, (_, i) => ({

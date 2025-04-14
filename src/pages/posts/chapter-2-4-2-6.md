@@ -115,7 +115,7 @@ React Testing Library 測試行為的做法會比 Enzyme 著重於測試實作�
 > [!WARNING]
 > react-test-renderer 已經暫停維護了
 > [`@testing-library/react`](https://testing-library.com/docs/react-testing-library/intro) 目前主要使用這個
-> ![clipboard.png](/posts/chapter-2-4-2-6_14.png)
+> ![clipboard.png](/posts/chapter-2-4-2-6_31.png)
 > [Migrate from Enzyme | Testing Library](https://testing-library.com/docs/react-testing-library/migrate-from-enzyme/#how-to-shallow-render-a-component)
 > RTL 說明盡可能避免如果真的需要則使用 `jest.mock` 做模擬。
 

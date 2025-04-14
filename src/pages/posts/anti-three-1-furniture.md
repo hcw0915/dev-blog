@@ -23,7 +23,7 @@ slug: anti-three-1-furniture
 > - https://r3f.docs.pmnd.rs/getting-started/examples
 > - https://codesandbox.io/p/sandbox/6d97z4
 
-![clipboard.png](/posts/anti-three-1-furniture_12.png)
+![clipboard.png](/posts/anti-three-1-furniture_29.png)
 
 內容: 透過 Hover 家具同時顯示對應價格. 
 
@@ -44,7 +44,7 @@ slug: anti-three-1-furniture
 ```
 
 
-![clipboard.png](/posts/anti-three-1-furniture_11.png)
+![clipboard.png](/posts/anti-three-1-furniture_28.png)
 
  ```js
 import * as THREE from "three"
