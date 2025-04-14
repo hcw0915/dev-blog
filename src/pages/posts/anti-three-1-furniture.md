@@ -1,23 +1,29 @@
 ---
 public: true
 layout: ../../layouts/BlogPost.astro
-title: Shopping - furniture (Anti)
+title: AntiThree(1) - furniture
 createdAt: 1744271780893
-updatedAt: 1744272800203
+updatedAt: 1744351123455
 tags:
   - Anti-Three
   - Three
   - Blog
 heroImage: /placeholder-hero.png
-slug: shopping-furniture-anti
+slug: anti-three-1-furniture
 ---
 
 ## Shopping - furniture (Anti)
 
-- https://r3f.docs.pmnd.rs/getting-started/examples
-- https://codesandbox.io/p/sandbox/6d97z4
+#### 🔥 可利用概念
+- 物體 raycasting 選擇物體
+- 滑鼠對於 camera 的交互效果
+- matth 數字的動畫效果
+- 場景優化, 包含光影 / Bvh / 色彩校正等等
 
-![clipboard.png](/posts/shopping-furniture-anti_1.png)
+> - https://r3f.docs.pmnd.rs/getting-started/examples
+> - https://codesandbox.io/p/sandbox/6d97z4
+
+![clipboard.png](/posts/anti-three-1-furniture_12.png)
 
 內容: 透過 Hover 家具同時顯示對應價格. 
 
@@ -28,6 +34,7 @@ slug: shopping-furniture-anti
 - `<TiltShift2>` 提供霧化後處理效果
 - `<ToneMapping />` 自動調整顏色與亮度對比,讓場景自然飽和, 更接近攝影效果
 - `<Mask>` 這個很迷, 還需要多案例了解
+- `<N8AO>` 增加立體感, 在物體周邊的陰影
 - 透過 滑鼠位置去找角度與位置, 更新 camera 位置 (真實場景可以考慮禁用, 直接提供不同視角切換按鈕即可)
 ```js
   useFrame((state, delta) => {
@@ -37,7 +44,7 @@ slug: shopping-furniture-anti
 ```
 
 
-![clipboard.png](/posts/shopping-furniture-anti_0.png)
+![clipboard.png](/posts/anti-three-1-furniture_11.png)
 
  ```js
 import * as THREE from "three"

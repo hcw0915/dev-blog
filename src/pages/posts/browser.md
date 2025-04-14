@@ -13,12 +13,12 @@ slug: browser
 
 非第一次請求具有兩種情況取決於 `no-cache` 後續請求是否攜帶 
 
-![clipboard.png](/posts/browser_26.png)
+![clipboard.png](/posts/browser_38.png)
 - Etag: `if-none-match` 
 
-![clipboard.png](/posts/browser_25.png)
+![clipboard.png](/posts/browser_37.png)
 
 
 - Last-Modified: `if-none-since`
 
-![clipboard.png](/posts/browser_24.png)
+![clipboard.png](/posts/browser_36.png)

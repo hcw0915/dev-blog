@@ -3,7 +3,7 @@ public: true
 layout: ../../layouts/BlogPost.astro
 title: Shader - template
 createdAt: 1743657255679
-updatedAt: 1744088094429
+updatedAt: 1744436172002
 tags:
   - Three
   - Shader

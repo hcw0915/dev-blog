@@ -39,7 +39,7 @@ void main() {
 }
 ```
 
-![clipboard.png](/posts/shader-color-offset_3.png)
+![clipboard.png](/posts/shader-color-offset_15.png)
 
 # GLSL 顏色混合與 `mixStrength` 計算解析
 

@@ -12,7 +12,7 @@ heroImage: /placeholder-hero.png
 slug: react-three-fiber-apple-watch
 ---
 https://www.youtube.com/watch?v=lrsB-4SN4us&ab_channel=TechyWebDev
-![apple-watch](/posts/react-three-fiber-apple-watch_23.png)
+![apple-watch](/posts/react-three-fiber-apple-watch_35.png)
 
 ```js
 import { useRef, useEffect } from "react";
