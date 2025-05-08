@@ -3,7 +3,7 @@ public: true
 layout: ../../layouts/BlogPost.astro
 title: SSR / SSG / CSR / ISR
 createdAt: 1741854513250
-updatedAt: 1742276733457
+updatedAt: 1744870435320
 tags:
   - Next
   - Blog
@@ -13,7 +13,7 @@ slug: ssr-ssg-csr-isr
 ---
 
 ### Next.js 13 版本
-```javascript!
+```js
 export default function handler(req, res) {
   res.status(200).json(products);
 }
@@ -21,7 +21,7 @@ export default function handler(req, res) {
 
 
 ### Next.js 14 版本
-```javascript!
+```js
 export async function GET() {
   return Response.json(products);
 }
@@ -31,7 +31,7 @@ export async function GET() {
 ### SSR SSG CSR ISR
 
 #### SSG
-```javascript
+```js
 async function Page() {
   const data = await fetchData();
   return <div>{data}</div>;
@@ -39,7 +39,7 @@ async function Page() {
 ```
 
 #### SSR
-```javascript!
+```js
 export const dynamic = 'force-dynamic';
 
 async function Page() {
@@ -49,7 +49,7 @@ async function Page() {
 ```
 
 #### ISR
-```javascript!
+```js
 export const revalidate = 60; // 秒數
 
 async function Page() {
@@ -108,7 +108,7 @@ middleware.js                    // 全局中間件（在 app 目錄外）
 
 可以很好限制 url 導向 或是語系等等問題 `/zh/` `/en/` `/kr/` `/jp/`....
 
-```typescript!
+```js
 import { NextResponse, type NextRequest } from "next/server"
 
 // 基本上類似攔截器功能, 可以針對 match 配對的檔案做處理一層處理
@@ -162,7 +162,7 @@ export function middleware(request: NextRequest) {
   - 產品列表
   - 幫助和文檔
 
-```typescript
+```js
 // 基本 SSG
 export default function Page() {
   return <div>Static Content</div>
@@ -181,7 +181,7 @@ export async function generateStaticParams() {
 - SSG 的延伸，允許在特定時間間隔更新靜態頁面
 - 結合了 SSG 的性能和動態內容的新鮮度
 
-```typescript
+```js
 // 頁面層級的 ISR
 export const revalidate = 60 // 60秒
 
@@ -193,7 +193,7 @@ fetch(URL, { next: { revalidate: 60 } })
 - 在瀏覽器中執行的渲染
 - 適用於高度互動的UI組件
 
-```typescript
+```js
 'use client'
 export default function InteractiveComponent() {
   const [state, setState] = useState()
@@ -205,7 +205,7 @@ export default function InteractiveComponent() {
 - 每個請求都在伺服器端動態生成頁面
 - 適用於需要實時數據的頁面
 
-```typescript
+```js
 // 強制 SSR
 export const dynamic = 'force-dynamic'
 
@@ -221,7 +221,7 @@ fetch(URL, { cache: 'no-store' })
 
 ### 使用場景
 1. **數據獲取**
-```typescript
+```js
 async function DataComponent() {
   const data = await fetchData() // 直接在伺服器端獲取
   return <div>{data.map(item => <Item key={item.id} {...item} />)}</div>
@@ -229,7 +229,7 @@ async function DataComponent() {
 ```
 
 2. **存取後端資源**
-```typescript
+```js
 import { db } from '@/lib/db'
 
 async function DbComponent() {
@@ -239,7 +239,7 @@ async function DbComponent() {
 ```
 
 3. **減少客戶端 Bundle**
-```typescript
+```js
 // 大型依賴庫保持在伺服器端
 import { heavyLibrary } from 'heavy-library'
 
@@ -256,7 +256,7 @@ export default function ServerComponent() {
 ## 配置優先順序與衝突處理
 
 ### 靜態/動態渲染設置
-```typescript
+```js
 // 1. 路由層級設置（最高優先）
 export const dynamic = 'force-dynamic' | 'force-static' | 'auto' | 'error'
 
@@ -273,7 +273,7 @@ export const revalidate = 60 // 秒
 3. 動態設置覆蓋靜態設置
 
 ### 衝突解決策略
-```typescript
+```js
 // 示例：處理多層級配置
 export const revalidate = 60 // 頁面級別
 
@@ -296,7 +296,7 @@ async function Component() {
 ## 漸進式載入策略
 
 ### 基本 Suspense 使用
-```typescript
+```js
 import { Suspense } from 'react'
 
 export default function Page() {
@@ -309,7 +309,7 @@ export default function Page() {
 ```
 
 ### 串聯式載入
-```typescript
+```js
 export default function Page() {
   return (
     <>
@@ -326,7 +326,7 @@ export default function Page() {
 ```
 
 ### 平行載入
-```typescript
+```js
 export default function Page() {
   return (
     <div className="grid">
@@ -342,7 +342,7 @@ export default function Page() {
 ```
 
 ### Loading.tsx 整合
-```typescript
+```js
 // app/loading.tsx
 export default function Loading() {
   return <LoadingSkeleton />
@@ -368,7 +368,7 @@ export default async function Page() {
 3. 保持互動性而不犧牲性能
 
 ### 實作方式
-```typescript
+```js
 export default function Page() {
   return (
     <>
@@ -435,7 +435,7 @@ export default function Page() {
 `%s`: 主要對應各頁面 metadata title
 ![image](https://hackmd.io/_uploads/HyKZGjWFyx.png)
 
-```typescript!
+```js
 export const metadata: Metadata = {
   title: {
     default: "My Awesome Blog",
