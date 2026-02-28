@@ -1,0 +1,31 @@
+---
+export interface Props {
+  title: string
+  company: string
+  period: string
+  responsibilities: string[]
+}
+
+const { title, company, period, responsibilities } = Astro.props
+---
+
+<div class="border-l-2 border-indigo-500 pl-6">
+  <div class="flex justify-between items-baseline mb-2">
+    <h3 class="text-lg font-semibold dark:text-white text-zinc-800">
+      {company}
+    </h3>
+    <span class="text-lg font-semibold dark:text-white text-zinc-800">
+      {title}
+    </span>
+  </div>
+  <p class="text-zinc-500 dark:text-zinc-400 text-sm mb-3 text-right">
+    {period}
+  </p>
+  {responsibilities.length > 0 && (
+    <ul class="text-zinc-600 dark:text-zinc-400 space-y-2 list-disc list-inside">
+      {responsibilities.map((item) => (
+        <li>{item}</li>
+      ))}
+    </ul>
+  )}
+</div>

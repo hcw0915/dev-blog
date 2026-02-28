@@ -1,0 +1,29 @@
+---
+import { IoArrowForward } from 'react-icons/io5'
+
+export interface Props {
+  title: string
+  description: string
+  url: string
+}
+
+const { title, description, url } = Astro.props
+---
+
+<div>
+  <h3 class="text-lg font-semibold mb-2 dark:text-white text-zinc-800">
+    {title}
+  </h3>
+  <p class="text-zinc-600 dark:text-zinc-400 mb-3">
+    {description}
+  </p>
+  <a
+    href={url}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 hover:underline"
+  >
+    {url}
+    <IoArrowForward className="text-sm" />
+  </a>
+</div>

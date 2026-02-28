@@ -3,7 +3,7 @@ public: true
 layout: ../../layouts/BlogPost.astro
 title: 多語系取值次序選擇 Language Source Priority Strategy
 createdAt: 1772303412375
-updatedAt: 1772304393701
+updatedAt: 1772305020147
 tags:
   - Blog
   - General
@@ -86,7 +86,7 @@ slug: language-source-priority-strategy
 - 不需要 SSR
 - 不重視 SEO
 
-## 缺點
+### 缺點
 
 - Server 讀不到
 - SEO 無幫助
@@ -111,7 +111,7 @@ navigator.language;
 
 ---
 
-# 🧠 語言偵測流程範例
+### 🧠 語言偵測流程範例
 
 ```js
 function detectLanguage() {
@@ -133,7 +133,7 @@ function detectLanguage() {
 
 ---
 
-# 🔄 語言切換設計原則
+### 🔄 語言切換設計原則
 
 當使用者切換語言時：
 
@@ -165,7 +165,7 @@ function switchLanguage(lang) {
 
 ---
 
-# 🚨 常見錯誤設計
+### 🚨 常見錯誤設計
 
 - localStorage 優先於 URL（會覆蓋分享連結語言）
 - 同時把 Cookie 與 localStorage 當權威來源
@@ -173,17 +173,17 @@ function switchLanguage(lang) {
 
 ---
 
-# 🏁 最佳實務總結
+### 🏁 最佳實務總結
 
 來源 是否權威 適用場景
 
 ---
 
-URL ✅ 最權威 SEO / SSR
-Cookie ✅ 使用者偏好 SSR
-localStorage ⚠️ Client only SPA
-Browser ❌ 猜測 初次訪問
-Default ❌ fallback 最後手段
+- URL ✅ 最權威 SEO / SSR
+- Cookie ✅ 使用者偏好 SSR
+- localStorage ⚠️ Client only SPA
+- Browser ❌ 猜測 初次訪問
+- Default ❌ fallback 最後手段
 
 ---
 

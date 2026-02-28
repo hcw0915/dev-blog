@@ -5,36 +5,459 @@ import Footer from '../../components/Footer.astro'
 import { SITE_TITLE, SITE_DESCRIPTION } from '../../config'
 import Body from '../../components/Body.astro'
 import Content from '../../components/Content.astro'
+import SectionTitle from '../../components/SectionTitle.astro'
+import SkillTag from '../../components/SkillTag.astro'
+import WorkExperience from '../../components/WorkExperience.astro'
+import EducationCard from '../../components/EducationCard.astro'
+import ProjectLink from '../../components/ProjectLink.astro'
+import SocialButton from '../../components/SocialButton.astro'
+import { IoDownloadOutline, IoMailOutline, IoLogoGithub } from 'react-icons/io5'
+import { FaTelegram, FaInstagram, FaWhatsapp } from 'react-icons/fa'
 
+const PDF_PATH = '/Antonio_Hou_260228 .pdf'
 
-// PDF.js example
-const PDF_PATH = '/about/Antonio_BC.pdf'
+// 技能数据
+const familiarSkills = ['React / Next', 'Tailwind', 'Style-components', 'TypeScript']
+const experiencedSkills = [
+  'Zustand', 'Vite', 'Redux', 'Vue2/3', 'webpack', 'rollup', 'turbopack',
+  'babel', 'AST', 'WebSocket', 'github-action', 'Canvas', 'SVG', 'Three.js', 'pnpm', 'solid.js'
+]
+
+// 工作经历数据
+const workExperiences = [
+  {
+    title: 'Mid–Sr. Frontend Developer',
+    company: 'Brilliant Gaming (Armenia)',
+    period: 'May 2025 - Present',
+    responsibilities: [
+      'Solidjs 網站開發，組件整合與溝通建議 (舊專案)',
+      'Next.js 15 包網開發 (Server Side Render) (新專案)',
+      '參與 0 - 1 專案基礎建設，多環境設定建立不同盤口包網',
+      '基礎組件設計管理，美術團隊溝通與管理組件規格',
+      '首屏資源效能優化手段 (服務端渲染，動態導入等)',
+      '動態 SEO 建立，配合多語系建立對應 sitemap 與頁面標籤',
+      '活動類型私有包開發，SDK 導出與 iframe 方案處理'
+    ]
+  },
+  {
+    title: 'Mid. Frontend Developer',
+    company: '盈通管理顧問有限公司',
+    period: 'Dec 2024 - May 2025',
+    responsibilities: [
+      'React 16 (class + function) Next 12，進行官網/ 後台維護作業',
+      'webpack 優化 (打包時間從 187s 減少至 66s)'
+    ]
+  },
+  {
+    title: 'Jr. Frontend Developer',
+    company: 'World Entertainment (Fly Asian)',
+    period: 'Oct 2023 - Oct 2024',
+    responsibilities: [
+      '主要負責遊戲開發 / 官網迭代 / 平台維護，私有包維護(包含 百家樂/番攤/輪盤/彩球)',
+      '圖片優化，提昇網頁圖片載入速度 42%',
+      '編寫 自定義 Eslint 規則，確保專案風格',
+      '透過 SVG style-components Tailwind 建立 web/h5 遊戲介面',
+      'CDD 組件驅動開發，提供其他開發者使用',
+      'Pixel perfect UI 高完成度',
+      '重構原生 JS 專案，Next + payload 3 官網製作/ CMS 製作',
+    ]
+  },
+  {
+    title: 'Jr. Frontend Developer',
+    company: '合凌科技',
+    period: 'Dec 2022 - Aug 2023',
+    responsibilities: [      
+      'Three js 智慧廠區專案維護',
+      '建立專案版控制度 (git)',
+      '引入 zustand 替換 useContext 帶來的渲染效能問題',
+      '撰寫專案文件與彙整',
+      '配合 React-hook-form 開發硬體控制系統'
+    ]
+  }
+]
+
+// 项目链接数据
+const projects = [
+  {
+    title: '個人技術部落格',
+    description: '使用 Astro、React 和 Tailwind CSS 建立的技術部落格，記錄學習筆記和開發心得。',
+    url: 'https://antonio-blog-one.vercel.app/'
+  },
+  {
+    title: 'WeGames',
+    description: '遊戲平台專案',
+    url: 'https://www.wegames.vip'
+  }
+]
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="zh-TW">
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead title={`About - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
   </head>
   <Body>
     <Header title={SITE_TITLE} />
-    <main class="pt-[56px]">
+    <main class="pt-[64px]">
       <Content>
-        <!-- <section>
-          <h1 class="text-3xl text-center font-mplus mt-12 mb-8">
-            Oops, not found
-          </h1>
-          <div class="text-center py-4">
-            <a
-              class="inline-flex items-center gap-1 underline underline-offset-2 decoration-orange-500"
-              href="/"
-              >Go to Index <IoChevronForward />
-            </a>
-          </div><a href="/"> </a>
-        </section><a href="/"> </a><a href="/"> </a> -->
+        <!-- 基本介紹 -->
+        <section class="mb-12">
+          <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-4 dark:text-white text-zinc-900">
+              Antonio Hou
+            </h1>
+            <p class="text-xl text-indigo-600 dark:text-indigo-400 mb-6 font-semibold">
+              Frontend Developer
+            </p>
+            <!-- 頭像 -->
+            <div class="flex justify-center mb-6">
+              <img
+                src="/Frieza.png"
+                alt="Antonio Hou"
+                class="w-32 h-32 rounded-full object-cover border-4 border-indigo-300 dark:border-indigo-600 shadow-lg"
+              />
+            </div>
+            <p class="text-base text-zinc-700 dark:text-zinc-300 max-w-2xl mx-auto leading-relaxed mb-6 font-medium">
+              自學開始，2022.12 開始前端工程師生涯，熟悉 React 生態，具備前端工程化的認知與部分優化實踐。
+              對於新知識與內容充滿好奇，且具備主動探索慾望。
+            </p>
+
+            <!-- 下載履歷按鈕 -->
+            <div class="flex justify-center gap-4">
+              <a
+                href={PDF_PATH}
+                download
+                class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium"
+              >
+                <IoDownloadOutline className="text-xl" />
+                下載履歷 PDF
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- 聯絡方式 -->
+        <section class="mb-12">
+          <SectionTitle title="聯絡方式" />
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            <SocialButton
+              label="Telegram"
+              url="https://t.me/hcw0915"
+              icon={FaTelegram}
+              hoverColor="#0088cc"
+            />
+            <SocialButton
+              label="Email"
+              url="mailto:love233031@gmail.com"
+              icon={IoMailOutline}
+              hoverColor="#6366f1"
+            />
+            <SocialButton
+              label="GitHub"
+              url="https://github.com/hcw0015"
+              icon={IoLogoGithub}
+              hoverColor="#9ca3af"
+            />
+            <SocialButton
+              label="Instagram"
+              url="https://instagram.com/hcw0915"
+              icon={FaInstagram}
+              hoverColor="#E4405F"
+            />
+            <SocialButton
+              label="WhatsApp"
+              url="https://wa.me/886988249339"
+              icon={FaWhatsapp}
+              hoverColor="#25D366"
+            />
+          </div>
+        </section>
+
+        <!-- QR Code 弹窗 -->
+        <div
+          id="qr-modal-overlay"
+          class="qr-modal-overlay fixed inset-0 bg-black/50 backdrop-blur-sm z-50 items-center justify-center p-4 hidden"
+          onclick="closeQRModal()"
+        >
+          <div
+            id="qr-modal-content"
+            class="qr-modal-content bg-white dark:bg-zinc-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl relative"
+            onclick="event.stopPropagation()"
+          >
+            <button
+              class="absolute top-4 right-4 text-2xl text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
+              onclick="closeQRModal()"
+              aria-label="关闭"
+            >
+              ✕
+            </button>
+            <div class="flex flex-col items-center gap-4">
+              <h3 id="qr-modal-label" class="text-xl font-bold text-zinc-800 dark:text-zinc-200 flex items-center gap-2">
+                <span id="qr-modal-icon"></span>
+              </h3>
+              <div class="relative">
+                <div
+                  id="qr-modal-qrcode"
+                  class="w-64 h-64 bg-white p-4 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script is:inline>
+          // 图标映射
+          const iconMap = {
+            Telegram: { component: 'FaTelegram', color: '#0088cc' },
+            Email: { component: 'IoMailOutline', color: '#6366f1' },
+            GitHub: { component: 'IoLogoGithub', color: '#181717' },
+            Instagram: { component: 'FaInstagram', color: '#E4405F' },
+            WhatsApp: { component: 'FaWhatsapp', color: '#25D366' }
+          }
+
+          // 检查是否支持 View Transition API
+          const supportsViewTransition = 'startViewTransition' in document
+
+          async function showQRModal(label, url) {
+            const overlay = document.getElementById('qr-modal-overlay')
+            const labelEl = document.getElementById('qr-modal-label')
+            const iconEl = document.getElementById('qr-modal-icon')
+            const qrContainer = document.getElementById('qr-modal-qrcode')
+
+            if (!overlay || !labelEl || !iconEl || !qrContainer) return
+
+            // 设置标签
+            labelEl.textContent = label
+
+            // 设置图标
+            const iconInfo = iconMap[label]
+            if (iconInfo) {
+              iconEl.innerHTML = `<span style="color: ${iconInfo.color}">${label[0]}</span>`
+            }
+
+            // 生成 QR code
+            try {
+              // 尝试使用 astro-qr-generator
+              const QRCodeModule = await import('astro-qr-generator')
+              const QRCode = QRCodeModule.default || QRCodeModule
+              qrContainer.innerHTML = ''
+              const qr = QRCode({
+                value: url,
+                size: 256,
+                margin: 2,
+                color: {
+                  dark: '#000000',
+                  light: '#FFFFFF'
+                }
+              })
+              qrContainer.appendChild(qr)
+            } catch (error) {
+              // 如果包未安装，使用 API 作为后备方案
+              qrContainer.innerHTML = `
+                <img 
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodeURIComponent(url)}" 
+                  alt="${label} QR Code"
+                  class="w-full h-full object-contain"
+                />
+              `
+            }
+
+            // 使用 View Transition API 显示弹窗
+            if (supportsViewTransition) {
+              document.startViewTransition(() => {
+                overlay.classList.remove('hidden')
+                overlay.classList.add('flex')
+              })
+            } else {
+              overlay.classList.remove('hidden')
+              overlay.classList.add('flex')
+            }
+          }
+
+          function closeQRModal() {
+            const overlay = document.getElementById('qr-modal-overlay')
+            if (!overlay) return
+
+            // 使用 View Transition API 关闭弹窗
+            if (supportsViewTransition) {
+              document.startViewTransition(() => {
+                overlay.classList.add('hidden')
+                overlay.classList.remove('flex')
+              })
+            } else {
+              overlay.classList.add('hidden')
+              overlay.classList.remove('flex')
+            }
+          }
+
+          // 导出到全局
+          window.showQRModal = showQRModal
+          window.closeQRModal = closeQRModal
+        </script>
+
+        <style>
+          /* View Transition API 样式 */
+          @supports (view-transition-name: none) {
+            .qr-modal-overlay {
+              view-transition-name: qr-modal-overlay;
+            }
+
+            .qr-modal-content {
+              view-transition-name: qr-modal-content;
+            }
+
+            ::view-transition-old(qr-modal-overlay),
+            ::view-transition-new(qr-modal-overlay) {
+              animation-duration: 0.3s;
+              animation-timing-function: ease-in-out;
+            }
+
+            ::view-transition-old(qr-modal-content),
+            ::view-transition-new(qr-modal-content) {
+              animation-duration: 0.3s;
+              animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+
+            ::view-transition-old(qr-modal-content) {
+              animation-name: slide-out;
+            }
+
+            ::view-transition-new(qr-modal-content) {
+              animation-name: slide-in;
+            }
+          }
+
+          @keyframes slide-in {
+            from {
+              transform: translateY(20px) scale(0.9);
+              opacity: 0;
+            }
+            to {
+              transform: translateY(0) scale(1);
+              opacity: 1;
+            }
+          }
+
+          @keyframes slide-out {
+            from {
+              transform: translateY(0) scale(1);
+              opacity: 1;
+            }
+            to {
+              transform: translateY(20px) scale(0.9);
+              opacity: 0;
+            }
+          }
+
+          /* 如果不支持 View Transition，使用传统动画 */
+          @supports not (view-transition-name: none) {
+            .qr-modal-overlay:not(.hidden) {
+              animation: fadeIn 0.3s ease-out;
+            }
+
+            .qr-modal-content {
+              animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+          }
+
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+            }
+            to {
+              opacity: 1;
+            }
+          }
+
+          @keyframes slideUp {
+            from {
+              transform: translateY(20px) scale(0.9);
+              opacity: 0;
+            }
+            to {
+              transform: translateY(0) scale(1);
+              opacity: 1;
+            }
+          }
+        </style>
+
+        <!-- 技能 -->
+        <section class="mb-12">
+          <SectionTitle title="技能" />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 class="text-lg font-semibold mb-3 dark:text-white text-zinc-800">
+                較熟悉技術
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                {familiarSkills.map((skill) => (
+                  <SkillTag name={skill} variant="primary" />
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold mb-3 dark:text-white text-zinc-800">
+                具開發經驗
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                {experiencedSkills.map((skill) => (
+                  <SkillTag name={skill} variant="secondary" />
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 工作經驗 -->
+        <section class="mb-12">
+          <SectionTitle title="工作經驗" />
+          <div class="space-y-8">
+            {workExperiences.map((work) => (
+              <WorkExperience
+                title={work.title}
+                company={work.company}
+                period={work.period}
+                responsibilities={work.responsibilities}
+              />
+            ))}
+          </div>
+        </section>
+
+        <!-- 專案經驗 -->
+        <section class="mb-12">
+          <SectionTitle title="專案連結" />
+          <div class="space-y-4">
+            {projects.map((project) => (
+              <ProjectLink
+                title={project.title}
+                description={project.description}
+                url={project.url}
+              />
+            ))}
+          </div>
+        </section>
+
+        <!-- 語言能力 -->
+        <section class="mb-12">
+          <SectionTitle title="語言能力" />
+          <div class="space-y-2 text-zinc-600 dark:text-zinc-400">
+            <p>• 中文：母語者</p>
+            <p>• 粵語：初階</p>
+            <p>• 英文：多益 765 分</p>
+          </div>
+        </section>
+
+        <!-- 教育背景 -->
+        <section class="mb-12">
+          <SectionTitle title="教育背景" />
+          <EducationCard
+            degree="化學暨材料工程學士"
+            school="國防大學理工學院化學暨材料工程學系"
+            period="2011 - 2015"
+          />
+        </section>
       </Content>
-    </main><a href="/">
-      <Footer />
-    </a><a href="/"> </a>
+    </main>
+    <Footer />
   </Body>
 </html>

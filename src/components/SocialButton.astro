@@ -1,0 +1,32 @@
+---
+import { IoQrCodeOutline } from 'react-icons/io5'
+
+export interface Props {
+  label: string
+  url: string
+  icon: any
+  hoverColor: string
+}
+
+const { label, url, icon: Icon, hoverColor } = Astro.props
+---
+
+<button
+  onclick={`showQRModal('${label}', '${url}')`}
+  class="social-button w-full flex flex-col items-center gap-3 p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border-2 transition-all duration-300 cursor-pointer group hover:scale-105 hover:shadow-lg"
+  style={{
+    '--hover-color': hoverColor,
+    'border-color': hoverColor
+  }}
+>
+  <Icon className="text-3xl text-zinc-600 dark:text-zinc-400 group-hover:text-white transition-colors duration-300" />
+  <span class="text-sm font-medium text-zinc-600 dark:text-zinc-400 group-hover:text-white transition-colors duration-300">{label}</span>
+  <IoQrCodeOutline className="text-lg text-zinc-400 dark:text-zinc-600 group-hover:text-white/80 transition-colors duration-300" />
+</button>
+
+<style>
+  .social-button:hover {
+    background-color: var(--hover-color) !important;
+    border-color: var(--hover-color) !important;
+  }
+</style>

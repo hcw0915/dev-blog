@@ -1,0 +1,18 @@
+---
+export interface Props {
+  name: string
+  variant?: 'primary' | 'secondary'
+}
+
+const { name, variant = 'secondary' } = Astro.props
+
+const baseClasses = 'px-3 py-1 rounded text-sm font-medium'
+const variantClasses = {
+  primary: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300',
+  secondary: 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
+}
+---
+
+<span class={`${baseClasses} ${variantClasses[variant]}`}>
+  {name}
+</span>
