@@ -16,9 +16,7 @@ export const translations = {
       familiarTech: '較熟悉技術',
       experiencedTech: '具開發經驗',
       workExperience: '工作經驗',
-      projects: '專案連結',
       languages: '語言能力',
-      education: '教育背景',
       scanQRCode: '掃描二維碼訪問',
       // Work experience
       work: {
@@ -111,9 +109,7 @@ export const translations = {
       familiarTech: 'Familiar Technologies',
       experiencedTech: 'Development Experience',
       workExperience: 'Work Experience',
-      projects: 'Projects',
       languages: 'Languages',
-      education: 'Education',
       scanQRCode: 'Scan QR Code to Visit',
       // Work experience
       work: {
