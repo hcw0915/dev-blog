@@ -1,0 +1,22 @@
+---
+import BaseHead from "@/components/BaseHead.astro"
+import Header from "@/components/Header.astro"
+import Footer from "@/components/Footer.astro"
+import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
+import Body from "@/components/Body.astro"
+import CodePlayground from "@/components/CodePlayground"
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`Pure Playground - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+  </head>
+  <Body>
+    <Header title={SITE_TITLE} />
+    <main class="pt-[64px]">
+      <CodePlayground client:load />
+    </main>
+    <Footer />
+  </Body>
+</html>
