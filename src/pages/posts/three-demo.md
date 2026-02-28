@@ -1,9 +1,9 @@
 ---
 public: true
 layout: ../../layouts/BlogPost.astro
-title: Three 玩家控制 demo
+title: Three - 玩家控制 demo
 createdAt: 1743489947000
-updatedAt: 1743490225811
+updatedAt: 1744088116458
 tags:
   - Three
   - Blog
