@@ -28,24 +28,35 @@ const getGradientStyle = (tagArray: string[]) => {
       <div
         class="relative p-4 mx-auto dark:bg-zinc-900 bg-white h-[calc(100dvh-112px)] justify-center items-center flex text-[5rem] overflow-y-hidden"
       >
-        <img
-          class="absolute top-[400px] left-1/2 -translate-x-1/2 -translate-y-1/2 object-cover"
-          src="/android-chrome-512x512.png"
-          alt=""
-        />
-        <div
-          class="flex justify-center items-center mt-[450px] text-[12rem] italic dark:text-white text-zinc-800 relative z-10 h-full w-full bg-[#0e5c74] dark:bg-[#ff8dab]"
-          style={{
-            fontFamily: 'Lilita One',
-            WebkitTextStrokeColor: 'transparent',
-            WebkitTextStrokeWidth: '3rem',
-            WebkitTextFillColor: 'hsl(33, 100%, 96%)',
-            // backgroundColor: 'hsl(260 70% 70%)',
-            backgroundClip: 'text',
-            mixBlendMode: 'hard-light' // 讓文字與背景圖片混合
-          }}
-        >
-          HELLO
+        <!-- 容器：使用 flexbox 確保內容始終居中 -->
+        <div class="relative flex flex-col items-center justify-center w-full h-full">
+          <!-- Emoji 圖片：使用相對單位保持比例 -->
+          <img
+            class="relative object-contain mb-4"
+            style={{
+              width: 'clamp(300px, 70vw, 500px)',
+              height: 'auto',
+              zIndex: 1
+            }}
+            src="/android-chrome-512x512.png"
+            alt=""
+          />
+          <!-- HELLO 文字：使用相對單位保持比例 -->
+          <div
+            class="relative italic dark:text-white text-zinc-800 z-10 bg-[#0e5c74] dark:bg-[#ff8dab] w-[50%] text-center"
+            style={{
+              fontFamily: 'Lilita One',
+              fontSize: 'clamp(4rem, 15vw, 12rem)',
+              WebkitTextStrokeColor: 'transparent',
+              WebkitTextStrokeWidth: 'clamp(0.5rem, 2vw, 3rem)',
+              WebkitTextFillColor: 'hsl(33, 100%, 96%)',
+              backgroundClip: 'text',
+              mixBlendMode: 'hard-light',
+              lineHeight: 1
+            }}
+          >
+            HELLO
+          </div>
         </div>
         <!-- 
         <div
