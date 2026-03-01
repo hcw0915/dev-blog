@@ -46,46 +46,9 @@ export default function CodePlayground({
   initialCss = "",
   initialJs = ""
 }: CodePlaygroundProps) {
-  const [html, setHtml] = useState(initialHtml)
-  const [css, setCss] = useState(initialCss)
-  const [js, setJs] = useState(initialJs)
-  const [previewKey, setPreviewKey] = useState(0)
-  const [theme, setTheme] = useState<"vs-dark" | "github-light">("vs-dark")
-  const iframeRef = useRef<HTMLIFrameElement>(null)
-
-  // 检测主题变化
-  useEffect(() => {
-    const detectTheme = () => {
-      const isDark = document.documentElement.classList.contains("dark")
-      setTheme(isDark ? "vs-dark" : "github-light")
-    }
-
-    // 初始检测
-    detectTheme()
-
-    // 监听主题变化
-    const observer = new MutationObserver(detectTheme)
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"]
-    })
-
-    // 监听 localStorage 变化（主题切换器可能会更新）
-    const handleStorageChange = () => {
-      detectTheme()
-    }
-    window.addEventListener("storage", handleStorageChange)
-
-    // 定期检查（防止其他方式改变主题）
-    const interval = setInterval(detectTheme, 1000)
-
-    return () => {
-      observer.disconnect()
-      window.removeEventListener("storage", handleStorageChange)
-      clearInterval(interval)
-    }
-  }, [])
-
+  // 如果所有初始值都为空，使用默认值；否则使用传入的值
+  const shouldUseDefault = !initialHtml && !initialCss && !initialJs
+  
   const defaultCode = {
     html: `<!DOCTYPE html>
 <html>
@@ -139,18 +102,70 @@ button:hover {
 })`
   }
 
+  const [html, setHtml] = useState(shouldUseDefault ? defaultCode.html : initialHtml)
+  const [css, setCss] = useState(shouldUseDefault ? defaultCode.css : initialCss)
+  const [js, setJs] = useState(shouldUseDefault ? defaultCode.js : initialJs)
+  const [previewKey, setPreviewKey] = useState(0)
+  const [theme, setTheme] = useState<"vs-dark" | "github-light">("vs-dark")
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+
+  // 检测主题变化
   useEffect(() => {
-    if (!html && !css && !js) {
-      setHtml(defaultCode.html)
-      setCss(defaultCode.css)
-      setJs(defaultCode.js)
+    const detectTheme = () => {
+      const isDark = document.documentElement.classList.contains("dark")
+      setTheme(isDark ? "vs-dark" : "github-light")
+    }
+
+    // 初始检测
+    detectTheme()
+
+    // 监听主题变化
+    const observer = new MutationObserver(detectTheme)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"]
+    })
+
+    // 监听 localStorage 变化（主题切换器可能会更新）
+    const handleStorageChange = () => {
+      detectTheme()
+    }
+    window.addEventListener("storage", handleStorageChange)
+
+    // 定期检查（防止其他方式改变主题）
+    const interval = setInterval(detectTheme, 1000)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener("storage", handleStorageChange)
+      clearInterval(interval)
     }
   }, [])
+
+  // 提取 HTML body 内容
+  const extractBodyContent = (htmlString: string): string => {
+    // 如果包含完整的 HTML 文档结构，提取 body 内容
+    const bodyMatch = htmlString.match(/<body[^>]*>([\s\S]*)<\/body>/i)
+    if (bodyMatch) {
+      return bodyMatch[1].trim()
+    }
+    
+    // 如果没有 body 标签，尝试移除 DOCTYPE、html、head 标签
+    let content = htmlString
+      .replace(/<!DOCTYPE[^>]*>/gi, '')
+      .replace(/<\/?html[^>]*>/gi, '')
+      .replace(/<\/?head[^>]*>[\s\S]*?<\/head>/gi, '')
+      .trim()
+    
+    return content
+  }
 
   // 更新预览
   const updatePreview = () => {
     if (!iframeRef.current) return
 
+    const bodyContent = extractBodyContent(html)
+    
     const previewContent = `
 <!DOCTYPE html>
 <html>
@@ -160,7 +175,7 @@ button:hover {
   <style>${css}</style>
 </head>
 <body>
-  ${html}
+  ${bodyContent}
   <script>${js}<\/script>
 </body>
 </html>`
@@ -248,17 +263,17 @@ button:hover {
 
   return (
     <ErrorBoundary>
-      <div className="h-[calc(100vh-200px)] w-full bg-[#1e1e1e]">
+      <div className="h-full w-full bg-white dark:bg-[#1e1e1e]">
         <PanelGroup direction="vertical" className="h-full" id="main-panel-group">
         {/* 编辑器区域 */}
         <Panel id="editor-panel" defaultSize={60} minSize={30}>
           <PanelGroup direction="horizontal" className="h-full" id="editor-panel-group">
             {/* HTML Editor */}
             <Panel id="html-panel" defaultSize={33.33} minSize={15}>
-              <div className="h-full flex flex-col bg-[#1e1e1e]">
-                <div className="flex items-center gap-2 px-4 py-2 bg-[#252526] border-b border-[#3e3e42]">
+              <div className="h-full flex flex-col bg-white dark:bg-[#1e1e1e]">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-[#252526] border-b border-gray-200 dark:border-[#3e3e42]">
                   <SiHtml5 className="text-[#e34c26] text-lg" />
-                  <span className="text-sm font-medium text-[#cccccc]">HTML</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-[#cccccc]">HTML</span>
                 </div>
                 <div className="flex-1">
                   <Editor
@@ -280,14 +295,14 @@ button:hover {
               </div>
             </Panel>
 
-            <PanelResizeHandle className="w-1 bg-[#3e3e42] hover:bg-[#007acc] transition-colors" />
+            <PanelResizeHandle className="w-1 bg-gray-200 dark:bg-[#3e3e42] hover:bg-blue-400 dark:hover:bg-[#007acc] transition-colors" />
 
             {/* CSS Editor */}
             <Panel id="css-panel" defaultSize={33.33} minSize={15}>
-              <div className="h-full flex flex-col bg-[#1e1e1e]">
-                <div className="flex items-center gap-2 px-4 py-2 bg-[#252526] border-b border-[#3e3e42]">
+              <div className="h-full flex flex-col bg-white dark:bg-[#1e1e1e]">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-[#252526] border-b border-gray-200 dark:border-[#3e3e42]">
                   <SiCss3 className="text-[#264de4] text-lg" />
-                  <span className="text-sm font-medium text-[#cccccc]">CSS</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-[#cccccc]">CSS</span>
                 </div>
                 <div className="flex-1">
                   <Editor
@@ -309,14 +324,14 @@ button:hover {
               </div>
             </Panel>
 
-            <PanelResizeHandle className="w-1 bg-[#3e3e42] hover:bg-[#007acc] transition-colors" />
+            <PanelResizeHandle className="w-1 bg-gray-200 dark:bg-[#3e3e42] hover:bg-blue-400 dark:hover:bg-[#007acc] transition-colors" />
 
             {/* JavaScript Editor */}
             <Panel id="js-panel" defaultSize={33.34} minSize={15}>
-              <div className="h-full flex flex-col bg-[#1e1e1e]">
-                <div className="flex items-center gap-2 px-4 py-2 bg-[#252526] border-b border-[#3e3e42]">
+              <div className="h-full flex flex-col bg-white dark:bg-[#1e1e1e]">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-[#252526] border-b border-gray-200 dark:border-[#3e3e42]">
                   <SiJavascript className="text-[#F7DF1E] text-lg" />
-                  <span className="text-sm font-medium text-[#cccccc]">JavaScript</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-[#cccccc]">JavaScript</span>
                 </div>
                 <div className="flex-1">
                   <Editor
@@ -340,7 +355,7 @@ button:hover {
           </PanelGroup>
         </Panel>
 
-        <PanelResizeHandle className="h-1 bg-[#3e3e42] hover:bg-[#007acc] transition-colors" />
+        <PanelResizeHandle className="h-1 bg-gray-200 dark:bg-[#3e3e42] hover:bg-blue-400 dark:hover:bg-[#007acc] transition-colors" />
 
         {/* Preview Panel */}
         <Panel id="preview-panel" defaultSize={40} minSize={20}>

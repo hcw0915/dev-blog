@@ -1,0 +1,49 @@
+---
+import BaseHead from "@/components/BaseHead.astro"
+import Header from "@/components/Header.astro"
+import Footer from "@/components/Footer.astro"
+import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
+import Body from "@/components/Body.astro"
+import PlaygroundCard from "@/components/PlaygroundCard.astro"
+import { playgrounds } from "@/data/playgrounds"
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`Pure Playground - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+  </head>
+  <Body>
+    <Header title={SITE_TITLE} />
+    <main class="pt-[64px] min-h-screen bg-zinc-50 dark:bg-zinc-900">
+      <div class="container mx-auto px-4 py-12">
+        <!-- Header -->
+        <div class="mb-12 text-center">
+          <h1 class="text-4xl font-bold text-zinc-800 dark:text-zinc-200 mb-4">
+            Pure Playground
+          </h1>
+          <p class="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
+            探索、学习和分享 HTML、CSS 和 JavaScript 代码示例。点击任意卡片开始编辑和预览。
+          </p>
+        </div>
+
+        <!-- Playground Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {playgrounds.map((playground) => (
+            <PlaygroundCard playground={playground} baseUrl="/en/playground/pure" />
+          ))}
+        </div>
+
+        <!-- Empty State (if no playgrounds) -->
+        {playgrounds.length === 0 && (
+          <div class="text-center py-20">
+            <p class="text-zinc-500 dark:text-zinc-400 text-lg">
+              暂无 playground 项目
+            </p>
+          </div>
+        )}
+      </div>
+    </main>
+    <Footer />
+  </Body>
+</html>

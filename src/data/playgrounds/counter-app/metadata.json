@@ -1,0 +1,7 @@
+{
+  "title": "计数器应用",
+  "description": "一个简单的计数器应用，展示状态管理和事件处理",
+  "tags": ["JavaScript", "状态管理", "基础"],
+  "author": "Demo",
+  "createdAt": "2024-01-03"
+}

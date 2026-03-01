@@ -1,0 +1,101 @@
+---
+import type { PlaygroundItem } from "@/data/playgrounds"
+
+interface Props {
+  playground: PlaygroundItem
+  baseUrl?: string
+}
+
+const { playground, baseUrl = "/en/playground/pure" } = Astro.props
+const editUrl = `${baseUrl}/${playground.id}`
+---
+
+<a
+  href={editUrl}
+  class="playground-card group block bg-white dark:bg-zinc-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-zinc-200 dark:border-zinc-700"
+>
+  <!-- Preview Thumbnail -->
+  <div class="relative h-48 bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-700 dark:to-zinc-800 overflow-hidden">
+    <iframe
+      srcdoc={(() => {
+        // 提取 body 内容，如果没有 body 标签则使用整个 HTML
+        let bodyContent = playground.html
+        const bodyMatch = playground.html.match(/<body[^>]*>([\s\S]*)<\/body>/i)
+        if (bodyMatch) {
+          bodyContent = bodyMatch[1]
+        } else {
+          // 移除 DOCTYPE、html、head 标签
+          bodyContent = playground.html
+            .replace(/<!DOCTYPE[^>]*>/gi, '')
+            .replace(/<\/?html[^>]*>/gi, '')
+            .replace(/<\/?head[^>]*>[\s\S]*?<\/head>/gi, '')
+        }
+        
+        return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      margin: 0; 
+      padding: 8px; 
+      transform: scale(0.4); 
+      transform-origin: top left; 
+      width: 250%; 
+      height: 250%;
+      overflow: hidden;
+    }
+    ${playground.css}
+  </style>
+</head>
+<body>
+  ${bodyContent}
+  <script>${playground.js}</script>
+</body>
+</html>`
+      })()}
+      class="w-full h-full border-none pointer-events-none"
+      sandbox="allow-scripts allow-same-origin"
+      loading="lazy"
+    ></iframe>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+  </div>
+
+  <!-- Card Content -->
+  <div class="p-5">
+    <h3 class="text-xl font-bold text-zinc-800 dark:text-zinc-200 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+      {playground.title}
+    </h3>
+    <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-4 line-clamp-2">
+      {playground.description}
+    </p>
+
+    <!-- Tags -->
+    <div class="flex flex-wrap gap-2 mb-4">
+      {playground.tags.map((tag) => (
+        <span class="px-2 py-1 text-xs bg-zinc-100 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-full">
+          {tag}
+        </span>
+      ))}
+    </div>
+
+    <!-- Footer -->
+    <div class="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-500">
+      <span>by {playground.author}</span>
+      <span class="group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+        编辑 →
+      </span>
+    </div>
+  </div>
+</a>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

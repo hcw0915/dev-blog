@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Gradient Generator</title>
+</head>
+<body>
+  <div class="container">
+    <h1>CSS 渐变生成器</h1>
+    <div class="preview-box" id="preview"></div>
+    <div class="controls">
+      <div class="control-group">
+        <label>颜色 1:</label>
+        <input type="color" id="color1" value="#667eea">
+      </div>
+      <div class="control-group">
+        <label>颜色 2:</label>
+        <input type="color" id="color2" value="#764ba2">
+      </div>
+      <div class="control-group">
+        <label>角度:</label>
+        <input type="range" id="angle" min="0" max="360" value="135">
+        <span id="angleValue">135°</span>
+      </div>
+    </div>
+    <div class="code-output">
+      <label>CSS 代码:</label>
+      <textarea id="cssCode" readonly></textarea>
+      <button id="copyBtn">复制代码</button>
+    </div>
+  </div>
+</body>
+</html>
