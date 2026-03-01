@@ -7,11 +7,12 @@ import { IoLogoGithub } from "react-icons/io5"
 import FootprintIcon from "./icons/footprint"
 import ThemeToggle from "./ThemeToggleButton"
 import { getLocaleFromPath } from "@/i18n/utils"
-import { defaultLocale } from "@/i18n/translations"
+import { defaultLocale, getTranslations } from "@/i18n/translations"
 import type { Locale } from "@/i18n/translations"
 
 const currentPath = Astro.url.pathname
 const locale = getLocaleFromPath(currentPath)
+const t = getTranslations(locale)
 
 const homePath = locale === defaultLocale ? '/' : `/${locale}/`
 const aboutPath = locale === defaultLocale ? '/about' : `/${locale}/about`
@@ -33,8 +34,8 @@ const postsPath = locale === defaultLocale ? '/posts' : `/${locale}/posts`
       
       <!-- 中间：导航链接 -->
       <div class="flex-1 flex items-center justify-center gap-6">
-        <HeaderLink href={aboutPath}>About</HeaderLink>
-        <HeaderLink href={postsPath}>Blog</HeaderLink>
+        <HeaderLink href={aboutPath}>{t.nav.about}</HeaderLink>
+        <HeaderLink href={postsPath}>{t.nav.blog}</HeaderLink>
         <PlaygroundDropdown client:visible />
       </div>
       

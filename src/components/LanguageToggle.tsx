@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react"
+import { getTranslations } from "@/i18n/translations"
+import type { Locale } from "@/i18n/translations"
 
 const locales = [
   { code: "zh", label: "中" },
@@ -7,7 +9,7 @@ const locales = [
 
 export default function LanguageToggle() {
   const [isMounted, setIsMounted] = useState(false)
-  const [currentLocale, setCurrentLocale] = useState<string>(() => {
+  const [currentLocale, setCurrentLocale] = useState<Locale>(() => {
     if (import.meta.env.SSR) {
       return "zh"
     }
@@ -17,12 +19,14 @@ export default function LanguageToggle() {
     }
     return "zh"
   })
+  
+  const translations = getTranslations(currentLocale)
 
   const toggleLocale = () => {
     const newLocale = currentLocale === "zh" ? "en" : "zh"
     const currentPath = window.location.pathname
 
-    // 获取基础路径（移除语言前缀）
+    // 獲取基礎路徑（移除語言前綴）
     let basePath = currentPath
     if (currentPath.startsWith("/en/")) {
       basePath = currentPath.replace("/en", "")
@@ -52,7 +56,7 @@ export default function LanguageToggle() {
               checked ? "bg-white text-black dark:bg-zinc-800 dark:text-white" : ""
             } cursor-pointer rounded-3xl px-3 py-1.5 text-sm font-medium transition-colors`}
             onClick={toggleLocale}
-            aria-label={`Switch to ${locale.label}`}
+            aria-label={`${translations.aria.switchLanguage} ${locale.label}`}
           >
             {locale.label}
           </button>

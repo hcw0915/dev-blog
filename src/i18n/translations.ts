@@ -95,6 +95,24 @@ export const translations = {
         school: '國防大學理工學院化學暨材料工程學系',
         period: '2011 - 2015'
       }
+    },
+    // Playground
+    playground: {
+      title: 'Playground',
+      vanilla: 'Vanilla',
+      react: 'React'
+    },
+    // Navigation
+    nav: {
+      about: '關於',
+      blog: '部落格'
+    },
+    // Accessibility labels
+    aria: {
+      closeModal: '關閉',
+      playgroundMenu: 'Playground 選單',
+      switchLanguage: '切換語言',
+      toggleTheme: '切換主題'
     }
   },
   en: {
@@ -188,6 +206,24 @@ export const translations = {
         school: 'National Defense University, College of Engineering, Department of Chemical and Materials Engineering',
         period: '2011 - 2015'
       }
+    },
+    // Playground
+    playground: {
+      title: 'Playground',
+      vanilla: 'Vanilla',
+      react: 'React'
+    },
+    // Navigation
+    nav: {
+      about: 'About',
+      blog: 'Blog'
+    },
+    // Accessibility labels
+    aria: {
+      closeModal: 'Close',
+      playgroundMenu: 'Playground menu',
+      switchLanguage: 'Switch language',
+      toggleTheme: 'Toggle theme'
     }
   }
 } as const

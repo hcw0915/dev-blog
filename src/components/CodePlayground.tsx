@@ -46,7 +46,7 @@ export default function CodePlayground({
   initialCss = "",
   initialJs = ""
 }: CodePlaygroundProps) {
-  // 如果所有初始值都为空，使用默认值；否则使用传入的值
+  // 如果所有初始值都為空，使用預設值；否則使用傳入的值
   const shouldUseDefault = !initialHtml && !initialCss && !initialJs
   
   const defaultCode = {
@@ -58,8 +58,8 @@ export default function CodePlayground({
 </head>
 <body>
   <h1>Hello, World!</h1>
-  <p>这是一个简单的示例。开始编辑代码，预览会实时更新。</p>
-  <button id="clickBtn">点击我</button>
+  <p>這是一個簡單的範例。開始編輯程式碼，預覽會即時更新。</p>
+  <button id="clickBtn">點擊我</button>
 </body>
 </html>`,
     css: `body {
@@ -98,7 +98,7 @@ button:hover {
 }`,
     js: `document.getElementById('clickBtn').addEventListener('click', function() {
   alert('Hello from JavaScript!')
-  this.textContent = '已点击！'
+  this.textContent = '已點擊！'
 })`
   }
 
@@ -109,30 +109,30 @@ button:hover {
   const [theme, setTheme] = useState<"vs-dark" | "github-light">("vs-dark")
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
-  // 检测主题变化
+  // 檢測主題變化
   useEffect(() => {
     const detectTheme = () => {
       const isDark = document.documentElement.classList.contains("dark")
       setTheme(isDark ? "vs-dark" : "github-light")
     }
 
-    // 初始检测
+    // 初始檢測
     detectTheme()
 
-    // 监听主题变化
+    // 監聽主題變化
     const observer = new MutationObserver(detectTheme)
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"]
     })
 
-    // 监听 localStorage 变化（主题切换器可能会更新）
+    // 監聽 localStorage 變化（主題切換器可能會更新）
     const handleStorageChange = () => {
       detectTheme()
     }
     window.addEventListener("storage", handleStorageChange)
 
-    // 定期检查（防止其他方式改变主题）
+    // 定期檢查（防止其他方式改變主題）
     const interval = setInterval(detectTheme, 1000)
 
     return () => {
@@ -142,15 +142,15 @@ button:hover {
     }
   }, [])
 
-  // 提取 HTML body 内容
+  // 提取 HTML body 內容
   const extractBodyContent = (htmlString: string): string => {
-    // 如果包含完整的 HTML 文档结构，提取 body 内容
+    // 如果包含完整的 HTML 文件結構，提取 body 內容
     const bodyMatch = htmlString.match(/<body[^>]*>([\s\S]*)<\/body>/i)
     if (bodyMatch) {
       return bodyMatch[1].trim()
     }
     
-    // 如果没有 body 标签，尝试移除 DOCTYPE、html、head 标签
+    // 如果沒有 body 標籤，嘗試移除 DOCTYPE、html、head 標籤
     let content = htmlString
       .replace(/<!DOCTYPE[^>]*>/gi, '')
       .replace(/<\/?html[^>]*>/gi, '')
@@ -160,7 +160,7 @@ button:hover {
     return content
   }
 
-  // 更新预览
+  // 更新預覽
   const updatePreview = () => {
     if (!iframeRef.current) return
 
@@ -190,7 +190,7 @@ button:hover {
     }
   }
 
-  // 实时更新（防抖）
+  // 即時更新（防抖）
   useEffect(() => {
     const timer = setTimeout(() => {
       updatePreview()
@@ -199,13 +199,13 @@ button:hover {
     return () => clearTimeout(timer)
   }, [html, css, js])
 
-  // 初始化预览
+  // 初始化預覽
   useEffect(() => {
     updatePreview()
   }, [])
 
   const handleClear = () => {
-    if (confirm("确定要清空所有代码吗？")) {
+    if (confirm("確定要清空所有程式碼嗎？")) {
       setHtml("")
       setCss("")
       setJs("")
@@ -220,7 +220,7 @@ button:hover {
       timestamp: new Date().toISOString()
     }
     localStorage.setItem("playground-code", JSON.stringify(code))
-    alert("代码已保存到本地存储！")
+    alert("程式碼已儲存到本地儲存！")
   }
 
   const handleLoad = () => {
@@ -231,12 +231,12 @@ button:hover {
         setHtml(code.html || "")
         setCss(code.css || "")
         setJs(code.js || "")
-        alert("代码已加载！")
+        alert("程式碼已載入！")
       } catch (e) {
-        alert("加载失败：" + (e as Error).message)
+        alert("載入失敗：" + (e as Error).message)
       }
     } else {
-      alert("没有保存的代码")
+      alert("沒有儲存的程式碼")
     }
   }
 
@@ -245,7 +245,7 @@ button:hover {
     updatePreview()
   }
 
-  // 捕获拖拽时的错误
+  // 捕獲拖拽時的錯誤
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
       if (event.message?.includes("SES_UNCAUGHT_EXCEPTION")) {
@@ -265,7 +265,7 @@ button:hover {
     <ErrorBoundary>
       <div className="h-full w-full bg-white dark:bg-[#1e1e1e]">
         <PanelGroup direction="vertical" className="h-full" id="main-panel-group">
-        {/* 编辑器区域 */}
+        {/* 編輯器區域 */}
         <Panel id="editor-panel" defaultSize={60} minSize={30}>
           <PanelGroup direction="horizontal" className="h-full" id="editor-panel-group">
             {/* HTML Editor */}
@@ -366,7 +366,7 @@ button:hover {
                 <button
                   onClick={handleRefresh}
                   className="px-2 py-1 text-xs text-[#333] dark:text-[#cccccc] hover:bg-[#e0e0e0] dark:hover:bg-[#2a2d2e] rounded"
-                  title="刷新"
+                  title="重新整理"
                 >
                   Refresh
                 </button>
@@ -380,14 +380,14 @@ button:hover {
                 <button
                   onClick={handleSave}
                   className="px-2 py-1 text-xs text-[#333] dark:text-[#cccccc] hover:bg-[#e0e0e0] dark:hover:bg-[#2a2d2e] rounded"
-                  title="保存"
+                  title="儲存"
                 >
                   Save
                 </button>
                 <button
                   onClick={handleLoad}
                   className="px-2 py-1 text-xs text-[#333] dark:text-[#cccccc] hover:bg-[#e0e0e0] dark:hover:bg-[#2a2d2e] rounded"
-                  title="加载"
+                  title="載入"
                 >
                   Load
                 </button>

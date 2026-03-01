@@ -1,10 +1,10 @@
 ---
-import QRModal from "./QRModal.astro"
+import QRModal from "./QRModal"
 ---
 
 <body
   class="bg-slate-100 dark:bg-zinc-900 text-slate-900 dark:text-zinc-300 break-words leading-6 transition-colors duration-500"
   >
   <slot />
-  <QRModal />
+  <QRModal client:load />
 </body>

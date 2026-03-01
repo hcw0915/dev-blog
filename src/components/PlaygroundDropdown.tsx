@@ -1,13 +1,22 @@
 import React, { useEffect, useState, useRef } from "react"
 import { IoChevronDown } from "react-icons/io5"
+import { getTranslations } from "@/i18n/translations"
+import type { Locale } from "@/i18n/translations"
 
 export default function PlaygroundDropdown() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
+  const [locale, setLocale] = useState<Locale>("zh")
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setIsMounted(true)
+    // 獲取當前語言
+    if (typeof window !== "undefined") {
+      const currentPath = window.location.pathname
+      const isEn = currentPath.startsWith("/en/")
+      setLocale(isEn ? "en" : "zh")
+    }
   }, [])
 
   useEffect(() => {
@@ -31,28 +40,30 @@ export default function PlaygroundDropdown() {
     }
   }, [isOpen, isMounted])
 
+  const translations = getTranslations(locale)
+
   if (!isMounted) {
     return (
       <div className="relative">
         <button className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-          Playground
+          {translations.playground.title}
           <IoChevronDown className="text-xs" />
         </button>
       </div>
     )
   }
 
-  // 获取当前路径和语言
+  // 獲取當前路徑和語言
   const currentPath = window.location.pathname
   const isEn = currentPath.startsWith("/en/")
   const basePath = isEn ? "/en" : ""
 
   const menuItems = [
-    { label: "Pure", href: `${basePath}/playground/pure` },
-    { label: "React", href: `${basePath}/playground/react` }
+    { label: translations.playground.vanilla, href: `${basePath}/playground/vanilla` },
+    { label: translations.playground.react, href: `${basePath}/playground/react` }
   ]
 
-  // 检查当前是否在 playground 页面
+  // 檢查當前是否在 playground 頁面
   const isPlaygroundActive = currentPath.includes("/playground/")
 
   return (
@@ -64,10 +75,10 @@ export default function PlaygroundDropdown() {
             ? "font-bold underline text-indigo-600 dark:text-indigo-400"
             : "text-zinc-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400"
         }`}
-        aria-label="Playground menu"
+        aria-label={translations.aria.playgroundMenu}
         aria-expanded={isOpen}
       >
-        Playground
+        {translations.playground.title}
         <IoChevronDown
           className={`text-xs transition-transform ${isOpen ? "rotate-180" : ""}`}
         />
