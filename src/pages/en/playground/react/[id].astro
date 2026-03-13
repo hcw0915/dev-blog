@@ -9,6 +9,10 @@ import { getLocaleFromPath } from "@/i18n/utils"
 import { getTranslations } from "@/i18n/translations"
 import type { Locale } from "@/i18n/translations"
 
+export async function getStaticPaths() {
+  return [];
+}
+
 const currentPath = Astro.url.pathname
 const locale = getLocaleFromPath(currentPath)
 const t = getTranslations(locale)
