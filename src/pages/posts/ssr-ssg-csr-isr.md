@@ -16,7 +16,7 @@ slug: ssr-ssg-csr-isr
 
 ```js
 export default function handler(req, res) {
-  res.status(200).json(products)
+  res.status(200).json(products);
 }
 ```
 
@@ -24,7 +24,7 @@ export default function handler(req, res) {
 
 ```js
 export async function GET() {
-  return Response.json(products)
+  return Response.json(products);
 }
 ```
 
@@ -36,30 +36,30 @@ export async function GET() {
 
 ```js
 async function Page() {
-  const data = await fetchData()
-  return <div>{data}</div>
+  const data = await fetchData();
+  return <div>{data}</div>;
 }
 ```
 
 #### SSR
 
 ```js
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 async function Page() {
-  const data = await fetchData()
-  return <div>{data}</div>
+  const data = await fetchData();
+  return <div>{data}</div>;
 }
 ```
 
 #### ISR
 
 ```js
-export const revalidate = 60 // 秒數
+export const revalidate = 60; // 秒數
 
 async function Page() {
-  const data = await fetchData()
-  return <div>{data}</div>
+  const data = await fetchData();
+  return <div>{data}</div>;
 }
 ```
 
@@ -110,22 +110,22 @@ middleware.js                    // 全局中間件（在 app 目錄外）
 可以很好限制 url 導向 或是語系等等問題 `/zh/` `/en/` `/kr/` `/jp/`....
 
 ```js
-import { NextResponse, type NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from "next/server";
 
 // 基本上類似攔截器功能, 可以針對 match 配對的檔案做處理一層處理
 export const config = {
   // Do not run the middleware on the following paths
   // prettier-ignore
-  matcher: '/provider'
-}
+  matcher: '/provider',
+};
 
 export function middleware(request: NextRequest) {
   // 只要 url = /profile 都會被導到 /hello 的 url
-  if (request.nextUrl.pathname === '/profile') {
-    const redirectUrl = new URL('/hello', request.url)
-    return NextResponse.rewrite()
+  if (request.nextUrl.pathname === "/profile") {
+    const redirectUrl = new URL("/hello", request.url);
+    return NextResponse.rewrite();
   }
-  return NextResponse.redirect(new URL('/', request.url))
+  return NextResponse.redirect(new URL("/", request.url));
 
   // 可以做一些處置 setHeader cookies 等等 request 內部的內容
   //   const response = NextResponse.next()
@@ -167,15 +167,15 @@ export function middleware(request: NextRequest) {
 ```js
 // 基本 SSG
 export default function Page() {
-  return <div>Static Content</div>
+  return <div>Static Content</div>;
 }
 
 // 帶有靜態數據的 SSG
 export async function generateStaticParams() {
-  const products = await getProducts()
-  return products.map(product => ({
-    id: product.id
-  }))
+  const products = await getProducts();
+  return products.map((product) => ({
+    id: product.id,
+  }));
 }
 ```
 
@@ -186,10 +186,10 @@ export async function generateStaticParams() {
 
 ```js
 // 頁面層級的 ISR
-export const revalidate = 60 // 60秒
+export const revalidate = 60; // 60秒
 
 // 數據層級的 ISR
-fetch(URL, { next: { revalidate: 60 } })
+fetch(URL, { next: { revalidate: 60 } });
 ```
 
 ### 客戶端渲染 (CSR)
@@ -198,10 +198,10 @@ fetch(URL, { next: { revalidate: 60 } })
 - 適用於高度互動的 UI 組件
 
 ```js
-'use client'
+"use client";
 export default function InteractiveComponent() {
-  const [state, setState] = useState()
-  return <button onClick={() => setState(!state)}>Toggle</button>
+  const [state, setState] = useState();
+  return <button onClick={() => setState(!state)}>Toggle</button>;
 }
 ```
 
@@ -212,10 +212,10 @@ export default function InteractiveComponent() {
 
 ```js
 // 強制 SSR
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 // 或使用 no-store fetch
-fetch(URL, { cache: 'no-store' })
+fetch(URL, { cache: "no-store" });
 ```
 
 ## Server Components
@@ -231,25 +231,25 @@ fetch(URL, { cache: 'no-store' })
 
 ```js
 async function DataComponent() {
-  const data = await fetchData() // 直接在伺服器端獲取
+  const data = await fetchData(); // 直接在伺服器端獲取
   return (
     <div>
-      {data.map(item => (
+      {data.map((item) => (
         <Item key={item.id} {...item} />
       ))}
     </div>
-  )
+  );
 }
 ```
 
 2. **存取後端資源**
 
 ```js
-import { db } from '@/lib/db'
+import { db } from "@/lib/db";
 
 async function DbComponent() {
-  const user = await db.query('SELECT * FROM users')
-  return <UserProfile user={user} />
+  const user = await db.query("SELECT * FROM users");
+  return <UserProfile user={user} />;
 }
 ```
 
@@ -257,11 +257,11 @@ async function DbComponent() {
 
 ```js
 // 大型依賴庫保持在伺服器端
-import { heavyLibrary } from 'heavy-library'
+import { heavyLibrary } from "heavy-library";
 
 export default function ServerComponent() {
-  const result = heavyLibrary.process()
-  return <div>{result}</div>
+  const result = heavyLibrary.process();
+  return <div>{result}</div>;
 }
 ```
 
@@ -276,13 +276,13 @@ export default function ServerComponent() {
 
 ```js
 // 1. 路由層級設置（最高優先）
-export const dynamic = 'force-dynamic' | 'force-static' | 'auto' | 'error'
+export const dynamic = "force-dynamic" | "force-static" | "auto" | "error";
 
 // 2. 數據獲取設置
-export const fetchCache = 'force-cache' | 'force-no-store' | 'default-cache'
+export const fetchCache = "force-cache" | "force-no-store" | "default-cache";
 
 // 3. 重驗證設置
-export const revalidate = 60 // 秒
+export const revalidate = 60; // 秒
 ```
 
 ### 優先順序規則
@@ -295,21 +295,21 @@ export const revalidate = 60 // 秒
 
 ```js
 // 示例：處理多層級配置
-export const revalidate = 60 // 頁面級別
+export const revalidate = 60; // 頁面級別
 
 async function Component() {
   // 這個 fetch 會遵循頁面 revalidate
-  const data1 = await fetch(URL1)
+  const data1 = await fetch(URL1);
 
   // 這個 fetch 有自己的配置
   const data2 = await fetch(URL2, {
-    cache: 'no-store' // 覆蓋頁面配置
-  })
+    cache: "no-store", // 覆蓋頁面配置
+  });
 
   // 這個 fetch 有特定的重驗證時間
   const data3 = await fetch(URL3, {
-    next: { revalidate: 30 } // 特定時間
-  })
+    next: { revalidate: 30 }, // 特定時間
+  });
 }
 ```
 
@@ -318,14 +318,14 @@ async function Component() {
 ### 基本 Suspense 使用
 
 ```js
-import { Suspense } from 'react'
+import { Suspense } from "react";
 
 export default function Page() {
   return (
     <Suspense fallback={<Loading />}>
       <SlowComponent />
     </Suspense>
-  )
+  );
 }
 ```
 
@@ -343,7 +343,7 @@ export default function Page() {
         </Suspense>
       </Suspense>
     </>
-  )
+  );
 }
 ```
 
@@ -360,7 +360,7 @@ export default function Page() {
         <Reviews />
       </Suspense>
     </div>
-  )
+  );
 }
 ```
 
@@ -404,7 +404,7 @@ export default function Page() {
         <Dynamic /> {/* 動態流式傳輸 */}
       </Suspense>
     </>
-  )
+  );
 }
 ```
 
@@ -469,14 +469,14 @@ export default function Page() {
 ```js
 export const metadata: Metadata = {
   title: {
-    default: 'My Awesome Blog',
-    template: '%s - My Awesome Blog'
+    default: "My Awesome Blog",
+    template: "%s - My Awesome Blog",
   },
-  description: 'Come and read my awesome articles!',
+  description: "Come and read my awesome articles!",
   twitter: {
-    card: 'summary_large_image'
-  }
-}
+    card: "summary_large_image",
+  },
+};
 ```
 
 https://www.opengraph.xyz/

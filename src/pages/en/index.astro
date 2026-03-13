@@ -1,0 +1,83 @@
+---
+import BaseHead from "@/components/BaseHead.astro"
+import Header from "@/components/Header.astro"
+import Footer from "@/components/Footer.astro"
+import { SITE_TITLE, SITE_DESCRIPTION, COLOR_MAP } from "@/config"
+import Body from "@/components/Body.astro"
+
+const getGradientStyle = (tagArray: string[]) => {
+  const colors = tagArray
+    .map(tag => COLOR_MAP[tag.toLowerCase()])
+    .sort()
+    .filter(Boolean) // Filter out undefined values to avoid invalid colors
+
+  if (colors.length === 0) {
+    return { background: `linear-gradient(135deg, #f0f0f0, #d9d9d9)` } // Default gray
+  }
+
+  return { background: `linear-gradient(135deg, ${colors.join(', ')})` }
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  <Body>
+    <Header title={SITE_TITLE} />
+    <main class="">
+      <div
+        class="relative p-4 mx-auto dark:bg-zinc-900 bg-white h-[calc(100dvh-112px)] justify-center items-center flex text-[5rem] overflow-y-hidden"
+      >
+        <!-- Container: Use flexbox to ensure content is always centered -->
+        <div class="relative flex flex-col items-center justify-center w-full h-full">
+          <!-- Emoji Image: Use relative units to maintain proportions -->
+          <img
+            class="relative object-contain mb-4"
+            style={{
+              width: 'clamp(300px, 70vw, 500px)',
+              height: 'auto',
+              zIndex: 1
+            }}
+            src="/android-chrome-512x512.png"
+            alt=""
+          />
+          <!-- HELLO Text: Use relative units to maintain proportions -->
+          <div
+            class="relative italic dark:text-white text-zinc-800 z-10 bg-[#0e5c74] dark:bg-[#ff8dab] w-[50%] text-center"
+            style={{
+              fontFamily: 'Lilita One',
+              fontSize: 'clamp(4rem, 15vw, 12rem)',
+              WebkitTextStrokeColor: 'transparent',
+              WebkitTextStrokeWidth: 'clamp(0.5rem, 2vw, 3rem)',
+              WebkitTextFillColor: 'hsl(33, 100%, 96%)',
+              backgroundClip: 'text',
+              mixBlendMode: 'hard-light',
+              lineHeight: 1
+            }}
+          >
+            HELLO
+          </div>
+        </div>
+        <!-- 
+        <div
+          class=".marquee-container absolute top-[400px] left-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center items-center mt-[450px] text-[12rem] italic dark:text-white text-zinc-800 z-10 h-full w-full"
+          style={{
+            fontFamily: 'Lilita One',
+            // WebkitTextStrokeColor: 'transparent',
+            // WebkitTextStrokeWidth: '1rem',
+            WebkitTextFillColor: '#A0C878',
+            // backgroundColor: 'hsl(260 70% 70%)',
+            // backgroundClip: 'text',
+            letterSpacing: '-30px',
+            mixBlendMode: 'hard-light' // Let text blend with background image
+          }}
+        >
+          <div class="marquee-content">
+            <span>YyYyyyYYYYyYyYyyYYYYyYYYyyyy</span>
+          </div>
+        </div> -->
+      </div>
+    </main>
+    <Footer />
+  </Body>
+</html>

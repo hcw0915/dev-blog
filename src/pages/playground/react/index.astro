@@ -4,35 +4,27 @@ import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
 import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
 import Body from "@/components/Body.astro"
-import Content from "@/components/Content.astro"
+import { getLocaleFromPath } from "@/i18n/utils"
+import { defaultLocale, getTranslations } from "@/i18n/translations"
+import type { Locale } from "@/i18n/translations"
+import ReactCodePlayground from "@/components/ReactCodePlayground"
+
+const currentPath = Astro.url.pathname
+const locale = getLocaleFromPath(currentPath)
+const t = getTranslations(locale)
 ---
 
 <!doctype html>
-<html lang="zh-TW">
+<html lang={locale === 'zh' ? 'zh-TW' : 'en'}>
   <head>
-    <BaseHead title={`React Playground - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+    <BaseHead title={`React ${t.playground.title} - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
   </head>
   <Body>
     <Header title={SITE_TITLE} />
-    <main class="pt-[64px]">
-      <Content>
-        <div class="max-w-4xl mx-auto">
-          <h1 class="text-4xl font-bold mb-6 dark:text-white text-zinc-900">
-            React Playground
-          </h1>
-          <p class="text-lg text-zinc-600 dark:text-zinc-400 mb-8">
-            這是一個使用 React 的 Playground 頁面。
-          </p>
-          <div class="bg-zinc-50 dark:bg-zinc-900 rounded-lg p-6 border border-zinc-200 dark:border-zinc-800">
-            <h2 class="text-2xl font-semibold mb-4 dark:text-white text-zinc-900">
-              開始編碼
-            </h2>
-            <p class="text-zinc-600 dark:text-zinc-400">
-              在這裡你可以使用 React 進行實驗和開發。
-            </p>
-          </div>
-        </div>
-      </Content>
+    <main class="pt-[64px] min-h-screen">
+      <div class="w-full" style="height: calc(100vh - 64px); min-height: 600px;">
+        <ReactCodePlayground client:only="react" />
+      </div>
     </main>
     <Footer />
   </Body>

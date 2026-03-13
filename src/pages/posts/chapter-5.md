@@ -117,12 +117,12 @@ PERCY_TOKEN=web_d5ba0ca8e24422c41fb9ca18eb22cc89859326242a008838c141e4e534b7616a
 
 ```js
 // cypress/e2e/mixtini.cy.js
-describe('Index Page', () => {
-  it('should update snapshot to Percy correctly', () => {
-    cy.visit('https://mixtini-co.web.app/')
-    cy.percySnapshot('index')
-  })
-})
+describe("Index Page", () => {
+  it("should update snapshot to Percy correctly", () => {
+    cy.visit("https://mixtini-co.web.app/");
+    cy.percySnapshot("index");
+  });
+});
 ```
 
 > [!NOTE] > `cy.percySnapshot` 目前尚未被 cypress 引用, 所以透過 `/cypress/support/commands.ts` 進行 cypress 的全域註冊 plugin/擴充套件, 當然也可以在 要測試的檔案裡面直接 `import "@percy/cypress"`
@@ -131,15 +131,15 @@ describe('Index Page', () => {
 // cypress/support/commands.ts
 
 /// <reference types="cypress" />
-import '@percy/cypress'
+import "@percy/cypress";
 
 // 或是
 
 // cypress/e2e/mixtini.cy.ts
-import '@percy/cypress'
-describe('Index Page', () => {
+import "@percy/cypress";
+describe("Index Page", () => {
   // ...
-})
+});
 ```
 
 - 執行 `npm cy:open` / 執行 `npm cy:percy`
@@ -249,16 +249,16 @@ npx sb init
 
 ```js
 // src/components/Button.tsx
-import React from 'react'
+import React from "react";
 
 type ButtonProps = {
   label: string,
-  onClick?: () => void
-}
+  onClick?: () => void,
+};
 
 export const Button = ({ label, onClick }: ButtonProps) => {
-  return <button onClick={onClick}>{label}</button>
-}
+  return <button onClick={onClick}>{label}</button>;
+};
 ```
 
 - 需要安裝 `@storybook/test`
@@ -269,32 +269,32 @@ pnpm add -D @storybook/test
 
 ```js
 // src/components/Button.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react'
-import { userEvent, within, expect } from '@storybook/test'
-import { Button } from './Button'
+import type { Meta, StoryObj } from "@storybook/react";
+import { userEvent, within, expect } from "@storybook/test";
+import { Button } from "./Button";
 
 const meta: Meta<typeof Button> = {
-  title: 'Example/Button',
-  component: Button
-}
-export default meta
+  title: "Example/Button",
+  component: Button,
+};
+export default meta;
 
-type Story = StoryObj<typeof Button>
+type Story = StoryObj<typeof Button>;
 
 export const Default: Story = {
   args: {
-    label: 'Click Me'
+    label: "Click Me",
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const button = await canvas.getByRole('button')
+    const canvas = within(canvasElement);
+    const button = await canvas.getByRole("button");
 
-    await userEvent.click(button)
+    await userEvent.click(button);
 
     // 你可以根據點擊後的狀態去驗證
-    expect(button).toHaveTextContent('Clicked') // 假設點擊後文字會改變
-  }
-}
+    expect(button).toHaveTextContent("Clicked"); // 假設點擊後文字會改變
+  },
+};
 ```
 
 - 新增 scripts
@@ -349,37 +349,37 @@ export const Default: Story = {
 修改 `mixtini.cy.ts`
 
 ```js
-import '@percy/cypress'
+import "@percy/cypress";
 
-describe('Index Page', () => {
-  it('should update snapshot to Percy correctly', () => {
-    cy.visit('https://mixtini-co.web.app/cocktails/search')
-    cy.percySnapshot('index', {
+describe("Index Page", () => {
+  it("should update snapshot to Percy correctly", () => {
+    cy.visit("https://mixtini-co.web.app/cocktails/search");
+    cy.percySnapshot("index", {
       // widths: [375, 768, 1440],
-    })
-  })
+    });
+  });
 
-  it('should search for 愛爾蘭咖啡 and take Percy snapshot', () => {
-    cy.visit('https://mixtini-co.web.app/cocktails/search')
+  it("should search for 愛爾蘭咖啡 and take Percy snapshot", () => {
+    cy.visit("https://mixtini-co.web.app/cocktails/search");
 
     // 等待頁面加載完成，包含 React 渲染
-    cy.wait(1000)
+    cy.wait(1000);
 
     // 輸入「愛爾蘭咖啡」
-    cy.get('input[placeholder="請輸入調酒名稱或材料"]').type('愛爾蘭咖啡', {
-      delay: 100
-    })
+    cy.get('input[placeholder="請輸入調酒名稱或材料"]').type("愛爾蘭咖啡", {
+      delay: 100,
+    });
 
     // 點擊搜尋按鈕
-    cy.get('button[data-testid="SEARCH_BUTTON"]').click()
+    cy.get('button[data-testid="SEARCH_BUTTON"]').click();
 
     // 等待搜尋結果載入
-    cy.wait(3000)
+    cy.wait(3000);
 
     // Percy 拍照
-    cy.percySnapshot('搜尋結果 - 愛爾蘭咖啡')
-  })
-})
+    cy.percySnapshot("搜尋結果 - 愛爾蘭咖啡");
+  });
+});
 ```
 
 分別執行 `pnpm cy:open` `pnpm cy:percy` 可以看到對應的畫面皆有按照測試案例去做顯示與截圖.
@@ -396,7 +396,7 @@ describe('Index Page', () => {
 name: Regular Visual Testing
 on:
   schedule:
-    - cron: '0 0 * * 1' # Every Monday at midnight UTC
+    - cron: "0 0 * * 1" # Every Monday at midnight UTC
   push:
     branches:
       - main

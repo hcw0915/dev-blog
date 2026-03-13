@@ -16,12 +16,12 @@ export async function getStaticPaths() {
 const { id } = Astro.params
 const playground = playgrounds.find((p) => p.id === id)
 
-// 调试信息
+// Debug info
 if (!playground) {
   console.warn(`Playground with id "${id}" not found. Available IDs:`, playgrounds.map(p => p.id))
 }
 
-// 如果找不到 playground，使用默认值
+// If playground not found, use default values
 const initialHtml = playground?.html || ""
 const initialCss = playground?.css || ""
 const initialJs = playground?.js || ""
@@ -42,10 +42,10 @@ const pageTitle = playground ? `${playground.title} - Edit` : "Edit Playground"
          
             <div class="container mx-auto flex items-center justify-between">
               <a
-                href="/en/playground/pure"
+                href="/en/playground/vanilla"
                 class="px-4 py-2 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 rounded-lg text-sm font-medium text-zinc-800 dark:text-zinc-200 transition-colors"
               >
-                ← 返回列表
+                ← Back to List
               </a>
               <div>
                 <h1 class="text-xl font-bold text-zinc-800 dark:text-zinc-200 text-right">
@@ -70,16 +70,16 @@ const pageTitle = playground ? `${playground.title} - Edit` : "Edit Playground"
       ) : (
         <div class="container mx-auto px-4 py-12 text-center">
           <h1 class="text-2xl font-bold text-zinc-800 dark:text-zinc-200 mb-4">
-            Playground 未找到
+            Playground Not Found
           </h1>
           <p class="text-zinc-600 dark:text-zinc-400 mb-4">
-            找不到 ID 为 "{id}" 的 playground
+            Playground with ID "{id}" not found
           </p>
           <a
-            href="/en/playground/pure"
+            href="/en/playground/vanilla"
             class="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
           >
-            返回列表
+            Back to List
           </a>
         </div>
       )}

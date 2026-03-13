@@ -98,7 +98,7 @@ export const translations = {
     },
     // Playground
     playground: {
-      title: 'Playground',
+      title: '遊戲場',
       vanilla: 'Vanilla',
       react: 'React'
     },
@@ -110,9 +110,15 @@ export const translations = {
     // Accessibility labels
     aria: {
       closeModal: '關閉',
-      playgroundMenu: 'Playground 選單',
+      playgroundMenu: '遊戲場選單',
       switchLanguage: '切換語言',
       toggleTheme: '切換主題'
+    },
+    // 404 page
+    notFound: {
+      title: '找不到頁面',
+      message: '抱歉，您訪問的頁面不存在。',
+      goHome: '返回首頁'
     }
   },
   en: {
@@ -224,6 +230,12 @@ export const translations = {
       playgroundMenu: 'Playground menu',
       switchLanguage: 'Switch language',
       toggleTheme: 'Toggle theme'
+    },
+    // 404 page
+    notFound: {
+      title: 'Oops, not found',
+      message: 'Sorry, the page you are looking for does not exist.',
+      goHome: 'Go to Index'
     }
   }
 } as const

@@ -45,7 +45,7 @@ export default function PlaygroundDropdown() {
   if (!isMounted) {
     return (
       <div className="relative">
-        <button className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+        <button className="inline-flex items-center gap-1 px-3 py-1.5 text-base font-medium text-zinc-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
           {translations.playground.title}
           <IoChevronDown className="text-xs" />
         </button>
@@ -59,8 +59,7 @@ export default function PlaygroundDropdown() {
   const basePath = isEn ? "/en" : ""
 
   const menuItems = [
-    { label: translations.playground.vanilla, href: `${basePath}/playground/vanilla` },
-    { label: translations.playground.react, href: `${basePath}/playground/react` }
+    { label: translations.playground.vanilla, href: `${basePath}/playground/vanilla` }
   ]
 
   // 檢查當前是否在 playground 頁面
@@ -70,7 +69,7 @@ export default function PlaygroundDropdown() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium transition-colors ${
+        className={`inline-flex items-center gap-1 px-3 py-1.5 text-base font-medium transition-colors ${
           isPlaygroundActive
             ? "font-bold underline text-indigo-600 dark:text-indigo-400"
             : "text-zinc-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400"

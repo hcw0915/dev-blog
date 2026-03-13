@@ -1,0 +1,60 @@
+---
+import BaseHead from "@/components/BaseHead.astro"
+import Header from "@/components/Header.astro"
+import Footer from "@/components/Footer.astro"
+import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
+import Body from "@/components/Body.astro"
+import ReactCodePlayground from "@/components/ReactCodePlayground"
+import { getLocaleFromPath } from "@/i18n/utils"
+import { defaultLocale, getTranslations } from "@/i18n/translations"
+import type { Locale } from "@/i18n/translations"
+
+const currentPath = Astro.url.pathname
+const locale = getLocaleFromPath(currentPath)
+const t = getTranslations(locale)
+const homePath = locale === defaultLocale ? '/' : `/${locale}/`
+const basePath = locale === defaultLocale ? '' : `/${locale}`
+const { id } = Astro.params
+
+// 這裡可以從數據庫或文件系統讀取 React playground 數據
+// 目前先使用空值，讓用戶自己編寫
+const initialCode = ""
+const pageTitle = locale === 'zh' ? `React ${t.playground.title} - 編輯` : `React ${t.playground.title} - Edit`
+---
+
+<!doctype html>
+<html lang={locale === 'zh' ? 'zh-TW' : 'en'}>
+  <head>
+    <BaseHead title={`${pageTitle} - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+  </head>
+  <Body>
+    <Header title={SITE_TITLE} />
+    <main class="pt-[64px] min-h-screen">
+      <div class="bg-zinc-100 dark:bg-zinc-900 px-4 py-3 border-b border-zinc-200 dark:border-zinc-700">
+        <div class="container mx-auto flex items-center justify-between">
+          <a
+            href={`${basePath}/playground/react`}
+            class="px-4 py-2 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 rounded-lg text-sm font-medium text-zinc-800 dark:text-zinc-200 transition-colors"
+          >
+            {locale === 'zh' ? '← 返回列表' : '← Back to List'}
+          </a>
+          <div>
+            <h1 class="text-xl font-bold text-zinc-800 dark:text-zinc-200 text-right">
+              {locale === 'zh' ? `React ${t.playground.title}` : `React ${t.playground.title}`}
+            </h1>
+            <p class="text-sm text-zinc-600 dark:text-zinc-400">
+              {locale === 'zh' ? `ID: ${id}` : `ID: ${id}`}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="w-full" style="height: calc(100vh - 64px - 73px); min-height: 600px;">
+        <ReactCodePlayground 
+          client:only="react"
+          initialCode={initialCode}
+        />
+      </div>
+    </main>
+    <Footer />
+  </Body>
+</html>
