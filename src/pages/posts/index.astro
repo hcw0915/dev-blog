@@ -11,6 +11,11 @@ import {
 import Body from "@/components/Body.astro"
 import Content from "@/components/Content.astro"
 import { IoArrowForward } from "react-icons/io5"
+import { getLocaleFromPath, formatDate } from "@/i18n/utils"
+import { getTranslations } from "@/i18n/translations"
+
+const locale = getLocaleFromPath(Astro.url.pathname)
+const t = getTranslations(locale)
 
 // 獲取所有文章
 const posts = (await Astro.glob('../posts/*.md')).sort(
@@ -38,7 +43,7 @@ const getGradientStyle = (tagArray: string[]) => {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale === 'zh' ? 'zh-TW' : 'en'}>
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
   </head>
@@ -61,7 +66,7 @@ const getGradientStyle = (tagArray: string[]) => {
                   id="blogFilter"
                   class="text-primary border-gray-300 border rounded-full px-3"
                 >
-                  {tag}
+                  {tag === 'All' ? t.blog.all : tag}
                 </button>
               ))
             }
@@ -76,26 +81,26 @@ const getGradientStyle = (tagArray: string[]) => {
                 const tags = post.frontmatter.tags?.join(' ') || ''
                 return (
                   <li class={tags}>
-                    <a href={post.url}>
-                      <div class="mt-3 opacity-50 text-sm flex items-center gap-3">
-                        <span class="inline-block h-4 w-0.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
-                        {new Intl.DateTimeFormat('en-US', {
-                          dateStyle: 'long'
-                        }).format(new Date(post.frontmatter.createdAt))}
-                      </div>
-                      <div class="text-xl font-bold truncate">
-                        {post.frontmatter.title}
-                      </div>
-                      <div class="opacity-70">
-                        {post.frontmatter.description || '(no description)'}
-                      </div>
-                      {post.frontmatter.heroImage ===
-                        '/placeholder-hero.png' && (
-                        <div
-                          class="w-full h-[150px] rounded-xl flex items-center justify-center text-[1.25rem] text-center text-zinc-800 font-bold p-2"
-                          style={getGradientStyle(post.frontmatter.tags || [])}
+                    <a href={post.url} class="group block">
+                      <div
+                        class="relative w-full h-[160px] rounded-xl overflow-hidden mb-3 transition-transform duration-300 group-hover:-translate-y-1"
+                        style={getGradientStyle(post.frontmatter.tags || [])}
+                      >
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                        <h2
+                          class="absolute inset-x-0 bottom-0 p-3 text-white font-bold text-lg leading-snug"
+                          style="text-shadow:0 1px 3px rgba(0,0,0,0.5);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden"
                         >
                           {post.frontmatter.title}
+                        </h2>
+                      </div>
+                      <div class="opacity-50 text-sm flex items-center gap-3">
+                        <span class="inline-block h-4 w-0.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+                        {formatDate(post.frontmatter.createdAt, locale)}
+                      </div>
+                      {post.frontmatter.description && (
+                        <div class="opacity-70 mt-1">
+                          {post.frontmatter.description}
                         </div>
                       )}
                     </a>
@@ -108,12 +113,12 @@ const getGradientStyle = (tagArray: string[]) => {
 
         <section>
           <p class="mb-8 indent-4">
-            This is a blog written with Inkdrop.
+            {t.blog.writtenWith}
             <a
               class="inline-flex items-center gap-1 indent-1 text-indigo-600 dark:text-indigo-400 decoration-indigo-400 dark:decoration-indigo-600 underline underline-offset-2"
               href={HOMEPAGE_URL}
             >
-              Learn more <IoArrowForward className="inline" />
+              {t.blog.learnMore} <IoArrowForward className="inline" />
             </a>
           </p>
         </section>
@@ -122,70 +127,75 @@ const getGradientStyle = (tagArray: string[]) => {
     <Footer />
 
     <script is:inline>
-      const input = document.querySelectorAll('#blogFilter')
+      function initBlogFilter() {
+        const input = document.querySelectorAll('#blogFilter')
+        if (!input.length) return
 
-      function hideBlogs(evt) {
-        let selectedTag = evt.currentTarget.getAttribute('data-type')
-        let tagElement = document.getElementById('tags')
-        let tags = tagElement.dataset.tags
-        tags = tags.split(',')
-        tags.splice(tags.indexOf(selectedTag), 1)
+        function hideBlogs(evt) {
+          let selectedTag = evt.currentTarget.getAttribute('data-type')
+          let tagElement = document.getElementById('tags')
+          let tags = tagElement.dataset.tags
+          tags = tags.split(',')
+          tags.splice(tags.indexOf(selectedTag), 1)
 
-        if (selectedTag === 'All') {
-          history.pushState({ tag: selectedTag }, '', window.location.pathname)
-        } else {
-          history.pushState(
-            { tag: selectedTag },
-            '',
-            `?c=${selectedTag.toLowerCase()}`
-          )
+          if (selectedTag === 'All') {
+            history.pushState({ tag: selectedTag }, '', window.location.pathname)
+          } else {
+            history.pushState(
+              { tag: selectedTag },
+              '',
+              `?c=${selectedTag.toLowerCase()}`
+            )
+          }
+
+          // 修改 Tags 樣式, 剩下沒被選中的 tags 樣式
+          input.forEach(e => {
+            const active = e.getAttribute('data-type') === selectedTag
+            e.style.background = active ? '#4f46e5' : 'transparent'
+            e.style.color = active ? '#ffffff' : ''
+            e.style.borderColor = active ? '#4f46e5' : ''
+          })
+
+          // 顯示選擇的標籤
+          let elementsToShow = document.getElementsByClassName(selectedTag)
+          for (let i = 0; i < elementsToShow.length; i++) {
+            elementsToShow[i].style.display = 'block'
+          }
+
+          if (selectedTag !== 'All') {
+            // 隱藏未選擇的標籤
+            tags.forEach(t => {
+              const elementsToHide = document.getElementsByClassName(t)
+              for (let i = 0; i < elementsToHide.length; i++) {
+                elementsToHide[i].style.display = 'none'
+              }
+            })
+          }
+
+          const elementsToHide = document.getElementsByClassName(selectedTag)
+          for (let i = 0; i < elementsToHide.length; i++) {
+            elementsToHide[i].style.display = 'block'
+          }
+
+          if (selectedTag === 'All') {
+            // 顯示所有標籤
+            tags.forEach(t => {
+              const elementsToHide = document.getElementsByClassName(t)
+              for (let i = 0; i < elementsToHide.length; i++) {
+                elementsToHide[i].style.display = 'block'
+              }
+            })
+          }
         }
 
-        // 修改 Tags 樣式, 剩下沒被選中的 tags 樣式
+        // 為每個篩選按鈕添加點擊事件監聽器
         input.forEach(e => {
-          e.style.background =
-            e.getAttribute('data-type') !== selectedTag
-              ? 'transparent'
-              : '#3178C6'
+          e.addEventListener('click', hideBlogs)
         })
-
-        // 顯示選擇的標籤
-        let elementsToShow = document.getElementsByClassName(selectedTag)
-        for (let i = 0; i < elementsToShow.length; i++) {
-          elementsToShow[i].style.display = 'block'
-        }
-
-        if (selectedTag !== 'All') {
-          // 隱藏未選擇的標籤
-          tags.forEach(t => {
-            const elementsToHide = document.getElementsByClassName(t)
-            for (let i = 0; i < elementsToHide.length; i++) {
-              elementsToHide[i].style.display = 'none'
-            }
-          })
-        }
-
-        const elementsToHide = document.getElementsByClassName(selectedTag)
-        for (let i = 0; i < elementsToHide.length; i++) {
-          elementsToHide[i].style.display = 'block'
-        }
-
-        if (selectedTag === 'All') {
-          // 隱藏未選擇的標籤
-          console.log(tags)
-          tags.forEach(t => {
-            const elementsToHide = document.getElementsByClassName(t)
-            for (let i = 0; i < elementsToHide.length; i++) {
-              elementsToHide[i].style.display = 'block'
-            }
-          })
-        }
       }
 
-      // 為每個篩選按鈕添加點擊事件監聽器
-      input.forEach(e => {
-        e.addEventListener('click', hideBlogs)
-      })
+      // astro:page-load 在初次載入與每次 View Transitions 換頁後都會觸發
+      document.addEventListener('astro:page-load', initBlogFilter)
     </script>
   </Body>
 </html>

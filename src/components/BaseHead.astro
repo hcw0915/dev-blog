@@ -2,6 +2,7 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css'
+import { ClientRouter } from 'astro:transitions'
 
 export interface Props {
   title: string
@@ -37,20 +38,39 @@ const { title, description, image = '/cover.png' } = Astro.props
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
 
-<script is:inline>
-  const theme = (() => {
-    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-      return localStorage.getItem('theme')
-    }
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark'
-    }
-    return 'light'
-  })()
+<ClientRouter />
 
-  if (theme === 'light') {
-    document.documentElement.classList.remove('dark')
-  } else {
-    document.documentElement.classList.add('dark')
+<script is:inline>
+  function applyTheme() {
+    const stored =
+      typeof localStorage !== 'undefined' && localStorage.getItem('theme')
+    const theme =
+      stored ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light')
+    document.documentElement.classList.toggle('dark', theme === 'dark')
   }
+
+  applyTheme()
+  // View Transitions swaps reset <html> attributes; re-apply before paint.
+  document.addEventListener('astro:after-swap', applyTheme)
+
+  // Top navigation progress bar, driven by the View Transitions lifecycle.
+  document.addEventListener('astro:before-preparation', () => {
+    const bar = document.getElementById('page-progress')
+    if (!bar) return
+    bar.classList.remove('done')
+    // restart the grow animation from 0
+    bar.classList.remove('loading')
+    void bar.offsetWidth
+    bar.classList.add('loading')
+  })
+
+  document.addEventListener('astro:page-load', () => {
+    const bar = document.getElementById('page-progress')
+    if (!bar) return
+    bar.classList.remove('loading')
+    bar.classList.add('done')
+  })
 </script>
