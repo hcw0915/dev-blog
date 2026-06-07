@@ -6,6 +6,7 @@ export const SITE_DESCRIPTION = "Powered by Inkdrop"
 export const HOMEPAGE_URL = "https://www.inkdrop.app/"
 
 export const COLOR_MAP: Record<string, string> = {
+  ai: "#D97757",
   javascript: "#F7DF1E",
   typescript: "#3178C6",
   vue: "#C1E1C1",
@@ -15,5 +16,6 @@ export const COLOR_MAP: Record<string, string> = {
   rust: "#DEA584",
   next: "#3E3F5B",
   three: "#4D55CC",
-  shader: "#F9AFAF"
+  shader: "#F9AFAF",
+  css: "#B83280",
 } as const

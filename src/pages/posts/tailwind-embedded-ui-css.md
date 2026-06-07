@@ -3,11 +3,10 @@ public: true
 layout: ../../layouts/BlogPost.astro
 title: '[心得]  Tailwind 在 Embedded UI 中的 CSS 覆蓋問題與解法'
 createdAt: 1773425633944
-updatedAt: 1773427216336
+updatedAt: 1773512807165
 tags:
-  - Javascript
-  - Typescript
   - General
+  - CSS
 heroImage: /placeholder-hero.png
 slug: tailwind-embedded-ui-css
 ---
