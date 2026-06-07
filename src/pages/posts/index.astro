@@ -13,9 +13,21 @@ import Content from "@/components/Content.astro"
 import { IoArrowForward } from "react-icons/io5"
 import { getLocaleFromPath, formatDate } from "@/i18n/utils"
 import { getTranslations } from "@/i18n/translations"
+import fs from "node:fs"
+import path from "node:path"
 
 const locale = getLocaleFromPath(Astro.url.pathname)
 const t = getTranslations(locale)
+
+// 建置時掃描 public/hero/ 內現有的封面圖，避免逐篇做 fs 檢查
+const heroDir = path.resolve("public/hero")
+const heroSet = new Set(
+  fs.existsSync(heroDir)
+    ? fs.readdirSync(heroDir).map(f => f.replace(/\.(png|jpg|jpeg|webp)$/i, ""))
+    : []
+)
+const getSlug = (filePath: string) =>
+  filePath.split("/").pop()!.replace(/\.md$/, "")
 
 // 獲取所有文章
 const posts = (await Astro.glob('../posts/*.md')).sort(
@@ -79,6 +91,8 @@ const getGradientStyle = (tagArray: string[]) => {
             {
               posts.map(post => {
                 const tags = post.frontmatter.tags?.join(' ') || ''
+                const slug = getSlug(post.file)
+                const hasHero = heroSet.has(slug)
                 return (
                   <li class={tags}>
                     <a href={post.url} class="group block">
@@ -86,6 +100,14 @@ const getGradientStyle = (tagArray: string[]) => {
                         class="relative w-full h-[160px] rounded-xl overflow-hidden mb-3 transition-transform duration-300 group-hover:-translate-y-1"
                         style={getGradientStyle(post.frontmatter.tags || [])}
                       >
+                        {hasHero && (
+                          <img
+                            src={`/hero/${slug}.png`}
+                            alt=""
+                            loading="lazy"
+                            class="absolute inset-0 w-full h-full object-cover"
+                          />
+                        )}
                         <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
                         <h2
                           class="absolute inset-x-0 bottom-0 p-3 text-white font-bold text-lg leading-snug"

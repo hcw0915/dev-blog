@@ -6,6 +6,8 @@ import Body from "@/components/Body.astro"
 import Content from "@/components/Content.astro"
 import { COLOR_MAP } from "@/config"
 import { getLocaleFromPath, formatDate } from "@/i18n/utils"
+import fs from "node:fs"
+import path from "node:path"
 
 export interface Props {
   content: {
@@ -37,8 +39,16 @@ const getGradientStyle = (tagArray: string[]) => {
   return `background: linear-gradient(135deg, ${colors.join(', ')})`
 }
 
-// 所有文章目前共用同一張佔位圖；若沒有自訂封面，改用與列表一致的標籤漸層
-const hasCustomHero = heroImage && heroImage !== '/placeholder-hero.png'
+// 依 slug 找 public/hero/<slug>.png 作為封面
+const slug = Astro.url.pathname.replace(/\/$/, "").split("/").pop() || ""
+const heroFile = path.resolve(`public/hero/${slug}.png`)
+const localHero = slug && fs.existsSync(heroFile) ? `/hero/${slug}.png` : null
+
+// 優先用 frontmatter 自訂封面，其次用 public/hero 的圖；都沒有才退回標籤漸層
+const customHero =
+  (heroImage && heroImage !== '/placeholder-hero.png' ? heroImage : null) ||
+  localHero
+const hasCustomHero = Boolean(customHero)
 ---
 
 <!doctype html>
@@ -114,8 +124,8 @@ const hasCustomHero = heroImage && heroImage !== '/placeholder-hero.png'
           {
             hasCustomHero ? (
               <img
-                class="border border-slate-300 dark:border-zinc-700 rounded-xl aspect-[15/6] w-full"
-                src={heroImage}
+                class="border border-slate-300 dark:border-zinc-700 rounded-xl aspect-[15/6] w-full object-cover"
+                src={customHero}
                 alt=""
               />
             ) : (
