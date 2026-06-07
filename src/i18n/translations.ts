@@ -100,7 +100,28 @@ export const translations = {
     playground: {
       title: '遊戲場',
       vanilla: 'Vanilla',
-      react: 'React'
+      react: 'React',
+      edit: '編輯',
+      importHint: '（支援 import 外部套件）',
+      preview: '預覽',
+      local: '本地',
+      switchToLocal: '切換到本地預覽',
+      switchToCodeSandbox: '切換到 CodeSandbox',
+      openInNewWindow: '在新視窗開啟',
+      refresh: '重新整理',
+      errorMessage: '發生錯誤，請重新整理頁面。',
+      demoText: '這是一個簡單的 React 範例。',
+      clickCount: '點擊次數'
+    },
+    // Blog list page
+    blog: {
+      all: '全部',
+      writtenWith: '這是使用 Inkdrop 撰寫的部落格。',
+      learnMore: '了解更多'
+    },
+    // QR modal
+    qr: {
+      loading: '載入中...'
     },
     // Navigation
     nav: {
@@ -217,7 +238,28 @@ export const translations = {
     playground: {
       title: 'Playground',
       vanilla: 'Vanilla',
-      react: 'React'
+      react: 'React',
+      edit: 'Edit',
+      importHint: '(supports importing external packages)',
+      preview: 'Preview',
+      local: 'Local',
+      switchToLocal: 'Switch to local preview',
+      switchToCodeSandbox: 'Switch to CodeSandbox',
+      openInNewWindow: 'Open in new window',
+      refresh: 'Refresh',
+      errorMessage: 'Something went wrong. Please refresh the page.',
+      demoText: 'A simple React example.',
+      clickCount: 'Clicks'
+    },
+    // Blog list page
+    blog: {
+      all: 'All',
+      writtenWith: 'This is a blog written with Inkdrop.',
+      learnMore: 'Learn more'
+    },
+    // QR modal
+    qr: {
+      loading: 'Loading...'
     },
     // Navigation
     nav: {

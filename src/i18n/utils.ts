@@ -29,6 +29,19 @@ export function getLocalizedPath(pathname: string, locale: Locale): string {
   return '/' + locale + '/' + segments.join('/')
 }
 
+export function formatDate(date: Date | string, locale: Locale): string {
+  const d = new Date(date)
+
+  if (locale === 'zh') {
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${year}.${month}.${day}`
+  }
+
+  return new Intl.DateTimeFormat('en-US', { dateStyle: 'long' }).format(d)
+}
+
 export function getPathWithoutLocale(pathname: string): string {
   const segments = pathname.split('/').filter(Boolean)
   

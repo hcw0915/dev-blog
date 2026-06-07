@@ -3,20 +3,17 @@ import { IoChevronDown } from "react-icons/io5"
 import { getTranslations } from "@/i18n/translations"
 import type { Locale } from "@/i18n/translations"
 
-export default function PlaygroundDropdown() {
+interface PlaygroundDropdownProps {
+  locale?: Locale
+}
+
+export default function PlaygroundDropdown({ locale = "zh" }: PlaygroundDropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
-  const [locale, setLocale] = useState<Locale>("zh")
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setIsMounted(true)
-    // 獲取當前語言
-    if (typeof window !== "undefined") {
-      const currentPath = window.location.pathname
-      const isEn = currentPath.startsWith("/en/")
-      setLocale(isEn ? "en" : "zh")
-    }
   }, [])
 
   useEffect(() => {
@@ -53,10 +50,9 @@ export default function PlaygroundDropdown() {
     )
   }
 
-  // 獲取當前路徑和語言
+  // 語言由 server 傳入，路徑僅用於高亮當前項目
   const currentPath = window.location.pathname
-  const isEn = currentPath.startsWith("/en/")
-  const basePath = isEn ? "/en" : ""
+  const basePath = locale === "en" ? "/en" : ""
 
   const menuItems = [
     { label: translations.playground.vanilla, href: `${basePath}/playground/vanilla` }

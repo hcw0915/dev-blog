@@ -128,7 +128,7 @@ export default function QRModal() {
                     className="w-full h-full object-contain"
                   />
                 ) : (
-                  <div className="text-zinc-400 dark:text-zinc-600">載入中...</div>
+                  <div className="text-zinc-400 dark:text-zinc-600">{translations.qr.loading}</div>
                 )}
               </div>
             </div>

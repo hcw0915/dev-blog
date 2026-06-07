@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { getTranslations } from "@/i18n/translations"
 import type { Locale } from "@/i18n/translations"
 
@@ -7,23 +7,15 @@ const locales = [
   { code: "en", label: "EN" }
 ]
 
-export default function LanguageToggle() {
-  const [isMounted, setIsMounted] = useState(false)
-  const [currentLocale, setCurrentLocale] = useState<Locale>(() => {
-    if (import.meta.env.SSR) {
-      return "zh"
-    }
-    const path = window.location.pathname
-    if (path.startsWith("/en/")) {
-      return "en"
-    }
-    return "zh"
-  })
-  
-  const translations = getTranslations(currentLocale)
+interface LanguageToggleProps {
+  locale?: Locale
+}
+
+export default function LanguageToggle({ locale = "zh" }: LanguageToggleProps) {
+  const translations = getTranslations(locale)
 
   const toggleLocale = () => {
-    const newLocale = currentLocale === "zh" ? "en" : "zh"
+    const newLocale = locale === "zh" ? "en" : "zh"
     const currentPath = window.location.pathname
 
     // 獲取基礎路徑（移除語言前綴）
@@ -41,31 +33,23 @@ export default function LanguageToggle() {
     window.location.href = newPath
   }
 
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  return isMounted ? (
+  return (
     <div className="inline-flex items-center p-[1px] rounded-3xl bg-slate-300 dark:bg-zinc-600">
-      {locales.map(locale => {
-        const checked = locale.code === currentLocale
+      {locales.map(item => {
+        const checked = item.code === locale
         return (
           <button
-            key={locale.code}
+            key={item.code}
             className={`${
               checked ? "bg-white text-black dark:bg-zinc-800 dark:text-white" : ""
             } cursor-pointer rounded-3xl px-3 py-1.5 text-sm font-medium transition-colors`}
             onClick={toggleLocale}
-            aria-label={`${translations.aria.switchLanguage} ${locale.label}`}
+            aria-label={`${translations.aria.switchLanguage} ${item.label}`}
           >
-            {locale.label}
+            {item.label}
           </button>
         )
       })}
-    </div>
-  ) : (
-    <div className="inline-flex items-center p-[1px] rounded-3xl bg-slate-300 dark:bg-zinc-600">
-      <div className="rounded-3xl px-3 py-1.5 text-sm font-medium">中文</div>
     </div>
   )
 }
