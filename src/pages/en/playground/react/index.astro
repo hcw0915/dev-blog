@@ -22,7 +22,7 @@ const t = getTranslations(locale)
     <Header title={SITE_TITLE} />
     <main class="pt-[64px] min-h-screen">
       <div class="w-full" style="height: calc(100vh - 64px); min-height: 600px;">
-        <ReactCodePlayground client:only="react" />
+        <ReactCodePlayground client:only="react" locale={locale} />
       </div>
     </main>
     <Footer />

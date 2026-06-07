@@ -4,13 +4,15 @@ import Editor from "@monaco-editor/react"
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels"
 import { SiReact } from "react-icons/si"
 import { IoCodeSlash, IoOpenOutline } from "react-icons/io5"
+import { getTranslations } from "@/i18n/translations"
+import type { Locale } from "@/i18n/translations"
 
 // 错误边界组件
 class ErrorBoundary extends Component<
-  { children: React.ReactNode },
+  { children: React.ReactNode; fallbackMessage: string },
   { hasError: boolean }
 > {
-  constructor(props: { children: React.ReactNode }) {
+  constructor(props: { children: React.ReactNode; fallbackMessage: string }) {
     super(props)
     this.state = { hasError: false }
   }
@@ -27,7 +29,7 @@ class ErrorBoundary extends Component<
     if (this.state.hasError) {
       return (
         <div className="flex items-center justify-center h-full text-red-500">
-          <p>Something went wrong. Please refresh the page.</p>
+          <p>{this.props.fallbackMessage}</p>
         </div>
       )
     }
@@ -38,6 +40,7 @@ class ErrorBoundary extends Component<
 
 interface ReactCodePlaygroundProps {
   initialCode?: string
+  locale?: Locale
 }
 
 // 解析并转换 import 语句为动态导入
@@ -101,8 +104,10 @@ function transformImports(code: string): { transformedCode: string; imports: str
 }
 
 export default function ReactCodePlayground({
-  initialCode = ""
+  initialCode = "",
+  locale = "zh"
 }: ReactCodePlaygroundProps) {
+  const t = getTranslations(locale).playground
   const shouldUseDefault = !initialCode
   const [useCodeSandbox, setUseCodeSandbox] = useState(false)
 
@@ -112,14 +117,14 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <div style={{ 
-      padding: '20px', 
+    <div style={{
+      padding: '20px',
       textAlign: 'center',
       fontFamily: 'system-ui, sans-serif'
     }}>
       <h1>Hello React!</h1>
-      <p>這是一個簡單的 React 範例。</p>
-      <button 
+      <p>${t.demoText}</p>
+      <button
         onClick={() => setCount(count + 1)}
         style={{
           padding: '10px 20px',
@@ -132,7 +137,7 @@ function App() {
           marginTop: '10px'
         }}
       >
-        點擊次數: {count}
+        ${t.clickCount}: {count}
       </button>
     </div>
   )
@@ -312,7 +317,7 @@ root.render(<App />);`
   }, [])
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary fallbackMessage={t.errorMessage}>
       <div className="h-full w-full bg-white dark:bg-[#1e1e1e]">
         <PanelGroup direction="horizontal" className="h-full" id="main-panel-group">
           {/* 編輯器區域 */}
@@ -323,7 +328,7 @@ root.render(<App />);`
                   <SiReact className="text-[#61dafb] text-lg" />
                   <span className="text-sm font-medium text-gray-700 dark:text-[#cccccc]">JSX</span>
                   <span className="text-xs text-gray-500 dark:text-gray-400">
-                    (支援 import 外部套件)
+                    {t.importHint}
                   </span>
                 </div>
               </div>
@@ -354,7 +359,7 @@ root.render(<App />);`
             <div className="h-full flex flex-col bg-white dark:bg-zinc-900">
               <div className="flex items-center justify-between px-4 py-2 bg-gray-100 dark:bg-[#252526] border-b border-gray-200 dark:border-[#3e3e42]">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-700 dark:text-[#cccccc]">預覽</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-[#cccccc]">{t.preview}</span>
                   <button
                     onClick={() => setUseCodeSandbox(!useCodeSandbox)}
                     className={`px-2 py-1 text-xs rounded transition-colors flex items-center gap-1 ${
@@ -362,10 +367,10 @@ root.render(<App />);`
                         ? 'bg-green-500 hover:bg-green-600 text-white'
                         : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300'
                     }`}
-                    title={useCodeSandbox ? '切換到本地預覽' : '切換到 CodeSandbox'}
+                    title={useCodeSandbox ? t.switchToLocal : t.switchToCodeSandbox}
                   >
                     <IoCodeSlash />
-                    {useCodeSandbox ? 'CodeSandbox' : '本地'}
+                    {useCodeSandbox ? 'CodeSandbox' : t.local}
                   </button>
                 </div>
                 <div className="flex items-center gap-2">
@@ -377,7 +382,7 @@ root.render(<App />);`
                       className="px-2 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors flex items-center gap-1"
                     >
                       <IoOpenOutline />
-                      在新視窗開啟
+                      {t.openInNewWindow}
                     </a>
                   )}
                   {!useCodeSandbox && (
@@ -385,7 +390,7 @@ root.render(<App />);`
                       onClick={handleRefresh}
                       className="px-3 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors"
                     >
-                      重新整理
+                      {t.refresh}
                     </button>
                   )}
                 </div>

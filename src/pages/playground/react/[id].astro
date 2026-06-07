@@ -53,9 +53,10 @@ const pageTitle = locale === 'zh' ? `React ${t.playground.title} - 編輯` : `Re
         </div>
       </div>
       <div class="w-full" style="height: calc(100vh - 64px - 73px); min-height: 600px;">
-        <ReactCodePlayground 
+        <ReactCodePlayground
           client:only="react"
           initialCode={initialCode}
+          locale={locale}
         />
       </div>
     </main>
