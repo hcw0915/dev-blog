@@ -4,6 +4,8 @@ import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
 import Body from "@/components/Body.astro"
 import Content from "@/components/Content.astro"
+import { COLOR_MAP } from "@/config"
+import { getLocaleFromPath, formatDate } from "@/i18n/utils"
 
 export interface Props {
   content: {
@@ -17,12 +19,30 @@ export interface Props {
 }
 
 const {
-  content: { title, description, heroImage, createdAt }
+  content: { title, description, heroImage, createdAt, tags = [] }
 } = Astro.props
+
+const locale = getLocaleFromPath(Astro.url.pathname)
+
+const getGradientStyle = (tagArray: string[]) => {
+  const colors = tagArray
+    .map(tag => COLOR_MAP[tag.toLowerCase()])
+    .sort()
+    .filter(Boolean)
+
+  if (colors.length === 0) {
+    return `background: linear-gradient(135deg, #f0f0f0, #d9d9d9)`
+  }
+
+  return `background: linear-gradient(135deg, ${colors.join(', ')})`
+}
+
+// 所有文章目前共用同一張佔位圖；若沒有自訂封面，改用與列表一致的標籤漸層
+const hasCustomHero = heroImage && heroImage !== '/placeholder-hero.png'
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale === 'zh' ? 'zh-TW' : 'en'}>
   <head>
     <BaseHead title={title} description={description} />
   </head>
@@ -80,17 +100,28 @@ const {
         ol {
           @apply list-decimal list-outside pl-4 mb-4;
         }
+        pre {
+          @apply rounded-xl p-4 mb-6 overflow-x-auto text-sm;
+        }
+        :not(pre) > code {
+          @apply bg-slate-100 dark:bg-zinc-800 rounded px-1.5 py-0.5 text-[0.9em] font-mono;
+        }
       }
     </style>
     <main class="pt-[64px]">
       <Content className="markdown-content">
         <div class="mb-8">
           {
-            heroImage && (
+            hasCustomHero ? (
               <img
                 class="border border-slate-300 dark:border-zinc-700 rounded-xl aspect-[15/6] w-full"
                 src={heroImage}
                 alt=""
+              />
+            ) : (
+              <div
+                class="rounded-xl aspect-[15/6] w-full"
+                style={getGradientStyle(tags)}
               />
             )
           }
@@ -99,11 +130,7 @@ const {
           <span
             class="inline-block h-4 w-0.5 rounded-full bg-zinc-400 dark:bg-zinc-500"
           ></span>
-          {
-            new Intl.DateTimeFormat('en-US', {
-              dateStyle: 'long'
-            }).format(new Date(createdAt))
-          }
+          {formatDate(createdAt, locale)}
         </div>
         <h1 class="text-3xl my-1 font-mplus">{title}</h1>
         <hr class="border-top border-zinc-400 my-4" />

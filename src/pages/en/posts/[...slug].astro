@@ -1,0 +1,14 @@
+---
+// Blog posts are single-language (sourced from Inkdrop), so the English route
+// just redirects to the canonical /posts/<slug> page instead of 404ing.
+export async function getStaticPaths() {
+  const posts: any[] = await Astro.glob('../../posts/*.md')
+  return posts.map(post => ({
+    params: { slug: post.frontmatter.slug as string },
+    props: { target: post.url as string }
+  }))
+}
+
+const { target } = Astro.props
+return Astro.redirect(target)
+---
