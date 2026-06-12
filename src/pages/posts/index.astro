@@ -35,26 +35,35 @@ const posts = (await Astro.glob('../posts/*.md'))
 const getExcerpt = (post: any): string => {
   if (post.frontmatter.description) return post.frontmatter.description
   const raw: string = post.rawContent()
+
+  const isSkippable = (s: string) =>
+    !s ||
+    s.startsWith('#') ||
+    s.startsWith('![') ||
+    s.startsWith('```') ||
+    s.startsWith('|') ||
+    s.startsWith('---') ||
+    s.startsWith('- ') ||
+    s.startsWith('* ') ||
+    s.startsWith('http')
+
+  const clean = (s: string) =>
+    s
+      .replace(/^>\s?/gm, '')
+      .replace(/[#*`_\[\]]/g, '')
+      .replace(/\(http[^)]*\)/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+
   const para = raw
     .split(/\n{2,}/)
     .map(s => s.trim())
-    .find(
-      s =>
-        s &&
-        !s.startsWith('#') &&
-        !s.startsWith('![') &&
-        !s.startsWith('```') &&
-        !s.startsWith('|') &&
-        !s.startsWith('---')
-    )
+    .filter(s => !isSkippable(s))
+    .map(clean)
+    .find(s => s.length >= 10 && !s.startsWith('- ') && !s.startsWith('* ') && !s.startsWith('http'))
+
   if (!para) return ''
-  const text = para
-    .replace(/^>\s?/gm, '')
-    .replace(/[#*`_\[\]]/g, '')
-    .replace(/\(.*?\)/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-  return text.length > 80 ? text.slice(0, 80) + '…' : text
+  return para.length > 80 ? para.slice(0, 80) + '…' : para
 }
 
 // 年份分隔：標記每年的第一篇
@@ -97,6 +106,7 @@ const getGradientStyle = (tagArray: string[]) => {
             id="blogSearch"
             type="search"
             placeholder={t.blog.searchPlaceholder}
+            aria-label={t.blog.searchPlaceholder}
             class="w-full sm:max-w-sm rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/[0.04] px-4 py-2 text-sm outline-none focus:border-violet-400/60 placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
           />
           <div
@@ -129,14 +139,14 @@ const getGradientStyle = (tagArray: string[]) => {
                 return (
                   <>
                     {year && (
-                      <li class="col-span-full flex items-center gap-3 mt-4 first:mt-0">
+                      <li class="col-span-full flex items-center gap-3 mt-4 first:mt-0" data-year-divider={year}>
                         <span class="font-serif text-xl font-bold text-zinc-400 dark:text-zinc-600">
                           {year}
                         </span>
                         <span class="h-px flex-1 bg-zinc-200 dark:bg-white/5" />
                       </li>
                     )}
-                    <li class={tagClasses} data-post-title={post.frontmatter.title}>
+                    <li class={tagClasses} data-post-title={post.frontmatter.title} data-year={new Date(post.frontmatter.createdAt).getFullYear()} data-post-tags={(post.frontmatter.tags ?? []).join('|')}>
                       <a href={post.url} class="group block rounded-2xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/[0.04] overflow-hidden transition-transform duration-300 hover:-translate-y-1">
                         <div
                           class="relative w-full h-[150px] overflow-hidden"
@@ -181,87 +191,70 @@ const getGradientStyle = (tagArray: string[]) => {
     <Footer />
 
     <style is:global>
-      .hidden-by-search {
+      .hidden-by-filter {
         display: none !important;
       }
     </style>
 
     <script is:inline>
+      function applyVisibility() {
+        const tagEl = document.getElementById('tags')
+        const search = document.getElementById('blogSearch')
+        if (!tagEl) return
+        const activeTag = tagEl.dataset.activeTag || 'All'
+        const q = (search && search.value ? search.value : '').trim().toLowerCase()
+
+        // 卡片可見性 = 同時滿足「標籤」與「搜尋」兩個條件
+        document.querySelectorAll('li[data-post-title]').forEach(li => {
+          const tags = (li.getAttribute('data-post-tags') || '').split('|')
+          const matchTag = activeTag === 'All' || tags.includes(activeTag)
+          const title = (li.getAttribute('data-post-title') || '').toLowerCase()
+          const matchSearch = q === '' || title.includes(q)
+          li.classList.toggle('hidden-by-filter', !(matchTag && matchSearch))
+        })
+
+        // 年份分隔線：該年沒有任何可見卡片就一併隱藏
+        document.querySelectorAll('li[data-year-divider]').forEach(divider => {
+          const year = divider.getAttribute('data-year-divider')
+          const visible = document.querySelector(
+            `li[data-post-title][data-year="${year}"]:not(.hidden-by-filter)`
+          )
+          divider.classList.toggle('hidden-by-filter', !visible)
+        })
+      }
+
       function initBlogFilter() {
-        const input = document.querySelectorAll('#blogFilter')
-        if (!input.length) return
+        const buttons = document.querySelectorAll('#blogFilter')
+        const tagEl = document.getElementById('tags')
+        if (!buttons.length || !tagEl) return
 
-        function hideBlogs(evt) {
-          let selectedTag = evt.currentTarget.getAttribute('data-type')
-          let tagElement = document.getElementById('tags')
-          let tags = tagElement.dataset.tags
-          tags = tags.split(',')
-          tags.splice(tags.indexOf(selectedTag), 1)
+        buttons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const selectedTag = btn.getAttribute('data-type')
+            tagEl.dataset.activeTag = selectedTag
 
-          if (selectedTag === 'All') {
-            history.pushState({ tag: selectedTag }, '', window.location.pathname)
-          } else {
-            history.pushState(
-              { tag: selectedTag },
-              '',
-              `?c=${selectedTag.toLowerCase()}`
-            )
-          }
+            if (selectedTag === 'All') {
+              history.pushState({ tag: selectedTag }, '', window.location.pathname)
+            } else {
+              history.pushState({ tag: selectedTag }, '', `?c=${selectedTag.toLowerCase()}`)
+            }
 
-          input.forEach(e => {
-            const active = e.getAttribute('data-type') === selectedTag
-            e.style.background = active ? '#7c3aed' : 'transparent'
-            e.style.color = active ? '#ffffff' : ''
-            e.style.borderColor = active ? '#7c3aed' : ''
+            buttons.forEach(e => {
+              const active = e.getAttribute('data-type') === selectedTag
+              e.style.background = active ? '#7c3aed' : 'transparent'
+              e.style.color = active ? '#ffffff' : ''
+              e.style.borderColor = active ? '#7c3aed' : ''
+            })
+
+            applyVisibility()
           })
-
-          let elementsToShow = document.getElementsByClassName(selectedTag)
-          for (let i = 0; i < elementsToShow.length; i++) {
-            elementsToShow[i].style.display = 'block'
-          }
-
-          if (selectedTag !== 'All') {
-            tags.forEach(t => {
-              const elementsToHide = document.getElementsByClassName(t)
-              for (let i = 0; i < elementsToHide.length; i++) {
-                elementsToHide[i].style.display = 'none'
-              }
-            })
-          }
-
-          const elementsToHide = document.getElementsByClassName(selectedTag)
-          for (let i = 0; i < elementsToHide.length; i++) {
-            elementsToHide[i].style.display = 'block'
-          }
-
-          if (selectedTag === 'All') {
-            tags.forEach(t => {
-              const elementsToHide = document.getElementsByClassName(t)
-              for (let i = 0; i < elementsToHide.length; i++) {
-                elementsToHide[i].style.display = 'block'
-              }
-            })
-          }
-        }
-
-        input.forEach(e => {
-          e.addEventListener('click', hideBlogs)
         })
       }
 
       function initBlogSearch() {
         const search = document.getElementById('blogSearch')
         if (!search) return
-        search.addEventListener('input', () => {
-          const q = search.value.trim().toLowerCase()
-          document.querySelectorAll('[data-post-title]').forEach(li => {
-            const hit = li
-              .getAttribute('data-post-title')
-              .toLowerCase()
-              .includes(q)
-            li.classList.toggle('hidden-by-search', !(q === '' || hit))
-          })
-        })
+        search.addEventListener('input', applyVisibility)
       }
 
       document.addEventListener('astro:page-load', () => {
