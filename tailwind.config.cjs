@@ -6,7 +6,11 @@ module.exports = {
     extend: {
       fontFamily: {
         mplus: ["'M PLUS Rounded 1c'", 'Verdana', 'sans-serif'],
-        ptsans: ["'PT Sans'", 'sans-serif']
+        ptsans: ["'PT Sans'", 'sans-serif'],
+        serif: ['Georgia', "'Noto Serif TC'", 'ui-serif', 'serif']
+      },
+      backgroundImage: {
+        'brand-gradient': 'linear-gradient(135deg, #22d3ee, #a78bfa)'
       }
     }
   },

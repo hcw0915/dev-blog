@@ -6,8 +6,6 @@ export interface Props {
 const { className = '' } = Astro.props
 ---
 
-<article
-  class={`mt-4 p-4 mx-auto max-w-5xl rounded-none md:rounded-xl bg-white border-none md:border-solid md:border md:border-slate-200 dark:bg-zinc-800/50 dark:md:border-zinc-700/50 ${className}`}
->
+<article class={`mt-4 px-4 py-6 mx-auto max-w-5xl ${className}`}>
   <slot />
 </article>

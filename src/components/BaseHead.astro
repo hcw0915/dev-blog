@@ -65,11 +65,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site)
   function applyTheme() {
     const stored =
       typeof localStorage !== 'undefined' && localStorage.getItem('theme')
-    const theme =
-      stored ||
-      (window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light')
+    const theme = stored || 'dark'
     document.documentElement.classList.toggle('dark', theme === 'dark')
   }
 

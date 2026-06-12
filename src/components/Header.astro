@@ -2,7 +2,6 @@
 import HeaderLink from "./HeaderLink.astro"
 import LanguageToggle from "./LanguageToggle"
 import PlaygroundDropdown from "./PlaygroundDropdown"
-import { SITE_TITLE } from "@/config"
 import { IoLogoGithub } from "react-icons/io5"
 import FootprintIcon from "./icons/footprint"
 import ThemeToggle from "./ThemeToggleButton"
@@ -20,15 +19,14 @@ const postsPath = locale === defaultLocale ? '/posts' : `/${locale}/posts`
 ---
 
 <header
-  class="fixed w-full p-2 z-20 bg-slate-100 dark:bg-zinc-900 transition-colors"
+  class="fixed w-full p-2 z-20 bg-[#fafaf8]/80 dark:bg-zinc-950/80 backdrop-blur border-b border-zinc-200/60 dark:border-white/5 transition-colors"
 >
   <div class="mx-auto max-w-5xl">
     <nav class="w-full flex items-center gap-3 text-base font-ptsans">
       <!-- 左侧：Logo -->
       <a href={homePath} class="group flex-shrink-0">
-        <h2 class="font-semibold tracking-tighter p-2 text-lg">
-          <img class="w-8 inline-block mr-2" src="/favicon-32x32.png" />
-          {SITE_TITLE}
+        <h2 class="font-bold tracking-tight p-2 text-lg dark:text-zinc-50">
+          Antonio<span class="text-transparent bg-clip-text bg-brand-gradient">.dev</span>
         </h2>
       </a>
       
