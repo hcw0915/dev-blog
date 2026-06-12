@@ -3,26 +3,38 @@ import BaseHead from "@/components/BaseHead.astro"
 import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
 import Body from "@/components/Body.astro"
-import Content from "@/components/Content.astro"
-import { COLOR_MAP } from "@/config"
+import { colorForTag } from "@/lib/tags"
 import { getLocaleFromPath, formatDate } from "@/i18n/utils"
+import { getTranslations } from "@/i18n/translations"
 import fs from "node:fs"
 import path from "node:path"
 
-export interface Props {
-  content: {
+const { frontmatter, headings, rawContent } = Astro.props as {
+  frontmatter: {
     title: string
-    description: string
+    description?: string
     createdAt: number
-    updatedAt: number
+    updatedAt?: number
     heroImage?: string
-    tags: string[]
+    tags?: string[]
+    slug: string
   }
+  headings: { depth: number; slug: string; text: string }[]
+  rawContent: () => string
 }
 
-const {
-  content: { title, description, heroImage, createdAt, updatedAt, tags = [] }
-} = Astro.props
+const { title, description = '', heroImage, createdAt, updatedAt, tags = [], slug } = frontmatter
+
+const locale = getLocaleFromPath(Astro.url.pathname)
+const t = getTranslations(locale)
+
+// 封面優先序：frontmatter 自訂 → public/hero/<slug>.png →（頁內不顯示，og 用自動生成圖）
+const heroFile = path.resolve(`public/hero/${slug}.png`)
+const localHero = fs.existsSync(heroFile) ? `/hero/${slug}.png` : null
+const customHero =
+  (heroImage && heroImage !== '/placeholder-hero.png' ? heroImage : null) ||
+  localHero
+const ogImage = customHero ?? `/og/${slug}.png`
 
 const articleMeta = {
   publishedTime: new Date(createdAt).toISOString(),
@@ -30,129 +42,211 @@ const articleMeta = {
   tags
 }
 
-const locale = getLocaleFromPath(Astro.url.pathname)
+// 閱讀時間：中文為主，以 400 字/分鐘估算
+const minutes = Math.max(1, Math.round(rawContent().replace(/\s/g, '').length / 400))
 
-const getGradientStyle = (tagArray: string[]) => {
-  const colors = tagArray
-    .map(tag => COLOR_MAP[tag.toLowerCase()])
-    .sort()
-    .filter(Boolean)
+// 上一篇 / 下一篇（依 createdAt 新→舊）
+const allPosts = Object.values(
+  import.meta.glob('../pages/posts/*.md', { eager: true }) as Record<string, any>
+)
+  .filter(p => p.frontmatter.public)
+  .sort(
+    (a, b) =>
+      new Date(b.frontmatter.createdAt).valueOf() -
+      new Date(a.frontmatter.createdAt).valueOf()
+  )
+const idx = allPosts.findIndex(p => p.frontmatter.slug === slug)
+const newerPost = idx > 0 ? allPosts[idx - 1] : null
+const olderPost = idx >= 0 && idx < allPosts.length - 1 ? allPosts[idx + 1] : null
 
-  if (colors.length === 0) {
-    return `background: linear-gradient(135deg, #f0f0f0, #d9d9d9)`
-  }
+const toc = headings.filter(h => h.depth >= 2 && h.depth <= 3)
 
-  return `background: linear-gradient(135deg, ${colors.join(', ')})`
-}
-
-// 依 slug 找 public/hero/<slug>.png 作為封面
-const slug = Astro.url.pathname.replace(/\/$/, "").split("/").pop() || ""
-const heroFile = path.resolve(`public/hero/${slug}.png`)
-const localHero = slug && fs.existsSync(heroFile) ? `/hero/${slug}.png` : null
-
-// 優先用 frontmatter 自訂封面，其次用 public/hero 的圖；都沒有才退回標籤漸層
-const customHero =
-  (heroImage && heroImage !== '/placeholder-hero.png' ? heroImage : null) ||
-  localHero
-const hasCustomHero = Boolean(customHero)
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  datePublished: articleMeta.publishedTime,
+  dateModified: articleMeta.modifiedTime ?? articleMeta.publishedTime,
+  author: { '@type': 'Person', name: 'Antonio Hou' },
+  image: new URL(ogImage, Astro.site).href
+})
 ---
 
 <!doctype html>
 <html lang={locale === 'zh' ? 'zh-TW' : 'en'}>
   <head>
-    <BaseHead title={title} description={description} article={articleMeta} />
+    <BaseHead title={title} description={description} image={ogImage} article={articleMeta} />
+    <script type="application/ld+json" set:html={jsonLd} />
   </head>
 
   <Body>
     <Header />
     <style is:global>
       main article.markdown-content {
-        h1,
-        h2,
-        h3,
-        h4,
-        h5 {
-          @apply font-bold font-mplus my-2;
+        h1, h2, h3, h4, h5 {
+          @apply font-bold font-serif my-3 text-zinc-900 dark:text-zinc-50 scroll-mt-24;
         }
-        h1 {
-          @apply text-4xl;
-        }
-        h2 {
-          @apply text-2xl;
-        }
-        h3 {
-          @apply text-xl;
-        }
-        h4 {
-          @apply text-lg;
-        }
-        img {
-          @apply border border-slate-300 dark:border-zinc-700 rounded-xl mb-6 w-full;
-        }
-        p {
-          @apply mb-6;
-        }
-        a {
-          @apply underline underline-offset-2 text-indigo-600 dark:text-indigo-400 decoration-indigo-400 dark:decoration-indigo-600;
-        }
-        table {
-          @apply table-auto border border-slate-200 dark:border-zinc-700 rounded-lg;
-        }
-        th {
-          @apply border dark:border-zinc-700 font-bold p-4 pb-3 text-left;
-        }
-        td {
-          @apply border border-slate-200 dark:border-zinc-700 p-4;
-        }
-        hr {
-          @apply border-slate-200 dark:border-zinc-500 my-4;
-        }
-        blockquote {
-          @apply px-4 my-4 border-l-4 border-l-slate-200 dark:border-l-zinc-500 italic;
-        }
-        ul {
-          @apply list-disc list-outside pl-4 mb-4;
-        }
-        ol {
-          @apply list-decimal list-outside pl-4 mb-4;
-        }
-        pre {
-          @apply rounded-xl p-4 mb-6 overflow-x-auto text-sm;
-        }
-        :not(pre) > code {
-          @apply bg-slate-100 dark:bg-zinc-800 rounded px-1.5 py-0.5 text-[0.9em] font-mono;
-        }
+        h1 { @apply text-3xl; }
+        h2 { @apply text-2xl mt-10; }
+        h3 { @apply text-xl mt-8; }
+        h4 { @apply text-lg; }
+        img { @apply border border-zinc-200 dark:border-white/10 rounded-xl mb-6 w-full; }
+        p { @apply mb-6 leading-loose; }
+        a { @apply underline underline-offset-2 text-violet-600 dark:text-violet-300 decoration-violet-400/60; }
+        table { @apply table-auto border border-zinc-200 dark:border-white/10 rounded-lg; }
+        th { @apply border dark:border-white/10 font-bold p-4 pb-3 text-left; }
+        td { @apply border border-zinc-200 dark:border-white/10 p-4; }
+        hr { @apply border-zinc-200 dark:border-white/10 my-6; }
+        blockquote { @apply px-4 my-6 border-l-4 border-l-cyan-400/60 text-zinc-600 dark:text-zinc-400; }
+        ul { @apply list-disc list-outside pl-4 mb-4; }
+        ol { @apply list-decimal list-outside pl-4 mb-4; }
+        pre { @apply rounded-xl p-4 mb-6 overflow-x-auto text-sm; }
+        :not(pre) > code { @apply bg-zinc-100 dark:bg-white/10 rounded px-1.5 py-0.5 text-[0.9em] font-mono; }
       }
+      .toc-link.active { color: #a78bfa; }
     </style>
-    <main class="pt-[64px]">
-      <Content className="markdown-content">
-        <div class="mb-8">
+
+    <main class="pt-[88px] pb-8">
+      <div class="mx-auto max-w-6xl px-4 xl:grid xl:grid-cols-[1fr_220px] xl:gap-10">
+        <article class="markdown-content w-full max-w-[68ch] mx-auto min-w-0">
           {
-            hasCustomHero ? (
+            customHero && (
               <img
-                class="border border-slate-300 dark:border-zinc-700 rounded-xl aspect-[15/6] w-full object-cover"
+                class="border border-zinc-200 dark:border-white/10 rounded-2xl aspect-[15/6] w-full object-cover mb-8"
                 src={customHero}
                 alt=""
               />
-            ) : (
-              <div
-                class="rounded-xl aspect-[15/6] w-full"
-                style={getGradientStyle(tags)}
-              />
             )
           }
-        </div>
-        <div class="opacity-50 text-sm flex items-center gap-3">
-          <span
-            class="inline-block h-4 w-0.5 rounded-full bg-zinc-400 dark:bg-zinc-500"
-          ></span>
-          {formatDate(createdAt, locale)}
-        </div>
-        <h1 class="text-3xl my-1 font-mplus">{title}</h1>
-        <hr class="border-top border-zinc-400 my-4" />
-        <slot />
-      </Content>
+
+          <div class="text-sm flex flex-wrap items-center gap-3 text-zinc-400 dark:text-zinc-500">
+            <span>{formatDate(new Date(createdAt), locale)}</span>
+            <span>·</span>
+            <span>{minutes} {t.post.minRead}</span>
+            {
+              tags.map(tag => (
+                <span
+                  class="text-xs font-bold tracking-wider uppercase"
+                  style={`color:${colorForTag(tag)}`}
+                >
+                  {tag}
+                </span>
+              ))
+            }
+          </div>
+          <h1 class="font-serif text-3xl md:text-4xl my-3 !mt-2 text-zinc-900 dark:text-zinc-50">
+            {title}
+          </h1>
+          <hr class="border-zinc-200 dark:border-white/10 my-6" />
+
+          {
+            toc.length > 0 && (
+              <details class="xl:hidden mb-6 rounded-xl border border-zinc-200 dark:border-white/10 p-4 text-sm">
+                <summary class="cursor-pointer font-semibold">TOC</summary>
+                <ul class="mt-2 space-y-1.5 !list-none !pl-0">
+                  {toc.map(h => (
+                    <li class={h.depth === 3 ? 'pl-4' : ''}>
+                      <a class="!no-underline !text-zinc-500 dark:!text-zinc-400 hover:!text-violet-500" href={`#${h.slug}`}>
+                        {h.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            )
+          }
+
+          <slot />
+
+          <nav class="mt-12 grid sm:grid-cols-2 gap-3">
+            {
+              olderPost ? (
+                <a
+                  href={olderPost.url}
+                  class="!no-underline block rounded-2xl border border-zinc-200 dark:border-white/10 p-4 hover:border-violet-400/50 transition-colors"
+                >
+                  <div class="text-xs text-zinc-400 dark:text-zinc-500 mb-1">← {t.post.prev}</div>
+                  <div class="text-sm font-semibold !text-zinc-700 dark:!text-zinc-200">
+                    {olderPost.frontmatter.title}
+                  </div>
+                </a>
+              ) : (
+                <span />
+              )
+            }
+            {
+              newerPost && (
+                <a
+                  href={newerPost.url}
+                  class="!no-underline block rounded-2xl border border-zinc-200 dark:border-white/10 p-4 text-right hover:border-violet-400/50 transition-colors"
+                >
+                  <div class="text-xs text-zinc-400 dark:text-zinc-500 mb-1">{t.post.next} →</div>
+                  <div class="text-sm font-semibold !text-zinc-700 dark:!text-zinc-200">
+                    {newerPost.frontmatter.title}
+                  </div>
+                </a>
+              )
+            }
+          </nav>
+        </article>
+
+        {
+          toc.length > 0 && (
+            <aside class="hidden xl:block">
+              <nav class="sticky top-24 text-sm" id="toc-nav">
+                <div class="font-bold text-xs tracking-widest text-zinc-400 dark:text-zinc-500 mb-3">
+                  TOC
+                </div>
+                <ul class="space-y-2 border-l border-zinc-200 dark:border-white/10">
+                  {toc.map(h => (
+                    <li class={h.depth === 3 ? 'pl-7' : 'pl-3'}>
+                      <a
+                        class="toc-link block text-zinc-500 dark:text-zinc-500 hover:text-violet-500 dark:hover:text-violet-300 leading-snug"
+                        href={`#${h.slug}`}
+                        data-heading={h.slug}
+                      >
+                        {h.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </aside>
+          )
+        }
+      </div>
     </main>
     <Footer />
+
+    <script is:inline>
+      function initToc() {
+        const nav = document.getElementById('toc-nav')
+        if (!nav) return
+        const links = nav.querySelectorAll('.toc-link')
+        const headings = [...links]
+          .map(l => document.getElementById(l.dataset.heading))
+          .filter(Boolean)
+        if (!headings.length) return
+
+        const observer = new IntersectionObserver(
+          entries => {
+            entries.forEach(entry => {
+              const link = nav.querySelector(
+                `[data-heading="${entry.target.id}"]`
+              )
+              if (!link) return
+              if (entry.isIntersecting) {
+                links.forEach(l => l.classList.remove('active'))
+                link.classList.add('active')
+              }
+            })
+          },
+          { rootMargin: '-80px 0px -70% 0px' }
+        )
+        headings.forEach(h => observer.observe(h))
+      }
+      document.addEventListener('astro:page-load', initToc)
+    </script>
   </Body>
 </html>

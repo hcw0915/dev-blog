@@ -147,6 +147,12 @@ export const translations = {
       title: '找不到頁面',
       message: '抱歉，您訪問的頁面不存在。',
       goHome: '返回首頁'
+    },
+    // Post
+    post: {
+      prev: '上一篇',
+      next: '下一篇',
+      minRead: '分鐘閱讀'
     }
   },
   en: {
@@ -292,6 +298,12 @@ export const translations = {
       title: 'Oops, not found',
       message: 'Sorry, the page you are looking for does not exist.',
       goHome: 'Go to Index'
+    },
+    // Post
+    post: {
+      prev: 'Previous',
+      next: 'Next',
+      minRead: 'min read'
     }
   }
 } as const
