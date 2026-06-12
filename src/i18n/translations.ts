@@ -115,9 +115,7 @@ export const translations = {
     },
     // Blog list page
     blog: {
-      all: '全部',
-      writtenWith: '這是使用 Inkdrop 撰寫的部落格。',
-      learnMore: '了解更多'
+      all: '全部'
     },
     // QR modal
     qr: {
@@ -253,9 +251,7 @@ export const translations = {
     },
     // Blog list page
     blog: {
-      all: 'All',
-      writtenWith: 'This is a blog written with Inkdrop.',
-      learnMore: 'Learn more'
+      all: 'All'
     },
     // QR modal
     qr: {
