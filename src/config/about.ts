@@ -48,4 +48,4 @@ export const experiencedSkills = [
   "babel", "AST", "WebSocket", "github-action", "Canvas", "SVG", "Three.js", "pnpm", "solid.js"
 ]
 
-export const PDF_PATH = "/Antonio_Hou_260228 .pdf"
+export const PDF_PATH = "/Antonio_Hou_260228.pdf"

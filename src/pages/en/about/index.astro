@@ -11,6 +11,7 @@ import WorkExperience from "@/components/WorkExperience.astro"
 import EducationCard from "@/components/EducationCard.astro"
 import ProjectLink from "@/components/ProjectLink.astro"
 import SocialButton from "@/components/SocialButton.astro"
+import BentoCard from "@/components/BentoCard.astro"
 import { IoDownloadOutline } from "react-icons/io5"
 import { getTranslations } from "@/i18n/translations"
 import { socialMediaList, familiarSkills, experiencedSkills, PDF_PATH } from "@/config/about"
@@ -59,141 +60,164 @@ const projects = [
     url: 'https://www.wegames.vip'
   }
 ]
+
+const personJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Antonio Hou',
+  jobTitle: 'Frontend Developer',
+  url: 'https://antonio-blog-one.vercel.app/about'
+})
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <BaseHead title={`About - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+    <script type="application/ld+json" set:html={personJsonLd} />
   </head>
   <Body>
     <Header title={SITE_TITLE} />
-    <main class="pt-[64px]">
+    <main class="pt-[72px]">
       <Content>
         <!-- 基本介紹 -->
-        <section class="mb-12">
-          <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold mb-4 dark:text-white text-zinc-900">
-              {t.about.title}
-            </h1>
-            <p class="text-xl text-indigo-600 dark:text-indigo-400 mb-6 font-semibold">
-              {t.about.subtitle}
-            </p>
-            <!-- 頭像 -->
-            <div class="flex justify-center mb-6">
-              <img
-                src="/Frieza.png"
-                alt="Antonio Hou"
-                class="w-32 h-32 rounded-full object-cover border-4 border-indigo-300 dark:border-indigo-600 shadow-lg"
-              />
-            </div>
-            <p class="text-base text-zinc-700 dark:text-zinc-300 max-w-2xl mx-auto leading-relaxed mb-6 font-medium">
-              {t.about.intro}
-            </p>
+        <section class="mb-6">
+          <BentoCard class="p-6 md:p-8">
+            <div class="text-center mb-8">
+              <h1 class="font-serif text-4xl font-bold mb-4 dark:text-white text-zinc-900">
+                {t.about.title}
+              </h1>
+              <p class="text-xl text-transparent bg-clip-text bg-brand-gradient mb-6 font-semibold">
+                {t.about.subtitle}
+              </p>
+              <!-- 頭像 -->
+              <div class="flex justify-center mb-6">
+                <img
+                  src="/Frieza.png"
+                  alt="Antonio Hou"
+                  class="w-32 h-32 rounded-full object-cover border-4 border-violet-300/60 dark:border-violet-400/40 shadow-lg"
+                />
+              </div>
+              <p class="text-base text-zinc-700 dark:text-zinc-300 max-w-2xl mx-auto leading-relaxed mb-6 font-medium">
+                {t.about.intro}
+              </p>
 
-            <!-- 下載履歷按鈕 -->
-            <div class="flex justify-center gap-4">
-              <a
-                href={PDF_PATH}
-                download
-                class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium"
-              >
-                <IoDownloadOutline className="text-xl" />
-                {t.about.downloadResume}
-              </a>
+              <!-- 下載履歷按鈕 -->
+              <div class="flex justify-center gap-4">
+                <a
+                  href={PDF_PATH}
+                  download
+                  class="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-lg transition-colors font-medium"
+                >
+                  <IoDownloadOutline className="text-xl" />
+                  {t.about.downloadResume}
+                </a>
+              </div>
             </div>
-          </div>
+          </BentoCard>
         </section>
 
         <!-- 聯絡方式 -->
-        <section class="mb-12">
-          <SectionTitle title={t.about.contact} />
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            {socialMediaList.map((social) => (
-              <SocialButton
-                label={social.label}
-                url={social.url}
-                icon={social.icon}
-                hoverColor={social.hoverColor}
-              />
-            ))}
-          </div>
+        <section class="mb-6">
+          <BentoCard class="p-6 md:p-8">
+            <SectionTitle title={t.about.contact} />
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+              {socialMediaList.map((social) => (
+                <SocialButton
+                  label={social.label}
+                  url={social.url}
+                  icon={social.icon}
+                  hoverColor={social.hoverColor}
+                />
+              ))}
+            </div>
+          </BentoCard>
         </section>
 
         <!-- 技能 -->
-        <section class="mb-12">
-          <SectionTitle title={t.about.skills} />
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h3 class="text-lg font-semibold mb-3 dark:text-white text-zinc-800">
-                {t.about.familiarTech}
-              </h3>
-              <div class="flex flex-wrap gap-2">
-                {familiarSkills.map((skill) => (
-                  <SkillTag name={skill} variant="primary" />
-                ))}
+        <section class="mb-6">
+          <BentoCard class="p-6 md:p-8">
+            <SectionTitle title={t.about.skills} />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 class="text-lg font-semibold mb-3 dark:text-white text-zinc-800">
+                  {t.about.familiarTech}
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                  {familiarSkills.map((skill) => (
+                    <SkillTag name={skill} variant="primary" />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold mb-3 dark:text-white text-zinc-800">
+                  {t.about.experiencedTech}
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                  {experiencedSkills.map((skill) => (
+                    <SkillTag name={skill} variant="secondary" />
+                  ))}
+                </div>
               </div>
             </div>
-            <div>
-              <h3 class="text-lg font-semibold mb-3 dark:text-white text-zinc-800">
-                {t.about.experiencedTech}
-              </h3>
-              <div class="flex flex-wrap gap-2">
-                {experiencedSkills.map((skill) => (
-                  <SkillTag name={skill} variant="secondary" />
-                ))}
-              </div>
-            </div>
-          </div>
+          </BentoCard>
         </section>
 
         <!-- 工作經驗 -->
-        <section class="mb-12">
-          <SectionTitle title={t.about.workExperience} />
-          <div class="space-y-8">
-            {workExperiences.map((work) => (
-              <WorkExperience
-                title={work.title}
-                company={work.company}
-                period={work.period}
-                responsibilities={work.responsibilities}
-              />
-            ))}
-          </div>
+        <section class="mb-6">
+          <BentoCard class="p-6 md:p-8">
+            <SectionTitle title={t.about.workExperience} />
+            <div class="space-y-8">
+              {workExperiences.map((work) => (
+                <WorkExperience
+                  title={work.title}
+                  company={work.company}
+                  period={work.period}
+                  responsibilities={work.responsibilities}
+                />
+              ))}
+            </div>
+          </BentoCard>
         </section>
 
         <!-- 專案經驗 -->
-        <section class="mb-12">
-          <SectionTitle title={t.about.projectsTitle} />
-          <div class="space-y-4">
-            {projects.map((project) => (
-              <ProjectLink
-                title={project.title}
-                description={project.description}
-                url={project.url}
-              />
-            ))}
-          </div>
+        <section class="mb-6">
+          <BentoCard class="p-6 md:p-8">
+            <SectionTitle title={t.about.projectsTitle} />
+            <div class="space-y-4">
+              {projects.map((project) => (
+                <ProjectLink
+                  title={project.title}
+                  description={project.description}
+                  url={project.url}
+                />
+              ))}
+            </div>
+          </BentoCard>
         </section>
 
         <!-- 語言能力 -->
-        <section class="mb-12">
-          <SectionTitle title={t.about.languages} />
-          <div class="space-y-2 text-zinc-600 dark:text-zinc-400">
-            <p>• {t.about.languageList.chinese}</p>
-            <p>• {t.about.languageList.cantonese}</p>
-            <p>• {t.about.languageList.english}</p>
-          </div>
+        <section class="mb-6">
+          <BentoCard class="p-6 md:p-8">
+            <SectionTitle title={t.about.languages} />
+            <div class="space-y-2 text-zinc-600 dark:text-zinc-400">
+              <p>• {t.about.languageList.chinese}</p>
+              <p>• {t.about.languageList.cantonese}</p>
+              <p>• {t.about.languageList.english}</p>
+            </div>
+          </BentoCard>
         </section>
 
         <!-- 教育背景 -->
-        <section class="mb-12">
-          <SectionTitle title={t.about.educationTitle} />
-          <EducationCard
-            degree={t.about.education.degree as string}
-            school={t.about.education.school as string}
-            period={t.about.education.period as string}
-          />
+        <section class="mb-6">
+          <BentoCard class="p-6 md:p-8">
+            <SectionTitle title={t.about.educationTitle} />
+            <EducationCard
+              degree={t.about.education.degree as string}
+              school={t.about.education.school as string}
+              period={t.about.education.period as string}
+            />
+          </BentoCard>
         </section>
       </Content>
     </main>
