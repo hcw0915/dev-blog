@@ -11,7 +11,8 @@ const __dirname = path.dirname(__filename)
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://uses.craftz.dog/",
+  // 換網域時：這裡與 src/config.ts 的 SITE_URL 兩處需同步
+  site: "https://antonio-blog-one.vercel.app",
   i18n: {
     defaultLocale: "zh",
     locales: ["zh", "en"],

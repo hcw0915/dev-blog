@@ -5,12 +5,10 @@ import Footer from "@/components/Footer.astro"
 import {
   SITE_TITLE,
   SITE_DESCRIPTION,
-  HOMEPAGE_URL,
   COLOR_MAP
 } from "@/config"
 import Body from "@/components/Body.astro"
 import Content from "@/components/Content.astro"
-import { IoArrowForward } from "react-icons/io5"
 import { getLocaleFromPath, formatDate } from "@/i18n/utils"
 import { getTranslations } from "@/i18n/translations"
 import fs from "node:fs"
@@ -133,17 +131,6 @@ const getGradientStyle = (tagArray: string[]) => {
           </ul>
         </section>
 
-        <section>
-          <p class="mb-8 indent-4">
-            {t.blog.writtenWith}
-            <a
-              class="inline-flex items-center gap-1 indent-1 text-indigo-600 dark:text-indigo-400 decoration-indigo-400 dark:decoration-indigo-600 underline underline-offset-2"
-              href={HOMEPAGE_URL}
-            >
-              {t.blog.learnMore} <IoArrowForward className="inline" />
-            </a>
-          </p>
-        </section>
       </Content>
     </main>
     <Footer />

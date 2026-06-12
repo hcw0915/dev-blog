@@ -2,8 +2,10 @@
 // You can import this data from anywhere in your site by using the `import` keyword.
 
 export const SITE_TITLE = "Antonio - DevLog"
-export const SITE_DESCRIPTION = "Powered by Inkdrop"
-export const HOMEPAGE_URL = "https://www.inkdrop.app/"
+export const SITE_DESCRIPTION =
+  "Antonio 的前端工程筆記：React、TypeScript、Three.js / Shader，以及帶領團隊導入 AI 開發工作流的實戰紀錄。"
+// 換網域時：這裡與 astro.config.mjs 的 site 兩處需同步
+export const SITE_URL = "https://antonio-blog-one.vercel.app"
 
 export const COLOR_MAP: Record<string, string> = {
   ai: "#D97757",

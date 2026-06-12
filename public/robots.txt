@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://antonio-blog-one.vercel.app/sitemap-index.xml

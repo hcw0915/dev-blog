@@ -1,19 +1,10 @@
 ---
-import { HOMEPAGE_URL } from "@/config"
-import InkdropLogo from "./icons/inkdrop-logo"
-
 const today = new Date()
 ---
 
-<footer class="p-4">
-  <div class="text-zinc-500 text-center">
-    &copy; {today.getFullYear()}
-    <span>Antonio H</span>. All rights reserved.
-  </div>
-  <div class="flex items-center justify-center text-center mt-4 gap-1">
-    <span class="text-xs opacity-50">Powered by</span>
-    <a href="https://www.inkdrop.app/" target="_blank" rel="noopener noreferrer">
-      <InkdropLogo />
-    </a>
+<footer class="p-6 text-center text-sm text-zinc-500 dark:text-zinc-600">
+  <div>
+    &copy; {today.getFullYear()} <span>Antonio H</span>. All rights reserved. ·
+    <a href="/rss.xml" class="underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-400">RSS</a>
   </div>
 </footer>

@@ -21,8 +21,14 @@ export interface Props {
 }
 
 const {
-  content: { title, description, heroImage, createdAt, tags = [] }
+  content: { title, description, heroImage, createdAt, updatedAt, tags = [] }
 } = Astro.props
+
+const articleMeta = {
+  publishedTime: new Date(createdAt).toISOString(),
+  modifiedTime: updatedAt ? new Date(updatedAt).toISOString() : undefined,
+  tags
+}
 
 const locale = getLocaleFromPath(Astro.url.pathname)
 
@@ -54,7 +60,7 @@ const hasCustomHero = Boolean(customHero)
 <!doctype html>
 <html lang={locale === 'zh' ? 'zh-TW' : 'en'}>
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead title={title} description={description} article={articleMeta} />
   </head>
 
   <Body>
