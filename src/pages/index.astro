@@ -4,9 +4,10 @@ import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
 import Body from "@/components/Body.astro"
 import BentoCard from "@/components/BentoCard.astro"
-import { SITE_TITLE, SITE_DESCRIPTION, COLOR_MAP } from "@/config"
+import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
 import { formatDate } from "@/i18n/utils"
 import { getTranslations } from "@/i18n/translations"
+import { colorForTags } from "@/lib/tags"
 
 const locale = "zh"
 const t = getTranslations(locale)
@@ -14,14 +15,11 @@ const t = getTranslations(locale)
 const posts = (await Astro.glob('./posts/*.md'))
   .filter((p: any) => p.frontmatter.public)
   .sort(
-    (a: any, b: any) => b.frontmatter.createdAt - a.frontmatter.createdAt
+    (a: any, b: any) => new Date(b.frontmatter.createdAt).valueOf() - new Date(a.frontmatter.createdAt).valueOf()
   )
 
 const heroPosts = posts.slice(0, 3)
 const latestPosts = posts.slice(3, 9)
-
-const tagColor = (tags: string[] = []) =>
-  COLOR_MAP[(tags[0] ?? '').toLowerCase()] ?? '#a1a1aa'
 ---
 
 <!doctype html>
@@ -62,9 +60,9 @@ const tagColor = (tags: string[] = []) =>
                 <div class="flex items-center gap-2 text-xs font-bold tracking-wider uppercase">
                   <span
                     class="inline-block w-2.5 h-2.5 rounded-full"
-                    style={`background:${tagColor(post.frontmatter.tags)}`}
+                    style={`background:${colorForTags(post.frontmatter.tags)}`}
                   />
-                  <span style={`color:${tagColor(post.frontmatter.tags)}`}>
+                  <span style={`color:${colorForTags(post.frontmatter.tags)}`}>
                     {(post.frontmatter.tags ?? [])[0] ?? 'NOTE'}
                   </span>
                   <span class="text-zinc-400 dark:text-zinc-500 font-normal normal-case">
@@ -95,7 +93,7 @@ const tagColor = (tags: string[] = []) =>
                     <span class="flex items-baseline gap-3 min-w-0">
                       <span
                         class="inline-block w-2 h-2 rounded-full flex-shrink-0 translate-y-[-1px]"
-                        style={`background:${tagColor(post.frontmatter.tags)}`}
+                        style={`background:${colorForTags(post.frontmatter.tags)}`}
                       />
                       <span class="truncate text-zinc-700 dark:text-zinc-200 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-brand-gradient transition-colors">
                         {post.frontmatter.title}
