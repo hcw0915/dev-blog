@@ -20,5 +20,8 @@ pnpm-debug.log*
 
 .astro
 
+# OG image font cache
+.fonts/
+
 # superpowers brainstorm sessions
 .superpowers/

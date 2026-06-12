@@ -4,6 +4,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "predev": "node tools/fetch-og-font.mjs",
+    "prebuild": "node tools/fetch-og-font.mjs",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
@@ -19,12 +21,14 @@
     "@astrojs/sitemap": "^3.2.1",
     "@astrojs/tailwind": "^5.1.4",
     "@monaco-editor/react": "^4.6.0",
+    "@resvg/resvg-js": "^2.6.2",
     "astro": "^5.1.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.3.0",
     "react-resizable-panels": "^2.0.20",
     "react-simple-typewriter": "^5.0.1",
+    "satori": "^0.26.0",
     "tailwindcss": "^3.4.10"
   },
   "devDependencies": {
