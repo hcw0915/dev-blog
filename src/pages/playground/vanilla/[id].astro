@@ -35,10 +35,10 @@ const pageTitle = playground ? `${playground.title} - 編輯` : "編輯 Playgrou
   </head>
   <Body>
     <Header title={SITE_TITLE} />
-    <main class="pt-[64px] min-h-screen">
+    <main class="pt-[72px] min-h-screen">
       {playground ? (
         <>
-          <div class="bg-zinc-100 dark:bg-zinc-900 px-4 py-3 border-b border-zinc-200 dark:border-zinc-700">
+          <div class="px-4 py-3 border-b border-zinc-200 dark:border-white/10">
             <div class="container mx-auto flex items-center justify-between">
               <a
                 href="/playground/vanilla"
@@ -57,7 +57,7 @@ const pageTitle = playground ? `${playground.title} - 編輯` : "編輯 Playgrou
           
             </div>
           </div>
-          <div class="w-full" style="height: calc(100vh - 64px - 73px); min-height: 600px;">
+          <div class="w-full" style="height: calc(100vh - 72px - 73px); min-height: 600px;">
             <CodePlayground
               client:only="react"
               initialHtml={initialHtml}
@@ -76,7 +76,7 @@ const pageTitle = playground ? `${playground.title} - 編輯` : "編輯 Playgrou
           </p>
           <a
             href="/playground/vanilla"
-            class="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+            class="inline-block px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg transition-colors"
           >
             返回列表
           </a>

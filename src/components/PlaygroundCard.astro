@@ -15,7 +15,7 @@ const t = getTranslations(getLocaleFromPath(Astro.url.pathname))
 
 <a
   href={editUrl}
-  class="playground-card group block bg-white dark:bg-zinc-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-zinc-200 dark:border-zinc-700"
+  class="playground-card group block bg-white dark:bg-white/[0.04] rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-zinc-200 dark:border-white/10"
 >
   <!-- Preview Thumbnail -->
   <div class="relative h-48 bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-700 dark:to-zinc-800 overflow-hidden">
@@ -68,7 +68,7 @@ const t = getTranslations(getLocaleFromPath(Astro.url.pathname))
 
   <!-- Card Content -->
   <div class="p-5">
-    <h3 class="text-xl font-bold text-zinc-800 dark:text-zinc-200 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+    <h3 class="text-xl font-bold text-zinc-800 dark:text-zinc-200 mb-2 group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors">
       {playground.title}
     </h3>
     <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-4 line-clamp-2">
@@ -87,7 +87,7 @@ const t = getTranslations(getLocaleFromPath(Astro.url.pathname))
     <!-- Footer -->
     <div class="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-500">
       <span>by {playground.author}</span>
-      <span class="group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+      <span class="group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors">
         {t.playground.edit} →
       </span>
     </div>

@@ -33,8 +33,8 @@ const pageTitle = locale === 'zh' ? `React ${t.playground.title} - 編輯` : `Re
   </head>
   <Body>
     <Header title={SITE_TITLE} />
-    <main class="pt-[64px] min-h-screen">
-      <div class="bg-zinc-100 dark:bg-zinc-900 px-4 py-3 border-b border-zinc-200 dark:border-zinc-700">
+    <main class="pt-[72px] min-h-screen">
+      <div class="px-4 py-3 border-b border-zinc-200 dark:border-white/10">
         <div class="container mx-auto flex items-center justify-between">
           <a
             href={`${basePath}/playground/react`}
@@ -52,7 +52,7 @@ const pageTitle = locale === 'zh' ? `React ${t.playground.title} - 編輯` : `Re
           </div>
         </div>
       </div>
-      <div class="w-full" style="height: calc(100vh - 64px - 73px); min-height: 600px;">
+      <div class="w-full" style="height: calc(100vh - 72px - 73px); min-height: 600px;">
         <ReactCodePlayground
           client:only="react"
           initialCode={initialCode}

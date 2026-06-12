@@ -145,9 +145,10 @@ export const translations = {
     },
     // 404 page
     notFound: {
-      title: '找不到頁面',
-      message: '抱歉，您訪問的頁面不存在。',
-      goHome: '返回首頁'
+      title: '找不到這個頁面',
+      desc: '它可能被移走了，或是網址打錯了。',
+      home: '回首頁',
+      posts: '看文章'
     },
     // Post
     post: {
@@ -297,9 +298,10 @@ export const translations = {
     },
     // 404 page
     notFound: {
-      title: 'Oops, not found',
-      message: 'Sorry, the page you are looking for does not exist.',
-      goHome: 'Go to Index'
+      title: 'Page not found',
+      desc: 'It may have moved, or the URL is wrong.',
+      home: 'Back home',
+      posts: 'Browse posts'
     },
     // Post
     post: {
