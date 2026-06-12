@@ -2,80 +2,122 @@
 import BaseHead from "@/components/BaseHead.astro"
 import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
-import { SITE_TITLE, SITE_DESCRIPTION, COLOR_MAP } from "@/config"
 import Body from "@/components/Body.astro"
+import BentoCard from "@/components/BentoCard.astro"
+import { SITE_TITLE, SITE_DESCRIPTION, COLOR_MAP } from "@/config"
+import { formatDate } from "@/i18n/utils"
+import { getTranslations } from "@/i18n/translations"
 
-const getGradientStyle = (tagArray: string[]) => {
-  const colors = tagArray
-    .map(tag => COLOR_MAP[tag.toLowerCase()])
-    .sort()
-    .filter(Boolean) // Filter out undefined values to avoid invalid colors
+const locale = "en"
+const t = getTranslations(locale)
 
-  if (colors.length === 0) {
-    return { background: `linear-gradient(135deg, #f0f0f0, #d9d9d9)` } // Default gray
-  }
+const posts = (await Astro.glob('../posts/*.md'))
+  .filter((p: any) => p.frontmatter.public)
+  .sort(
+    (a: any, b: any) => b.frontmatter.createdAt - a.frontmatter.createdAt
+  )
 
-  return { background: `linear-gradient(135deg, ${colors.join(', ')})` }
-}
+const heroPosts = posts.slice(0, 3)
+const latestPosts = posts.slice(3, 9)
+
+const tagColor = (tags: string[] = []) =>
+  COLOR_MAP[(tags[0] ?? '').toLowerCase()] ?? '#a1a1aa'
 ---
 
 <!doctype html>
 <html lang="en">
-  <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
   <Body>
-    <Header title={SITE_TITLE} />
-    <main class="">
-      <div
-        class="relative p-4 mx-auto dark:bg-zinc-900 bg-white h-[calc(100dvh-112px)] justify-center items-center flex text-[5rem] overflow-y-hidden"
-      >
-        <!-- Container: Use flexbox to ensure content is always centered -->
-        <div class="relative flex flex-col items-center justify-center w-full h-full">
-          <!-- Emoji Image: Use relative units to maintain proportions -->
-          <img
-            class="relative object-contain mb-4"
-            style={{
-              width: 'clamp(300px, 70vw, 500px)',
-              height: 'auto',
-              zIndex: 1
-            }}
-            src="/android-chrome-512x512.png"
-            alt=""
-          />
-          <!-- HELLO Text: Use relative units to maintain proportions -->
-          <div
-            class="relative italic dark:text-white text-zinc-800 z-10 bg-[#0e5c74] dark:bg-[#ff8dab] w-[50%] text-center"
-            style={{
-              fontFamily: 'Lilita One',
-              fontSize: 'clamp(4rem, 15vw, 12rem)',
-              WebkitTextStrokeColor: 'transparent',
-              WebkitTextStrokeWidth: 'clamp(0.5rem, 2vw, 3rem)',
-              WebkitTextFillColor: 'hsl(33, 100%, 96%)',
-              backgroundClip: 'text',
-              mixBlendMode: 'hard-light',
-              lineHeight: 1
-            }}
+    <Header />
+    <main class="pt-[88px] pb-8">
+      <div class="mx-auto max-w-5xl px-4">
+        <!-- Hero Bento -->
+        <section class="grid gap-4 md:grid-cols-3">
+          <BentoCard class="md:col-span-2 p-8 md:p-10">
+            <h1 class="font-serif text-4xl md:text-5xl font-bold text-zinc-900 dark:text-zinc-50">
+              {t.home.heroTitle}
+            </h1>
+            <p class="mt-4 text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              {t.home.intro}
+            </p>
+          </BentoCard>
+
+          <BentoCard
+            href="/en/playground/vanilla"
+            class="p-8 flex flex-col justify-between !border-violet-300/50 dark:!border-violet-400/30 !bg-gradient-to-br from-cyan-500/10 to-violet-500/10 dark:from-cyan-400/15 dark:to-violet-400/15"
           >
-            HELLO
+            <div class="text-xs font-bold tracking-[0.25em] text-violet-600 dark:text-violet-300">
+              {t.home.playgroundLabel}
+            </div>
+            <div class="mt-8 font-semibold text-zinc-800 dark:text-zinc-100">
+              {t.home.playgroundCta} →
+            </div>
+          </BentoCard>
+
+          {
+            heroPosts.map((post: any) => (
+              <BentoCard href={post.url} class="p-6">
+                <div class="flex items-center gap-2 text-xs font-bold tracking-wider uppercase">
+                  <span
+                    class="inline-block w-2.5 h-2.5 rounded-full"
+                    style={`background:${tagColor(post.frontmatter.tags)}`}
+                  />
+                  <span style={`color:${tagColor(post.frontmatter.tags)}`}>
+                    {(post.frontmatter.tags ?? [])[0] ?? 'NOTE'}
+                  </span>
+                  <span class="text-zinc-400 dark:text-zinc-500 font-normal normal-case">
+                    {formatDate(new Date(post.frontmatter.createdAt), locale)}
+                  </span>
+                </div>
+                <h3 class="mt-3 font-semibold leading-snug text-zinc-800 dark:text-zinc-100">
+                  {post.frontmatter.title}
+                </h3>
+              </BentoCard>
+            ))
+          }
+        </section>
+
+        <!-- Latest Posts -->
+        <section class="mt-14">
+          <h2 class="font-serif text-2xl font-bold mb-6 text-zinc-900 dark:text-zinc-50">
+            {t.home.latestPosts}
+          </h2>
+          <ul class="divide-y divide-zinc-200 dark:divide-white/5">
+            {
+              latestPosts.map((post: any) => (
+                <li>
+                  <a
+                    href={post.url}
+                    class="group flex items-baseline justify-between gap-4 py-4"
+                  >
+                    <span class="flex items-baseline gap-3 min-w-0">
+                      <span
+                        class="inline-block w-2 h-2 rounded-full flex-shrink-0 translate-y-[-1px]"
+                        style={`background:${tagColor(post.frontmatter.tags)}`}
+                      />
+                      <span class="truncate text-zinc-700 dark:text-zinc-200 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-brand-gradient transition-colors">
+                        {post.frontmatter.title}
+                      </span>
+                    </span>
+                    <span class="flex-shrink-0 text-sm text-zinc-400 dark:text-zinc-500">
+                      {formatDate(new Date(post.frontmatter.createdAt), locale)}
+                    </span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          <div class="mt-6">
+            <a
+              href="/en/posts"
+              class="text-sm font-semibold text-violet-600 dark:text-violet-300 hover:underline underline-offset-4"
+            >
+              {t.home.viewAll} →
+            </a>
           </div>
-        </div>
-        <!-- 
-        <div
-          class=".marquee-container absolute top-[400px] left-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center items-center mt-[450px] text-[12rem] italic dark:text-white text-zinc-800 z-10 h-full w-full"
-          style={{
-            fontFamily: 'Lilita One',
-            // WebkitTextStrokeColor: 'transparent',
-            // WebkitTextStrokeWidth: '1rem',
-            WebkitTextFillColor: '#A0C878',
-            // backgroundColor: 'hsl(260 70% 70%)',
-            // backgroundClip: 'text',
-            letterSpacing: '-30px',
-            mixBlendMode: 'hard-light' // Let text blend with background image
-          }}
-        >
-          <div class="marquee-content">
-            <span>YyYyyyYYYYyYyYyyYYYYyYYYyyyy</span>
-          </div>
-        </div> -->
+        </section>
       </div>
     </main>
     <Footer />

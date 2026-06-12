@@ -113,6 +113,15 @@ export const translations = {
       demoText: '這是一個簡單的 React 範例。',
       clickCount: '點擊次數'
     },
+    // Home page
+    home: {
+      heroTitle: '前端工程筆記',
+      intro: 'Antonio H. · 前端工程師。記錄 React、TypeScript、Three.js / Shader，與團隊導入 AI 開發工作流的實戰心得。',
+      playgroundLabel: 'PLAYGROUND',
+      playgroundCta: '互動程式實驗場',
+      latestPosts: '最新文章',
+      viewAll: '全部文章'
+    },
     // Blog list page
     blog: {
       all: '全部'
@@ -248,6 +257,15 @@ export const translations = {
       errorMessage: 'Something went wrong. Please refresh the page.',
       demoText: 'A simple React example.',
       clickCount: 'Clicks'
+    },
+    // Home page
+    home: {
+      heroTitle: 'Frontend Engineering Notes',
+      intro: 'Antonio H. · Frontend engineer. Notes on React, TypeScript, Three.js / shaders, and bringing AI workflows to a frontend team.',
+      playgroundLabel: 'PLAYGROUND',
+      playgroundCta: 'Interactive code playground',
+      latestPosts: 'Latest posts',
+      viewAll: 'All posts'
     },
     // Blog list page
     blog: {
