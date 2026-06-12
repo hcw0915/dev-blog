@@ -124,7 +124,8 @@ export const translations = {
     },
     // Blog list page
     blog: {
-      all: '全部'
+      all: '全部',
+      searchPlaceholder: '搜尋文章標題…'
     },
     // QR modal
     qr: {
@@ -275,7 +276,8 @@ export const translations = {
     },
     // Blog list page
     blog: {
-      all: 'All'
+      all: 'All',
+      searchPlaceholder: 'Search posts…'
     },
     // QR modal
     qr: {

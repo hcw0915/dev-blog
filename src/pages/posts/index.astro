@@ -2,11 +2,7 @@
 import BaseHead from "@/components/BaseHead.astro"
 import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
-import {
-  SITE_TITLE,
-  SITE_DESCRIPTION,
-  COLOR_MAP
-} from "@/config"
+import { SITE_TITLE, SITE_DESCRIPTION, COLOR_MAP } from "@/config"
 import Body from "@/components/Body.astro"
 import Content from "@/components/Content.astro"
 import { getLocaleFromPath, formatDate } from "@/i18n/utils"
@@ -27,27 +23,60 @@ const heroSet = new Set(
 const getSlug = (filePath: string) =>
   filePath.split("/").pop()!.replace(/\.md$/, "")
 
-// 獲取所有文章
-const posts = (await Astro.glob('../posts/*.md')).sort(
-  (a: any, b: any) =>
-    new Date(b.frontmatter.createdAt).valueOf() -
-    new Date(a.frontmatter.createdAt).valueOf()
-)
+const posts = (await Astro.glob('../posts/*.md'))
+  .filter((p: any) => p.frontmatter.public)
+  .sort(
+    (a: any, b: any) =>
+      new Date(b.frontmatter.createdAt).valueOf() -
+      new Date(a.frontmatter.createdAt).valueOf()
+  )
 
-// 獲取唯一標籤
-const tags = posts.map(p => p.frontmatter.tags).flat()
+// 摘要：優先 frontmatter.description，否則取內文第一段（接受引言段，跳過標題/圖/程式碼/表格）
+const getExcerpt = (post: any): string => {
+  if (post.frontmatter.description) return post.frontmatter.description
+  const raw: string = post.rawContent()
+  const para = raw
+    .split(/\n{2,}/)
+    .map(s => s.trim())
+    .find(
+      s =>
+        s &&
+        !s.startsWith('#') &&
+        !s.startsWith('![') &&
+        !s.startsWith('```') &&
+        !s.startsWith('|') &&
+        !s.startsWith('---')
+    )
+  if (!para) return ''
+  const text = para
+    .replace(/^>\s?/gm, '')
+    .replace(/[#*`_\[\]]/g, '')
+    .replace(/\(.*?\)/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return text.length > 80 ? text.slice(0, 80) + '…' : text
+}
+
+// 年份分隔：標記每年的第一篇
+let lastYear = 0
+const rows = posts.map((post: any) => {
+  const year = new Date(post.frontmatter.createdAt).getFullYear()
+  const isNewYear = year !== lastYear
+  lastYear = year
+  return { post, year: isNewYear ? year : null }
+})
+
+const tags = posts.map((p: any) => p.frontmatter.tags).flat()
 const uniqueTags = ['All', ...new Set(tags)]
 
 const getGradientStyle = (tagArray: string[]) => {
-  const colors = tagArray
+  const colors = (tagArray ?? [])
     .map(tag => COLOR_MAP[tag.toLowerCase()])
     .sort()
     .filter(Boolean)
-
   if (colors.length === 0) {
-    return { background: `linear-gradient(135deg, #f0f0f0, #d9d9d9)` }
+    return { background: `linear-gradient(135deg, #3f3f46, #18181b)` }
   }
-
   return { background: `linear-gradient(135deg, ${colors.join(', ')})` }
 }
 ---
@@ -55,15 +84,21 @@ const getGradientStyle = (tagArray: string[]) => {
 <!doctype html>
 <html lang={locale === 'zh' ? 'zh-TW' : 'en'}>
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead title={`Posts - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
   </head>
 
   <Body>
-    <Header title={SITE_TITLE} />
-    <main class="pt-[64px]">
+    <Header />
+    <main class="pt-[72px]">
       <Content>
-        {/* 標籤篩選按鈕 */}
-        <section class="mb-8">
+        {/* 搜尋 + 標籤篩選 */}
+        <section class="mb-8 space-y-4">
+          <input
+            id="blogSearch"
+            type="search"
+            placeholder={t.blog.searchPlaceholder}
+            class="w-full sm:max-w-sm rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/[0.04] px-4 py-2 text-sm outline-none focus:border-violet-400/60 placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
+          />
           <div
             class="flex flex-wrap gap-2"
             id="tags"
@@ -74,7 +109,7 @@ const getGradientStyle = (tagArray: string[]) => {
                 <button
                   data-type={tag}
                   id="blogFilter"
-                  class="text-primary border-gray-300 border rounded-full px-3"
+                  class="text-sm border border-zinc-300 dark:border-white/15 text-zinc-600 dark:text-zinc-400 rounded-full px-3 py-0.5 transition-colors"
                 >
                   {tag === 'All' ? t.blog.all : tag}
                 </button>
@@ -85,55 +120,71 @@ const getGradientStyle = (tagArray: string[]) => {
 
         {/* 文章列表 */}
         <section>
-          <ul class="grid grid-cols-3 gap-4">
+          <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {
-              posts.map(post => {
-                const tags = post.frontmatter.tags?.join(' ') || ''
+              rows.map(({ post, year }: any) => {
+                const tagClasses = post.frontmatter.tags?.join(' ') || ''
                 const slug = getSlug(post.file)
                 const hasHero = heroSet.has(slug)
                 return (
-                  <li class={tags}>
-                    <a href={post.url} class="group block">
-                      <div
-                        class="relative w-full h-[160px] rounded-xl overflow-hidden mb-3 transition-transform duration-300 group-hover:-translate-y-1"
-                        style={getGradientStyle(post.frontmatter.tags || [])}
-                      >
-                        {hasHero && (
-                          <img
-                            src={`/hero/${slug}.png`}
-                            alt=""
-                            loading="lazy"
-                            class="absolute inset-0 w-full h-full object-cover"
-                          />
-                        )}
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
-                        <h2
-                          class="absolute inset-x-0 bottom-0 p-3 text-white font-bold text-lg leading-snug"
-                          style="text-shadow:0 1px 3px rgba(0,0,0,0.5);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden"
+                  <>
+                    {year && (
+                      <li class="col-span-full flex items-center gap-3 mt-4 first:mt-0">
+                        <span class="font-serif text-xl font-bold text-zinc-400 dark:text-zinc-600">
+                          {year}
+                        </span>
+                        <span class="h-px flex-1 bg-zinc-200 dark:bg-white/5" />
+                      </li>
+                    )}
+                    <li class={tagClasses} data-post-title={post.frontmatter.title}>
+                      <a href={post.url} class="group block rounded-2xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/[0.04] overflow-hidden transition-transform duration-300 hover:-translate-y-1">
+                        <div
+                          class="relative w-full h-[150px] overflow-hidden"
+                          style={getGradientStyle(post.frontmatter.tags || [])}
                         >
-                          {post.frontmatter.title}
-                        </h2>
-                      </div>
-                      <div class="opacity-50 text-sm flex items-center gap-3">
-                        <span class="inline-block h-4 w-0.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
-                        {formatDate(post.frontmatter.createdAt, locale)}
-                      </div>
-                      {post.frontmatter.description && (
-                        <div class="opacity-70 mt-1">
-                          {post.frontmatter.description}
+                          {hasHero && (
+                            <img
+                              src={`/hero/${slug}.png`}
+                              alt=""
+                              loading="lazy"
+                              class="absolute inset-0 w-full h-full object-cover"
+                            />
+                          )}
+                          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                          <h2
+                            class="absolute inset-x-0 bottom-0 p-3 text-white font-bold leading-snug"
+                            style="text-shadow:0 1px 3px rgba(0,0,0,0.5);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden"
+                          >
+                            {post.frontmatter.title}
+                          </h2>
                         </div>
-                      )}
-                    </a>
-                  </li>
+                        <div class="p-3">
+                          <div class="text-xs text-zinc-400 dark:text-zinc-500">
+                            {formatDate(new Date(post.frontmatter.createdAt), locale)}
+                          </div>
+                          {getExcerpt(post) && (
+                            <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">
+                              {getExcerpt(post)}
+                            </p>
+                          )}
+                        </div>
+                      </a>
+                    </li>
+                  </>
                 )
               })
             }
           </ul>
         </section>
-
       </Content>
     </main>
     <Footer />
+
+    <style is:global>
+      .hidden-by-search {
+        display: none !important;
+      }
+    </style>
 
     <script is:inline>
       function initBlogFilter() {
@@ -157,22 +208,19 @@ const getGradientStyle = (tagArray: string[]) => {
             )
           }
 
-          // 修改 Tags 樣式, 剩下沒被選中的 tags 樣式
           input.forEach(e => {
             const active = e.getAttribute('data-type') === selectedTag
-            e.style.background = active ? '#4f46e5' : 'transparent'
+            e.style.background = active ? '#7c3aed' : 'transparent'
             e.style.color = active ? '#ffffff' : ''
-            e.style.borderColor = active ? '#4f46e5' : ''
+            e.style.borderColor = active ? '#7c3aed' : ''
           })
 
-          // 顯示選擇的標籤
           let elementsToShow = document.getElementsByClassName(selectedTag)
           for (let i = 0; i < elementsToShow.length; i++) {
             elementsToShow[i].style.display = 'block'
           }
 
           if (selectedTag !== 'All') {
-            // 隱藏未選擇的標籤
             tags.forEach(t => {
               const elementsToHide = document.getElementsByClassName(t)
               for (let i = 0; i < elementsToHide.length; i++) {
@@ -187,7 +235,6 @@ const getGradientStyle = (tagArray: string[]) => {
           }
 
           if (selectedTag === 'All') {
-            // 顯示所有標籤
             tags.forEach(t => {
               const elementsToHide = document.getElementsByClassName(t)
               for (let i = 0; i < elementsToHide.length; i++) {
@@ -197,14 +244,30 @@ const getGradientStyle = (tagArray: string[]) => {
           }
         }
 
-        // 為每個篩選按鈕添加點擊事件監聽器
         input.forEach(e => {
           e.addEventListener('click', hideBlogs)
         })
       }
 
-      // astro:page-load 在初次載入與每次 View Transitions 換頁後都會觸發
-      document.addEventListener('astro:page-load', initBlogFilter)
+      function initBlogSearch() {
+        const search = document.getElementById('blogSearch')
+        if (!search) return
+        search.addEventListener('input', () => {
+          const q = search.value.trim().toLowerCase()
+          document.querySelectorAll('[data-post-title]').forEach(li => {
+            const hit = li
+              .getAttribute('data-post-title')
+              .toLowerCase()
+              .includes(q)
+            li.classList.toggle('hidden-by-search', !(q === '' || hit))
+          })
+        })
+      }
+
+      document.addEventListener('astro:page-load', () => {
+        initBlogFilter()
+        initBlogSearch()
+      })
     </script>
   </Body>
 </html>
