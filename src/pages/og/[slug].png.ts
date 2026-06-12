@@ -7,6 +7,14 @@ import { COLOR_MAP } from '@/config'
 
 const fontPath = path.resolve('.fonts/NotoSansCJKtc-Bold.otf')
 
+// 字型資料在 module 載入時讀取一次，避免每個 slug 重複 I/O
+if (!fs.existsSync(fontPath)) {
+  throw new Error(
+    `OG font missing at ${fontPath} — run \`node tools/fetch-og-font.mjs\` first`
+  )
+}
+const fontData = fs.readFileSync(fontPath)
+
 export async function getStaticPaths() {
   const modules = import.meta.glob('../posts/*.md', { eager: true }) as Record<
     string,
@@ -25,17 +33,13 @@ export async function getStaticPaths() {
 }
 
 export const GET: APIRoute = async ({ props }) => {
-  if (!fs.existsSync(fontPath)) {
-    throw new Error(
-      `OG font missing at ${fontPath} — run \`node tools/fetch-og-font.mjs\` first`
-    )
-  }
-  const fontData = fs.readFileSync(fontPath)
   const { title, tags, date } = props as {
     title: string
     tags: string[]
     date: Date
   }
+  // 與 src/lib/tags.ts 的 colorForTags 同邏輯，但 fallback 用品牌青色而非文字灰：
+  // OG 圖的 accent 方塊需要可見的顏色
   const accent = COLOR_MAP[(tags[0] ?? '').toLowerCase()] ?? '#22d3ee'
   const dateText = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`
 
@@ -87,7 +91,11 @@ export const GET: APIRoute = async ({ props }) => {
               style: {
                 fontSize: title.length > 24 ? '60px' : '76px',
                 fontWeight: 700,
-                lineHeight: 1.3
+                lineHeight: 1.3,
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden'
               },
               children: title
             }

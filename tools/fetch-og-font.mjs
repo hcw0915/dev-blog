@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 const FONT_URL =
-  'https://cdn.jsdelivr.net/gh/notofonts/noto-cjk@main/Sans/OTF/TraditionalChinese/NotoSansCJKtc-Bold.otf'
+  'https://cdn.jsdelivr.net/gh/notofonts/noto-cjk@Sans2.004/Sans/OTF/TraditionalChinese/NotoSansCJKtc-Bold.otf'
 const dest = path.resolve('.fonts/NotoSansCJKtc-Bold.otf')
 
 if (fs.existsSync(dest)) {
@@ -12,7 +12,13 @@ if (fs.existsSync(dest)) {
 
 fs.mkdirSync(path.dirname(dest), { recursive: true })
 console.log('Downloading OG font (one-time, ~16MB)...')
-const res = await fetch(FONT_URL)
+let res
+try {
+  res = await fetch(FONT_URL, { signal: AbortSignal.timeout(30000) })
+} catch (err) {
+  console.error(`OG font download failed/timed out: ${err.message}`)
+  process.exit(1)
+}
 if (!res.ok) {
   console.error(`OG font download failed: HTTP ${res.status}`)
   process.exit(1)
