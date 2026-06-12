@@ -42,7 +42,7 @@ export default function PlaygroundDropdown({ locale = "zh" }: PlaygroundDropdown
   if (!isMounted) {
     return (
       <div className="relative">
-        <button className="inline-flex items-center gap-1 px-3 py-1.5 text-base font-medium text-zinc-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+        <button className="inline-flex items-center gap-1 px-3 py-1.5 text-base font-medium text-zinc-600 dark:text-zinc-400 hover:text-violet-600 dark:hover:text-violet-300 transition-colors">
           {translations.playground.title}
           <IoChevronDown className="text-xs" />
         </button>
@@ -67,8 +67,8 @@ export default function PlaygroundDropdown({ locale = "zh" }: PlaygroundDropdown
         onClick={() => setIsOpen(!isOpen)}
         className={`inline-flex items-center gap-1 px-3 py-1.5 text-base font-medium transition-colors ${
           isPlaygroundActive
-            ? "font-bold underline text-indigo-600 dark:text-indigo-400"
-            : "text-zinc-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400"
+            ? "font-bold underline text-violet-600 dark:text-violet-300"
+            : "text-zinc-600 dark:text-zinc-400 hover:text-violet-600 dark:hover:text-violet-300"
         }`}
         aria-label={translations.aria.playgroundMenu}
         aria-expanded={isOpen}
@@ -89,7 +89,7 @@ export default function PlaygroundDropdown({ locale = "zh" }: PlaygroundDropdown
                 href={item.href}
                 className={`block px-4 py-2 text-sm transition-colors ${
                   isActive
-                    ? "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-semibold"
+                    ? "bg-violet-50 dark:bg-violet-400/15 text-violet-600 dark:text-violet-300 font-semibold"
                     : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700"
                 }`}
                 onClick={() => setIsOpen(false)}
