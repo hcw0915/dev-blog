@@ -42,8 +42,11 @@ const articleMeta = {
   tags
 }
 
-// 閱讀時間：中文為主，以 400 字/分鐘估算
-const minutes = Math.max(1, Math.round(rawContent().replace(/\s/g, '').length / 400))
+// 閱讀時間：CJK 字元以 400 字/分、其餘以 220 詞/分估算（略過程式碼區塊）
+const prose = rawContent().replace(/```[\s\S]*?```/g, '')
+const cjkChars = (prose.match(/[一-鿿㐀-䶿]/g) ?? []).length
+const words = (prose.replace(/[一-鿿㐀-䶿]/g, ' ').match(/[A-Za-z0-9]+/g) ?? []).length
+const minutes = Math.max(1, Math.round(cjkChars / 400 + words / 220))
 
 // 上一篇 / 下一篇（依 createdAt 新→舊）
 const allPosts = Object.values(
@@ -220,7 +223,9 @@ const jsonLd = JSON.stringify({
     <Footer />
 
     <script is:inline>
+      let tocObserver
       function initToc() {
+        if (tocObserver) tocObserver.disconnect()
         const nav = document.getElementById('toc-nav')
         if (!nav) return
         const links = nav.querySelectorAll('.toc-link')
@@ -229,7 +234,7 @@ const jsonLd = JSON.stringify({
           .filter(Boolean)
         if (!headings.length) return
 
-        const observer = new IntersectionObserver(
+        tocObserver = new IntersectionObserver(
           entries => {
             entries.forEach(entry => {
               const link = nav.querySelector(
@@ -244,7 +249,7 @@ const jsonLd = JSON.stringify({
           },
           { rootMargin: '-80px 0px -70% 0px' }
         )
-        headings.forEach(h => observer.observe(h))
+        headings.forEach(h => tocObserver.observe(h))
       }
       document.addEventListener('astro:page-load', initToc)
     </script>
