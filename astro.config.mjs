@@ -33,7 +33,14 @@ export default defineConfig({
       }
     }
   },
-  integrations: [sitemap(), react(), tailwind()],
+  integrations: [
+    sitemap({
+      // /en/posts/<slug>/ 是 noindex 的 redirect stub，不進 sitemap（/en/posts/ 列表頁保留）
+      filter: page => !/\/en\/posts\/.+/.test(new URL(page).pathname)
+    }),
+    react(),
+    tailwind()
+  ],
   markdown: {
     shikiConfig: {
       theme: "aurora-x"
