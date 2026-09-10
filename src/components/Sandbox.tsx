@@ -38,7 +38,22 @@ interface TreeNode {
   children?: TreeNode[]
 }
 
+// sessionStorage：同一分頁重新整理還在，關掉分頁就回到原始範例。
+// localStorage 會留下永遠不消失的舊草稿，讀者下次進來看到的不是範例而是自己上個月的手滑。
 const DRAFT_KEY = (id: string) => `sandbox:draft:${id}`
+const draftStore = () => (typeof sessionStorage !== "undefined" ? sessionStorage : null)
+
+/** 檔名檢查：相對路徑、不能往上跳、不能以 / 開頭或結尾 */
+const isValidPath = (p: string) =>
+  p.length > 0 && !p.startsWith("/") && !p.endsWith("/") && !p.split("/").some(seg => seg === "" || seg === "." || seg === "..")
+
+/** 跟 original 比：改過 + 新增 + 刪除 的檔案數 */
+const countChanges = (files: FileMap, original: FileMap) => {
+  const keys = new Set([...Object.keys(files), ...Object.keys(original)])
+  let n = 0
+  for (const k of keys) if (files[k] !== original[k]) n++
+  return n
+}
 
 // ── 檔案樹 ──────────────────────────────────────────────────────────────
 const buildTree = (paths: string[]): TreeNode[] => {
@@ -91,6 +106,64 @@ function FileIcon({ path }: { path: string }) {
   )
 }
 
+/** 行內輸入：Enter 確認、Esc 取消、失焦確認 */
+function NameInput({
+  initial,
+  error,
+  onCommit,
+  onCancel,
+  indent
+}: {
+  initial: string
+  error?: string
+  onCommit: (v: string) => void
+  onCancel: () => void
+  indent: number
+}) {
+  const ref = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    el.focus()
+    // 改名時預選檔名主體（不含副檔名），跟 VS Code 一樣
+    const dot = initial.lastIndexOf(".")
+    const slash = initial.lastIndexOf("/") + 1
+    el.setSelectionRange(slash, dot > slash ? dot : initial.length)
+  }, [initial])
+  return (
+    <div style={{ paddingLeft: indent }} className="pr-2">
+      <input
+        ref={ref}
+        defaultValue={initial}
+        spellCheck={false}
+        onKeyDown={e => {
+          if (e.key === "Enter") onCommit(e.currentTarget.value)
+          if (e.key === "Escape") onCancel()
+        }}
+        onBlur={e => onCommit(e.currentTarget.value)}
+        className={`w-full rounded border bg-white px-1.5 py-0.5 font-mono text-[12px] text-zinc-900 outline-none dark:bg-black/40 dark:text-zinc-50 ${
+          error ? "border-red-500" : "border-violet-400"
+        }`}
+      />
+      {error && <div className="mt-0.5 text-[11px] text-red-500">{error}</div>}
+    </div>
+  )
+}
+
+interface TreeActions {
+  onRename: (p: string) => void
+  onDelete: (p: string) => void
+  onDeleteFolder: (p: string) => void
+  onNewIn: (folder: string) => void
+  entry: string
+  editing: { kind: "new" | "rename"; path: string; error?: string } | null
+  onCommit: (v: string) => void
+  onCancelEdit: () => void
+}
+
+const ACTION_BTN =
+  "hidden group-hover:inline-flex h-4 w-4 shrink-0 items-center justify-center rounded text-[11px] text-zinc-400 hover:bg-zinc-900/10 hover:text-zinc-900 dark:hover:bg-white/15 dark:hover:text-zinc-50"
+
 function Tree({
   nodes,
   active,
@@ -98,6 +171,7 @@ function Tree({
   collapsed,
   onToggle,
   onOpen,
+  actions,
   depth = 0
 }: {
   nodes: TreeNode[]
@@ -106,28 +180,43 @@ function Tree({
   collapsed: Set<string>
   onToggle: (p: string) => void
   onOpen: (p: string) => void
+  actions: TreeActions
   depth?: number
 }) {
+  const { editing } = actions
   return (
     <ul className="text-[13px] leading-6">
       {nodes.map(n =>
         n.children ? (
           <li key={n.path}>
-            <button
-              type="button"
-              onClick={() => onToggle(n.path)}
-              className="flex w-full items-center gap-1.5 text-left text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
-              style={{ paddingLeft: 8 + depth * 12 }}
-            >
-              <span
-                className={`inline-block text-[9px] transition-transform ${
-                  collapsed.has(n.path) ? "" : "rotate-90"
-                }`}
+            <div className="group flex items-center pr-1">
+              <button
+                type="button"
+                onClick={() => onToggle(n.path)}
+                className="flex min-w-0 flex-1 items-center gap-1.5 text-left text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+                style={{ paddingLeft: 8 + depth * 12 }}
               >
-                ▶
-              </span>
-              <span className="font-medium">{n.name}</span>
-            </button>
+                <span
+                  className={`inline-block text-[9px] transition-transform ${
+                    collapsed.has(n.path) ? "" : "rotate-90"
+                  }`}
+                >
+                  ▶
+                </span>
+                <span className="truncate font-medium">{n.name}</span>
+              </button>
+              <button type="button" title="New file here" className={ACTION_BTN} onClick={() => actions.onNewIn(n.path)}>+</button>
+              <button type="button" title="Delete folder" className={ACTION_BTN} onClick={() => actions.onDeleteFolder(n.path)}>×</button>
+            </div>
+            {editing?.kind === "new" && editing.path === n.path + "/" && (
+              <NameInput
+                initial={editing.path}
+                error={editing.error}
+                onCommit={actions.onCommit}
+                onCancel={actions.onCancelEdit}
+                indent={8 + (depth + 1) * 12 + 14}
+              />
+            )}
             {!collapsed.has(n.path) && (
               <Tree
                 nodes={n.children}
@@ -136,16 +225,28 @@ function Tree({
                 collapsed={collapsed}
                 onToggle={onToggle}
                 onOpen={onOpen}
+                actions={actions}
                 depth={depth + 1}
               />
             )}
           </li>
-        ) : (
+        ) : editing?.kind === "rename" && editing.path === n.path ? (
           <li key={n.path}>
+            <NameInput
+              initial={n.path}
+              error={editing.error}
+              onCommit={actions.onCommit}
+              onCancel={actions.onCancelEdit}
+              indent={8 + depth * 12 + 14}
+            />
+          </li>
+        ) : (
+          <li key={n.path} className="group flex items-center pr-1">
             <button
               type="button"
               onClick={() => onOpen(n.path)}
-              className={`flex w-full items-center gap-2 text-left transition-colors ${
+              onDoubleClick={() => n.path !== actions.entry && actions.onRename(n.path)}
+              className={`flex min-w-0 flex-1 items-center gap-2 text-left transition-colors ${
                 active === n.path
                   ? "bg-violet-500/10 dark:bg-white/[0.07]"
                   : "hover:bg-zinc-900/[0.04] dark:hover:bg-white/[0.04]"
@@ -162,9 +263,15 @@ function Tree({
               <FileIcon path={n.path} />
               <span className="truncate">{n.name}</span>
               {dirty.has(n.path) && (
-                <span className="ml-auto mr-2 shrink-0 font-mono text-[10px] font-bold opacity-80">M</span>
+                <span className="ml-auto mr-1 shrink-0 font-mono text-[10px] font-bold opacity-80">M</span>
               )}
             </button>
+            {n.path !== actions.entry && (
+              <>
+                <button type="button" title="Rename" className={ACTION_BTN} onClick={() => actions.onRename(n.path)}>✎</button>
+                <button type="button" title="Delete" className={ACTION_BTN} onClick={() => actions.onDelete(n.path)}>×</button>
+              </>
+            )}
           </li>
         )
       )}
@@ -204,14 +311,15 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
 
   const [files, setFiles] = useState<FileMap>(() => {
     try {
-      const raw = localStorage.getItem(DRAFT_KEY(id))
+      const raw = draftStore()?.getItem(DRAFT_KEY(id))
       if (raw) {
         const draft = JSON.parse(raw)
-        if (draft && typeof draft === "object") return { ...original, ...draft }
+        if (draft && typeof draft === "object" && !Array.isArray(draft)) return draft as FileMap
       }
     } catch {}
     return original
   })
+  const [editing, setEditing] = useState<{ kind: "new" | "rename"; path: string; error?: string } | null>(null)
   const firstFile = files[entry] !== undefined ? entry : Object.keys(files)[0] ?? ""
   const [tabs, setTabs] = useState<string[]>([firstFile])
   const [active, setActive] = useState<string>(firstFile)
@@ -241,15 +349,15 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
     for (const p of Object.keys(files)) if (files[p] !== original[p]) s.add(p)
     return s
   }, [files, original])
+  const changeCount = useMemo(() => countChanges(files, original), [files, original])
 
   // 草稿存在瀏覽器 localStorage：靜態站寫不回原始檔，跟 CodeSandbox 未登入時一樣
   const persist = useCallback(
     (next: FileMap) => {
-      let changed = false
-      for (const p of Object.keys(next)) if (next[p] !== original[p]) changed = true
       try {
-        if (changed) localStorage.setItem(DRAFT_KEY(id), JSON.stringify(next))
-        else localStorage.removeItem(DRAFT_KEY(id))
+        const store = draftStore()
+        if (countChanges(next, original)) store?.setItem(DRAFT_KEY(id), JSON.stringify(next))
+        else store?.removeItem(DRAFT_KEY(id))
         setSavedAt(Date.now())
       } catch {}
     },
@@ -304,11 +412,32 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
   // Monaco 的 TypeScript 服務：預設不認 JSX、也不知道 esm.sh 套件的型別，會滿屏假錯。
   // 這裡設 jsx / 模組解析、忽略「找不到模組」，並把所有檔案先建成 model，
   // 跨檔 import 的型別才解析得到 —— 之後 .ts/.tsx 有真正的型別檢查。
-  const monacoReady = useRef(false)
+  const monacoRef = useRef<any>(null)
+  const uriOf = useCallback((p: string) => monacoRef.current?.Uri.parse(`file:///${id}/${p}`), [id])
+  const ensureModel = useCallback(
+    (p: string, content: string) => {
+      const monaco = monacoRef.current
+      if (!monaco) return
+      const uri = uriOf(p)
+      const m = monaco.editor.getModel(uri)
+      if (m) {
+        if (m.getValue() !== content) m.setValue(content)
+      } else monaco.editor.createModel(content, languageOf(p), uri)
+    },
+    [uriOf]
+  )
+  const disposeModel = useCallback(
+    (p: string) => {
+      const monaco = monacoRef.current
+      if (!monaco) return
+      monaco.editor.getModel(uriOf(p))?.dispose()
+    },
+    [uriOf]
+  )
   const beforeMount = useCallback(
     (monaco: any) => {
-      if (monacoReady.current) return
-      monacoReady.current = true
+      if (monacoRef.current) return
+      monacoRef.current = monaco
       const ts = monaco.languages.typescript
       const opts = {
         target: ts.ScriptTarget.ESNext,
@@ -369,12 +498,66 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
     })
 
   const reset = () => {
-    if (!dirty.size || confirm(t.resetConfirm)) {
+    if (!changeCount || confirm(t.resetConfirm)) {
       setFiles(original)
+      setTabs(ts => ts.filter(p => original[p] !== undefined))
+      if (original[active] === undefined) setActive(entry)
+      for (const p of Object.keys(files)) if (original[p] === undefined) disposeModel(p)
+      for (const [p, content] of Object.entries(original)) ensureModel(p, content)
       try {
-        localStorage.removeItem(DRAFT_KEY(id))
+        draftStore()?.removeItem(DRAFT_KEY(id))
       } catch {}
     }
+  }
+
+  // ── 檔案操作：新增 / 改名 / 刪除 ─────────────────────────────────────
+  const createFile = (path: string) => {
+    setFiles(f => ({ ...f, [path]: "" }))
+    ensureModel(path, "")
+    open(path)
+  }
+  const renameFile = (from: string, to: string) => {
+    setFiles(f => {
+      const next: FileMap = {}
+      for (const [p, c] of Object.entries(f)) next[p === from ? to : p] = c
+      return next
+    })
+    ensureModel(to, files[from] ?? "")
+    disposeModel(from)
+    setTabs(ts => ts.map(p => (p === from ? to : p)))
+    if (active === from) setActive(to)
+  }
+  const deletePaths = (paths: string[]) => {
+    const gone = new Set(paths)
+    setFiles(f => {
+      const next: FileMap = {}
+      for (const [p, c] of Object.entries(f)) if (!gone.has(p)) next[p] = c
+      return next
+    })
+    paths.forEach(disposeModel)
+    const remaining = tabs.filter(p => !gone.has(p))
+    setTabs(remaining)
+    if (gone.has(active)) setActive(remaining[0] ?? entry)
+  }
+  const deleteFile = (path: string) => {
+    if (path === entry) return
+    if (confirm(t.deleteConfirm.replace("{name}", path))) deletePaths([path])
+  }
+  const deleteFolder = (folder: string) => {
+    const inside = Object.keys(files).filter(p => p.startsWith(folder + "/"))
+    if (inside.includes(entry)) return
+    if (confirm(t.deleteConfirm.replace("{name}", `${folder}/ (${inside.length})`))) deletePaths(inside)
+  }
+  /** 新增或改名的收尾：驗證 → 套用 → 關掉輸入框 */
+  const commitEdit = (value: string) => {
+    if (!editing) return
+    const name = value.trim().replace(/^\.\//, "")
+    if (!isValidPath(name)) return setEditing({ ...editing, error: t.invalidName })
+    if (editing.kind === "rename" && name === editing.path) return setEditing(null)
+    if (files[name] !== undefined) return setEditing({ ...editing, error: t.nameExists })
+    if (editing.kind === "new") createFile(name)
+    else renameFile(editing.path, name)
+    setEditing(null)
   }
   const refresh = () => {
     setLogs([])
@@ -406,17 +589,36 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
               <span className="font-bold tracking-[0.15em] text-zinc-400 dark:text-zinc-500">
                 {t.files}
               </span>
+              <div className="flex items-center gap-0.5">
+              <button
+                type="button"
+                onClick={() => setEditing({ kind: "new", path: "" })}
+                title={t.newFile}
+                className="rounded px-1.5 py-0.5 text-[13px] leading-none text-zinc-500 hover:bg-zinc-900/[0.05] hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-white/10 dark:hover:text-zinc-50"
+              >
+                +
+              </button>
               <button
                 type="button"
                 onClick={reset}
-                disabled={!dirty.size}
+                disabled={!changeCount}
                 title={t.reset}
                 className="rounded px-1.5 py-0.5 text-[11px] text-zinc-500 hover:bg-zinc-900/[0.05] hover:text-zinc-900 disabled:opacity-30 dark:text-zinc-400 dark:hover:bg-white/10 dark:hover:text-zinc-50"
               >
                 {t.reset}
               </button>
+              </div>
             </div>
             <div className="flex-1 overflow-auto py-1.5">
+              {editing?.kind === "new" && !editing.path.includes("/") && (
+                <NameInput
+                  initial={editing.path}
+                  error={editing.error}
+                  onCommit={commitEdit}
+                  onCancel={() => setEditing(null)}
+                  indent={8}
+                />
+              )}
               <Tree
                 nodes={tree}
                 active={active}
@@ -424,6 +626,23 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
                 collapsed={collapsed}
                 onToggle={toggleFolder}
                 onOpen={open}
+                actions={{
+                  entry,
+                  editing,
+                  onRename: p => setEditing({ kind: "rename", path: p }),
+                  onDelete: deleteFile,
+                  onDeleteFolder: deleteFolder,
+                  onNewIn: folder => {
+                    setCollapsed(s => {
+                      const n = new Set(s)
+                      n.delete(folder)
+                      return n
+                    })
+                    setEditing({ kind: "new", path: folder + "/" })
+                  },
+                  onCommit: commitEdit,
+                  onCancelEdit: () => setEditing(null)
+                }}
               />
             </div>
           </Panel>
@@ -475,12 +694,12 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
                   className={`whitespace-nowrap transition-colors ${
                     flash
                       ? "text-emerald-600 dark:text-emerald-300"
-                      : dirty.size
+                      : changeCount
                         ? "text-zinc-500 dark:text-zinc-400"
                         : "text-zinc-400 dark:text-zinc-600"
                   }`}
                 >
-                  {flash ? t.draftSaved : dirty.size ? `${t.draftSaved} · ${dirty.size}` : t.draftClean}
+                  {flash ? t.draftSaved : changeCount ? `${t.draftSaved} · ${changeCount}` : t.draftClean}
                 </span>
                 <button
                   type="button"
