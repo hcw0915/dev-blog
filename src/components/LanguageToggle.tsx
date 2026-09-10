@@ -34,15 +34,17 @@ export default function LanguageToggle({ locale = "zh" }: LanguageToggleProps) {
   }
 
   return (
-    <div className="inline-flex items-center p-[1px] rounded-3xl bg-slate-300 dark:bg-zinc-600">
+    <div className="inline-flex items-center rounded-full border border-zinc-200 bg-white/60 p-0.5 dark:border-white/10 dark:bg-white/[0.04]">
       {locales.map(item => {
         const checked = item.code === locale
         return (
           <button
             key={item.code}
             className={`${
-              checked ? "bg-white text-black dark:bg-zinc-800 dark:text-white" : ""
-            } cursor-pointer rounded-3xl px-3 py-1.5 text-sm font-medium transition-colors`}
+              checked
+                ? "bg-zinc-900/[0.06] text-zinc-900 dark:bg-white/10 dark:text-zinc-100"
+                : "text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300"
+            } cursor-pointer rounded-full px-2.5 py-1 text-[13px] font-medium transition-colors`}
             onClick={toggleLocale}
             aria-label={`${translations.aria.switchLanguage} ${item.label}`}
           >

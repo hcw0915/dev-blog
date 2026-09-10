@@ -6,7 +6,6 @@
  * 決定），「最新文章」從第 1 篇算起。先前是把最新 3 篇做成卡片、第 4 篇之後
  * 做成列表卻標上「最新文章」，讀者會以為第 4 篇才是最新的。
  */
-import BentoCard from "@/components/BentoCard.astro"
 import PlaygroundBento from "@/components/PlaygroundBento.astro"
 import PostCard from "@/components/PostCard.astro"
 import { FEATURED_SLUGS } from "@/config"
@@ -61,21 +60,36 @@ for (const p of posts) {
 const topics = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8)
 ---
 
-<main class="pt-[88px] pb-16">
+<main class="overflow-x-clip pt-[88px] pb-16">
   <div class="mx-auto max-w-5xl px-4">
-    <!-- Hero bento -->
-    <section class="grid gap-4 md:grid-cols-3">
-      <BentoCard class="md:col-span-2 p-8 md:p-10 flex flex-col">
+    <!-- Hero：文字直接落在頁面上，只留 Playground 一張 accent 卡 -->
+    <section class="relative grid gap-6 md:grid-cols-3 md:gap-8">
+      <!-- 品牌色柔光：讓青→紫在靜態狀態就存在，不只在 hover -->
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute -left-16 -top-20 h-72 w-72 rounded-full bg-cyan-400/25 blur-3xl dark:bg-cyan-400/10"
+      >
+      </div>
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute -top-8 left-40 h-64 w-64 rounded-full bg-violet-400/25 blur-3xl dark:bg-violet-400/10"
+      >
+      </div>
+
+      <div class="relative flex flex-col md:col-span-2 md:py-4">
         <h1
-          class="font-serif text-4xl md:text-5xl font-bold text-zinc-900 dark:text-zinc-50"
+          class="font-serif text-5xl md:text-6xl font-bold leading-[1.1] text-zinc-900 dark:text-zinc-50"
         >
           {t.home.heroTitle}
         </h1>
-        <p class="mt-4 text-zinc-500 dark:text-zinc-400 leading-relaxed">
+        <div class="mt-5 h-1 w-14 rounded-full bg-brand-gradient"></div>
+        <p
+          class="mt-5 max-w-xl text-[15px] md:text-base text-zinc-500 dark:text-zinc-400 leading-relaxed"
+        >
           {t.home.intro}
         </p>
 
-        <div class="mt-auto pt-8">
+        <div class="mt-auto pt-10">
           <div
             class="text-[11px] font-bold tracking-[0.18em] uppercase text-zinc-400 dark:text-zinc-600"
           >
@@ -100,9 +114,9 @@ const topics = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8)
             {t.home.statTopics}
           </div>
         </div>
-      </BentoCard>
+      </div>
 
-      <PlaygroundBento locale={locale} />
+      <PlaygroundBento locale={locale} class="relative" />
     </section>
 
     <!-- 精選：與時間無關 -->
@@ -112,13 +126,16 @@ const topics = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8)
           <h2 class="font-serif text-2xl font-bold mb-5 text-zinc-900 dark:text-zinc-50">
             {t.home.featured}
           </h2>
-          <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((post: any) => (
-              <PostCard
-                post={post}
-                locale={locale}
-                kind={kinds[slugOf(post)]}
-              />
+          <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2">
+            {featured.map((post: any, i: number) => (
+              <div class:list={[i === 0 && "sm:col-span-2 lg:row-span-2"]}>
+                <PostCard
+                  post={post}
+                  locale={locale}
+                  kind={kinds[slugOf(post)]}
+                  size={i === 0 ? "lg" : "md"}
+                />
+              </div>
             ))}
           </div>
         </section>

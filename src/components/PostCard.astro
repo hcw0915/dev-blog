@@ -29,7 +29,9 @@ const hero = heroFor(slug)
   href={post.url}
   class="group flex h-full flex-col rounded-2xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/[0.04] overflow-hidden transition-transform duration-300 hover:-translate-y-1"
 >
-  <div class:list={["w-full overflow-hidden", size === "lg" ? "aspect-[2/1]" : "aspect-[8/3]"]}>
+  <!-- 大卡：縮圖吃掉多餘高度（SVG 是 slice 模式，填多大都不變形），文字區維持自然高度，
+       卡片才不會在摘要只有一句話時下半留白 -->
+  <div class:list={["w-full overflow-hidden", size === "lg" ? "flex-1 min-h-[220px]" : "aspect-[8/3]"]}>
     {
       hero ? (
         <img src={hero} alt="" loading="lazy" class="h-full w-full object-cover" />
@@ -39,7 +41,7 @@ const hero = heroFor(slug)
     }
   </div>
 
-  <div class="flex flex-1 flex-col p-4">
+  <div class:list={["flex flex-col", size === "lg" ? "p-5 md:p-6" : "flex-1 p-4"]}>
     {
       chips.length > 0 && (
         <div class="flex flex-wrap gap-1.5">
@@ -54,7 +56,7 @@ const hero = heroFor(slug)
     <h3
       class:list={[
         "mt-2.5 font-semibold leading-snug text-zinc-800 dark:text-zinc-100 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-brand-gradient transition-colors",
-        size === "lg" && "text-lg"
+        size === "lg" && "text-xl md:text-2xl leading-snug"
       ]}
     >
       {post.frontmatter.title}
@@ -64,7 +66,7 @@ const hero = heroFor(slug)
     </div>
     {
       excerpt && (
-        <p class="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">
+        <p class:list={["mt-1.5 text-sm text-zinc-500 dark:text-zinc-400", size === "lg" ? "line-clamp-3 md:text-[15px]" : "line-clamp-2"]}>
           {excerpt}
         </p>
       )
