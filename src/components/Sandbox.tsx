@@ -147,15 +147,22 @@ function Tree({
               onClick={() => onOpen(n.path)}
               className={`flex w-full items-center gap-2 text-left transition-colors ${
                 active === n.path
-                  ? "bg-violet-500/10 text-zinc-900 dark:bg-white/[0.07] dark:text-zinc-50"
-                  : "text-zinc-600 hover:bg-zinc-900/[0.04] dark:text-zinc-400 dark:hover:bg-white/[0.04]"
+                  ? "bg-violet-500/10 dark:bg-white/[0.07]"
+                  : "hover:bg-zinc-900/[0.04] dark:hover:bg-white/[0.04]"
+              } ${
+                dirty.has(n.path)
+                  ? "text-amber-700 dark:text-amber-300"
+                  : active === n.path
+                    ? "text-zinc-900 dark:text-zinc-50"
+                    : "text-zinc-600 dark:text-zinc-400"
               }`}
               style={{ paddingLeft: 8 + depth * 12 + 14 }}
+              title={dirty.has(n.path) ? "Modified（與原始檔不同）" : undefined}
             >
               <FileIcon path={n.path} />
               <span className="truncate">{n.name}</span>
               {dirty.has(n.path) && (
-                <span className="ml-auto mr-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+                <span className="ml-auto mr-2 shrink-0 font-mono text-[10px] font-bold opacity-80">M</span>
               )}
             </button>
           </li>
@@ -387,14 +394,19 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
                   aria-selected={active === p}
                   onClick={() => setActive(p)}
                   className={`group flex cursor-pointer items-center gap-2 border-r border-zinc-200 px-3 text-xs dark:border-white/10 ${
-                    active === p
-                      ? "bg-white text-zinc-900 dark:bg-[#0e0e12] dark:text-zinc-50"
-                      : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+                    active === p ? "bg-white dark:bg-[#0e0e12]" : ""
+                  } ${
+                    dirty.has(p)
+                      ? "text-amber-700 dark:text-amber-300"
+                      : active === p
+                        ? "text-zinc-900 dark:text-zinc-50"
+                        : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
                   }`}
+                  title={dirty.has(p) ? "Modified（與原始檔不同）" : undefined}
                 >
                   <FileIcon path={p} />
                   <span className="whitespace-nowrap">{p.split("/").pop()}</span>
-                  {dirty.has(p) && <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />}
+                  {dirty.has(p) && <span className="font-mono text-[10px] font-bold opacity-80">M</span>}
                   <button
                     type="button"
                     aria-label={`close ${p}`}
