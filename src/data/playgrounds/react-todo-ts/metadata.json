@@ -1,0 +1,8 @@
+{
+  "title": "React Todo (TypeScript)",
+  "description": "TypeScript 多檔案專案：型別拆檔、泛型 hook、strict 模式。試著把 done 改成字串，編輯器會直接標錯。",
+  "tags": ["React", "TypeScript", "Hooks"],
+  "author": "Antonio",
+  "createdAt": "2026-09-11",
+  "template": "react"
+}

@@ -13,9 +13,15 @@ export interface Props {
     modifiedTime?: string
     tags?: string[]
   }
+  /**
+   * 預設開啟無刷新換頁。放全域單例（Monaco）的頁面要關掉：換頁時它不會被重建，
+   * 上一頁的 model 會串到這一頁，動態注入 <head> 的 CSS 也會被 head 比對清掉。
+   * 目標頁沒有 ClientRouter 時，Astro 會自動改成整頁載入，進出都乾淨。
+   */
+  clientRouter?: boolean
 }
 
-const { title, description, image = '/cover.png', article } = Astro.props
+const { title, description, image = '/cover.png', article, clientRouter = true } = Astro.props
 const canonical = new URL(Astro.url.pathname, Astro.site)
 ---
 
@@ -59,7 +65,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site)
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.site)} />
 
-<ClientRouter />
+{clientRouter && <ClientRouter />}
 
 <script is:inline>
   function applyTheme() {

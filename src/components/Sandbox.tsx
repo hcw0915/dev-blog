@@ -301,6 +301,52 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
 
   const tree = useMemo(() => buildTree(Object.keys(files)), [files])
 
+  // Monaco 的 TypeScript 服務：預設不認 JSX、也不知道 esm.sh 套件的型別，會滿屏假錯。
+  // 這裡設 jsx / 模組解析、忽略「找不到模組」，並把所有檔案先建成 model，
+  // 跨檔 import 的型別才解析得到 —— 之後 .ts/.tsx 有真正的型別檢查。
+  const monacoReady = useRef(false)
+  const beforeMount = useCallback(
+    (monaco: any) => {
+      if (monacoReady.current) return
+      monacoReady.current = true
+      const ts = monaco.languages.typescript
+      const opts = {
+        target: ts.ScriptTarget.ESNext,
+        module: ts.ModuleKind.ESNext,
+        moduleResolution: ts.ModuleResolutionKind.NodeJs,
+        jsx: ts.JsxEmit.ReactJSX,
+        allowJs: true,
+        esModuleInterop: true,
+        allowSyntheticDefaultImports: true,
+        strict: true,
+        // ponytail: 沒有 React 的 .d.ts，hooks 回傳值與事件參數都是 any，開 noImplicitAny
+        // 只會滿屏假錯。要真正的 React 型別得做 ATA（automatic type acquisition：
+        // 從 esm.sh 抓 @types/react 及其相依 csstype/prop-types 塞進 addExtraLib）。
+        noImplicitAny: false,
+        noEmit: true,
+        skipLibCheck: true
+      }
+      const diag = {
+        // 2307 找不到模組、7016 沒有宣告檔：外部套件從 esm.sh 來，瀏覽器端沒有 .d.ts
+        // 7026 / 2875：沒有 React 的型別就不認識 JSX.IntrinsicElements 與 jsx-runtime
+        diagnosticCodesToIgnore: [2307, 7016, 7026, 2875, 7044]
+      }
+      ts.typescriptDefaults.setCompilerOptions(opts)
+      ts.javascriptDefaults.setCompilerOptions(opts)
+      ts.typescriptDefaults.setDiagnosticsOptions(diag)
+      ts.javascriptDefaults.setDiagnosticsOptions(diag)
+      ts.typescriptDefaults.setEagerModelSync(true)
+      ts.javascriptDefaults.setEagerModelSync(true)
+      for (const [p, content] of Object.entries(files)) {
+        const uri = monaco.Uri.parse(`file:///${id}/${p}`)
+        const existing = monaco.editor.getModel(uri)
+        if (existing) existing.setValue(content)
+        else monaco.editor.createModel(content, languageOf(p), uri)
+      }
+    },
+    [files, id]
+  )
+
   const open = useCallback((p: string) => {
     setTabs(ts => (ts.includes(p) ? ts : [...ts, p]))
     setActive(p)
@@ -449,7 +495,8 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
               {active ? (
                 <Editor
                   height="100%"
-                  path={active}
+                  path={`file:///${id}/${active}`}
+                  beforeMount={beforeMount}
                   language={languageOf(active)}
                   value={files[active] ?? ""}
                   onChange={v => setFiles(f => ({ ...f, [active]: v ?? "" }))}
