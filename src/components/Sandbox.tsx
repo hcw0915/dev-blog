@@ -30,6 +30,8 @@ interface LogEntry {
   id: number
   level: Level
   args: string[]
+  /** preview：iframe 送來的，重建預覽時清掉（像瀏覽器重載）；editor：Prettier 這類本地訊息，留著 */
+  source: "preview" | "editor"
 }
 
 interface TreeNode {
@@ -40,6 +42,48 @@ interface TreeNode {
 
 // sessionStorage：同一分頁重新整理還在，關掉分頁就回到原始範例。
 // localStorage 會留下永遠不消失的舊草稿，讀者下次進來看到的不是範例而是自己上個月的手滑。
+// ── Prettier：真的 Prettier，不是 Monaco 內建的 TS 格式器（不換行、不統一引號）──
+// 從 esm.sh 懶載入 standalone + 該語言需要的 plugin，第一次格式化才下載。
+// ponytail: 不裝進 bundle 是刻意的 —— typescript plugin 一個就 1MB，只有按到格式化的人該付這個錢
+const PRETTIER_VER = "3"
+const PRETTIER_PLUGINS: Record<string, string[]> = {
+  html: ["html", "postcss", "babel", "estree"], // html 內嵌 <style>/<script> 也要能格式化
+  css: ["postcss"],
+  javascript: ["babel", "estree"],
+  typescript: ["typescript", "estree"],
+  json: ["babel", "estree"]
+}
+const PRETTIER_PARSER: Record<string, string> = {
+  html: "html",
+  css: "css",
+  javascript: "babel",
+  typescript: "typescript",
+  json: "json"
+}
+// 對齊 repo 的 .prettierrc；singleQuote 例外 —— 範例全用單引號，格式化時不該把讀者的引號全翻掉
+const PRETTIER_OPTS = {
+  arrowParens: "avoid",
+  singleQuote: true,
+  bracketSpacing: true,
+  endOfLine: "lf",
+  semi: false,
+  tabWidth: 2,
+  trailingComma: "none",
+  printWidth: 100
+}
+const prettierMods: Record<string, Promise<any>> = {}
+const loadMod = (path: string) =>
+  (prettierMods[path] ??= import(/* @vite-ignore */ `https://esm.sh/prettier@${PRETTIER_VER}/${path}`))
+async function prettierFormat(lang: string, code: string): Promise<string> {
+  const parser = PRETTIER_PARSER[lang]
+  if (!parser) return code
+  const [core, ...plugins] = await Promise.all([
+    loadMod("standalone"),
+    ...PRETTIER_PLUGINS[lang].map(n => loadMod(`plugins/${n}`))
+  ])
+  return core.format(code, { ...PRETTIER_OPTS, parser, plugins: plugins.map(m => m.default ?? m) })
+}
+
 const DRAFT_KEY = (id: string) => `sandbox:draft:${id}`
 const draftStore = () => (typeof sessionStorage !== "undefined" ? sessionStorage : null)
 
@@ -432,7 +476,7 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
   // 編輯 → 400ms 後重建預覽 + 存草稿
   useEffect(() => {
     const timer = setTimeout(() => {
-      setLogs([])
+      setLogs(prev => prev.filter(l => l.source === "editor"))
       setSrcdoc(buildPreview(files, { entry }))
       persist(files)
     }, 400)
@@ -444,7 +488,10 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
     const onMsg = (e: MessageEvent) => {
       const d = e.data
       if (!d || !d.__sandbox) return
-      setLogs(prev => [...prev.slice(-299), { id: logSeq.current++, level: d.level, args: d.args }])
+      setLogs(prev => [
+        ...prev.slice(-299),
+        { id: logSeq.current++, level: d.level, args: d.args, source: "preview" }
+      ])
     }
     window.addEventListener("message", onMsg)
     return () => window.removeEventListener("message", onMsg)
@@ -454,13 +501,46 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
   }, [logs])
 
   // ⌘S / Ctrl+S：立即存草稿 + 重整預覽，並給看得見的回饋；別讓瀏覽器跳「另存網頁」
-  const saveNow = useCallback(() => {
+  const editorRef = useRef<any>(null)
+  const [formatting, setFormatting] = useState(false)
+  const formatNowRef = useRef<() => Promise<void>>(async () => {})
+  /** 用 Prettier 格式化目前的檔案；失敗（多半是語法錯）把訊息丟進 console 面板 */
+  // 不走 editor.action.formatDocument：Monaco 對同一語言有多個 formatter 時取最晚註冊的，
+  // 內建 css/html 模式在開檔時才載入、註冊得比我們晚，會搶走；而且那個 action 會吞掉錯誤。
+  const formatNow = useCallback(async () => {
+    const ed = editorRef.current
+    const model = ed?.getModel()
+    if (!ed || !model) return
+    const lang = model.getLanguageId()
+    if (!PRETTIER_PARSER[lang]) return
+    setFormatting(true)
+    try {
+      const before = model.getValue()
+      const after = await prettierFormat(lang, before)
+      if (after !== before) {
+        ed.executeEdits("prettier", [{ range: model.getFullModelRange(), text: after }])
+        ed.pushUndoStop()
+      }
+    } catch (e: any) {
+      setLogs(prev => [
+        ...prev.slice(-299),
+        { id: logSeq.current++, level: "error", args: [`Prettier: ${e?.message ?? e}`], source: "editor" }
+      ])
+    } finally {
+      setFormatting(false)
+    }
+  }, [])
+  formatNowRef.current = formatNow
+  const saveNow = useCallback(async () => {
+    await formatNow()
+    // 格式化的編輯走 onChange → setFiles，等一個 tick 讓 state 落地再存
+    await new Promise(r => setTimeout(r, 0))
     persist(filesRef.current)
     setSrcdoc(buildPreview(filesRef.current, { entry }))
     setPreviewKey(k => k + 1)
     setFlash(true)
     setTimeout(() => setFlash(false), 1400)
-  }, [persist, entry])
+  }, [persist, entry, formatNow])
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
@@ -531,6 +611,7 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
       ts.javascriptDefaults.setDiagnosticsOptions(diag)
       ts.typescriptDefaults.setEagerModelSync(true)
       ts.javascriptDefaults.setEagerModelSync(true)
+
       for (const [p, content] of Object.entries(files)) {
         const uri = monaco.Uri.parse(`file:///${id}/${p}`)
         const existing = monaco.editor.getModel(uri)
@@ -654,7 +735,7 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
     setEditing(null)
   }
   const refresh = () => {
-    setLogs([])
+    setLogs(prev => prev.filter(l => l.source === "editor"))
     setPreviewKey(k => k + 1)
   }
   const openExternal = () => {
@@ -822,6 +903,16 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
                 </span>
                 <button
                   type="button"
+                  onClick={formatNow}
+                  disabled={formatting || !PRETTIER_PARSER[languageOf(active)]}
+                  title={t.formatHint}
+                  className="rounded border border-zinc-300 px-2 py-0.5 font-medium text-zinc-600 hover:border-violet-400 hover:text-violet-600 disabled:opacity-40 dark:border-white/15 dark:text-zinc-300 dark:hover:border-violet-400 dark:hover:text-violet-300"
+                >
+                  {formatting ? t.formatting : t.format}{" "}
+                  <kbd className="ml-0.5 font-mono text-[10px] opacity-60">⇧⌥F</kbd>
+                </button>
+                <button
+                  type="button"
                   onClick={saveNow}
                   className="rounded border border-zinc-300 px-2 py-0.5 font-medium text-zinc-600 hover:border-violet-400 hover:text-violet-600 dark:border-white/15 dark:text-zinc-300 dark:hover:border-violet-400 dark:hover:text-violet-300"
                 >
@@ -835,6 +926,17 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
                   height="100%"
                   path={`file:///${id}/${active}`}
                   beforeMount={beforeMount}
+                  onMount={(ed, monaco) => {
+                    editorRef.current = ed
+                    ed.addAction({
+                      id: "prettier.format",
+                      label: "Format with Prettier",
+                      keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KeyF],
+                      contextMenuGroupId: "1_modification",
+                      contextMenuOrder: 1,
+                      run: () => formatNowRef.current()
+                    })
+                  }}
                   language={languageOf(active)}
                   value={files[active] ?? ""}
                   onChange={v => setFiles(f => ({ ...f, [active]: v ?? "" }))}
