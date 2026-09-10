@@ -1,0 +1,92 @@
+---
+/**
+ * 文章卡：縮圖 + tag chips + 標題 + 日期 + 摘要。
+ * 首頁精選與 /posts 列表共用同一個元件 —— 同一批內容不該有兩種長相。
+ */
+import { formatDate } from "@/i18n/utils"
+import { displayTags, tagStyle } from "@/lib/tags"
+import { thumbSvg } from "@/lib/thumb"
+import { slugOf, heroFor, getExcerpt } from "@/lib/post"
+
+export interface Props {
+  post: any
+  locale: "zh" | "en"
+  /** 由 assignKinds() 指派的圖案；省略則由 slug 決定 */
+  kind?: string
+  /** 大卡：縮圖更高、標題更大 */
+  size?: "md" | "lg"
+}
+
+const { post, locale, kind, size = "md" } = Astro.props
+const slug = slugOf(post)
+const tags = post.frontmatter.tags ?? []
+const chips = displayTags(tags)
+const excerpt = getExcerpt(post, size === "lg" ? 110 : 80)
+const hero = heroFor(slug)
+---
+
+<a
+  href={post.url}
+  class="group flex h-full flex-col rounded-2xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/[0.04] overflow-hidden transition-transform duration-300 hover:-translate-y-1"
+>
+  <div class:list={["w-full overflow-hidden", size === "lg" ? "aspect-[2/1]" : "aspect-[8/3]"]}>
+    {
+      hero ? (
+        <img src={hero} alt="" loading="lazy" class="h-full w-full object-cover" />
+      ) : (
+        <Fragment set:html={thumbSvg(slug, tags, kind)} />
+      )
+    }
+  </div>
+
+  <div class="flex flex-1 flex-col p-4">
+    {
+      chips.length > 0 && (
+        <div class="flex flex-wrap gap-1.5">
+          {chips.map(tag => (
+            <span class="chip" style={tagStyle(tag)}>
+              {tag}
+            </span>
+          ))}
+        </div>
+      )
+    }
+    <h3
+      class:list={[
+        "mt-2.5 font-semibold leading-snug text-zinc-800 dark:text-zinc-100 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-brand-gradient transition-colors",
+        size === "lg" && "text-lg"
+      ]}
+    >
+      {post.frontmatter.title}
+    </h3>
+    <div class="mt-1.5 text-xs text-zinc-400 dark:text-zinc-500">
+      {formatDate(new Date(post.frontmatter.createdAt), locale)}
+    </div>
+    {
+      excerpt && (
+        <p class="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">
+          {excerpt}
+        </p>
+      )
+    }
+  </div>
+</a>
+
+<style>
+  /* chip 是 10px 粗體小字，對比度要求比內文更高，兩個主題各用一組算好的文字色 */
+  .chip {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--tag-ink);
+    border: 1px solid color-mix(in srgb, var(--tag-color) 45%, transparent);
+    background: color-mix(in srgb, var(--tag-color) 12%, transparent);
+    border-radius: 9999px;
+    padding: 1px 7px;
+    line-height: 1.5;
+  }
+  :global(.dark) .chip {
+    color: var(--tag-ink-dark);
+  }
+</style>

@@ -3,24 +3,18 @@ import BaseHead from "@/components/BaseHead.astro"
 import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
 import Body from "@/components/Body.astro"
-import BentoCard from "@/components/BentoCard.astro"
-import PlaygroundBento from "@/components/PlaygroundBento.astro"
+import HomeContent from "@/components/HomeContent.astro"
 import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
-import { formatDate } from "@/i18n/utils"
-import { getTranslations } from "@/i18n/translations"
-import { colorForTags } from "@/lib/tags"
 
 const locale = "en"
-const t = getTranslations(locale)
 
-const posts = (await Astro.glob('../posts/*.md'))
+const posts = (await Astro.glob("../posts/*.md"))
   .filter((p: any) => p.frontmatter.public)
   .sort(
-    (a: any, b: any) => new Date(b.frontmatter.createdAt).valueOf() - new Date(a.frontmatter.createdAt).valueOf()
+    (a: any, b: any) =>
+      new Date(b.frontmatter.createdAt).valueOf() -
+      new Date(a.frontmatter.createdAt).valueOf()
   )
-
-const heroPosts = posts.slice(0, 3)
-const latestPosts = posts.slice(3, 9)
 ---
 
 <!doctype html>
@@ -30,85 +24,7 @@ const latestPosts = posts.slice(3, 9)
   </head>
   <Body>
     <Header />
-    <main class="pt-[88px] pb-8">
-      <div class="mx-auto max-w-5xl px-4">
-        <!-- Hero Bento -->
-        <section class="grid gap-4 md:grid-cols-3">
-          <BentoCard class="md:col-span-2 p-8 md:p-10">
-            <h1 class="font-serif text-4xl md:text-5xl font-bold text-zinc-900 dark:text-zinc-50">
-              {t.home.heroTitle}
-            </h1>
-            <p class="mt-4 text-zinc-500 dark:text-zinc-400 leading-relaxed">
-              {t.home.intro}
-            </p>
-          </BentoCard>
-
-          <PlaygroundBento locale={locale} />
-
-          {
-            heroPosts.map((post: any) => (
-              <BentoCard href={post.url} class="p-6">
-                <div class="flex items-center gap-2 text-xs font-bold tracking-wider uppercase">
-                  <span
-                    class="inline-block w-2.5 h-2.5 rounded-full"
-                    style={`background:${colorForTags(post.frontmatter.tags)}`}
-                  />
-                  <span style={`color:${colorForTags(post.frontmatter.tags)}`}>
-                    {(post.frontmatter.tags ?? [])[0] ?? 'NOTE'}
-                  </span>
-                  <span class="text-zinc-400 dark:text-zinc-500 font-normal normal-case">
-                    {formatDate(new Date(post.frontmatter.createdAt), locale)}
-                  </span>
-                </div>
-                <h3 class="mt-3 font-semibold leading-snug text-zinc-800 dark:text-zinc-100">
-                  {post.frontmatter.title}
-                </h3>
-              </BentoCard>
-            ))
-          }
-        </section>
-
-        <!-- Latest Posts -->
-        <section class="mt-14">
-          <h2 class="font-serif text-2xl font-bold mb-6 text-zinc-900 dark:text-zinc-50">
-            {t.home.latestPosts}
-          </h2>
-          <ul class="divide-y divide-zinc-200 dark:divide-white/5">
-            {
-              latestPosts.map((post: any) => (
-                <li>
-                  <a
-                    href={post.url}
-                    class="group flex items-baseline justify-between gap-4 py-4"
-                  >
-                    <span class="flex items-baseline gap-3 min-w-0">
-                      <span
-                        class="inline-block w-2 h-2 rounded-full flex-shrink-0 translate-y-[-1px]"
-                        style={`background:${colorForTags(post.frontmatter.tags)}`}
-                      />
-                      <span class="truncate text-zinc-700 dark:text-zinc-200 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-brand-gradient transition-colors">
-                        {post.frontmatter.title}
-                      </span>
-                    </span>
-                    <span class="flex-shrink-0 text-sm text-zinc-400 dark:text-zinc-500">
-                      {formatDate(new Date(post.frontmatter.createdAt), locale)}
-                    </span>
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-          <div class="mt-6">
-            <a
-              href="/en/posts"
-              class="text-sm font-semibold text-violet-600 dark:text-violet-300 hover:underline underline-offset-4"
-            >
-              {t.home.viewAll} →
-            </a>
-          </div>
-        </section>
-      </div>
-    </main>
+    <HomeContent posts={posts} locale={locale} />
     <Footer />
   </Body>
 </html>

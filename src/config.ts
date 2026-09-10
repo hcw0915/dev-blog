@@ -56,3 +56,17 @@ export const TAG_WEIGHT_DEFAULT = 40
 
 /** 泛用標籤：51/53 篇都掛著 blog，沒有辨識力，不進配色也不進 chips */
 export const NOISE_TAGS = new Set(["blog"])
+
+/**
+ * 首頁「精選」要放哪幾篇。刻意與時間無關 —— 先前首頁把最新 3 篇做成卡片、
+ * 第 4 篇之後做成列表並標上「最新文章」，等於標題在說謊。
+ *
+ * 也可以在 Inkdrop 筆記的 frontmatter 寫 `featured: true`（會被 live-export
+ * 保留），不用開 repo；這份清單是 repo 端的備援與預設。
+ */
+export const FEATURED_SLUGS: string[] = [
+  // 第一個是釘選位，永遠排在最前；其餘依發佈日期新到舊排序。
+  "knowledge-keyword-rag", // AI：系統設計 + 團隊落地，主導者視角
+  "tailwind-embedded-ui-css", // 真實約束下的方案取捨，含被否決的解法與理由
+  "chapter-5", // 工具評比矩陣 + CI 整合，不只是教學
+]

@@ -39,9 +39,19 @@ const href = locale === "en" ? "/en/playground/vanilla" : "/playground/vanilla"
       <span class="h-2 w-2 rounded-full bg-emerald-400/70"></span>
     </div>
     <pre
-      class="px-2.5 py-2 text-[10px] leading-[1.7] font-mono text-zinc-500 dark:text-zinc-400 overflow-hidden"><span class="text-violet-500 dark:text-violet-300">const</span> mesh = <span class="text-violet-500 dark:text-violet-300">new</span> Mesh(geo, mat)
-mesh.rotation.y += <span class="text-cyan-600 dark:text-cyan-300">0.01</span>
-renderer.render(scene, cam)</pre>
+      class="px-2.5 py-2 text-[10px] leading-[1.75] font-mono text-zinc-500 dark:text-zinc-400 overflow-hidden"><span class="text-violet-500 dark:text-violet-300">const</span> geo = <span class="text-violet-500 dark:text-violet-300">new</span> THREE.TorusGeometry(<span class="text-cyan-600 dark:text-cyan-300">1</span>, <span class="text-cyan-600 dark:text-cyan-300">0.4</span>)
+<span class="text-violet-500 dark:text-violet-300">const</span> mat = <span class="text-violet-500 dark:text-violet-300">new</span> THREE.ShaderMaterial({'{'}
+  uniforms: {'{'} uTime: {'{'} value: <span class="text-cyan-600 dark:text-cyan-300">0</span> {'}'} {'}'},
+  vertexShader, fragmentShader
+{'}'})
+scene.add(<span class="text-violet-500 dark:text-violet-300">new</span> THREE.Mesh(geo, mat))
+
+<span class="text-zinc-400 dark:text-zinc-600">// 每一幀推進 uniform</span>
+<span class="text-violet-500 dark:text-violet-300">function</span> <span class="text-cyan-600 dark:text-cyan-300">tick</span>(t) {'{'}
+  mat.uniforms.uTime.value = t * <span class="text-cyan-600 dark:text-cyan-300">0.001</span>
+  renderer.render(scene, camera)
+  requestAnimationFrame(tick)
+{'}'}</pre>
   </div>
 
   <div

@@ -117,6 +117,11 @@ export const translations = {
     home: {
       heroTitle: '前端工程筆記',
       intro: 'Antonio H. · 前端工程師。記錄 React、TypeScript、Three.js / Shader，與團隊導入 AI 開發工作流的實戰心得。',
+      featured: '精選',
+      moreLabel: '更多文章',
+      topicsLabel: '主題',
+      statPosts: '篇文章',
+      statTopics: '個主題',
       playgroundLabel: 'PLAYGROUND',
       playgroundCta: '互動程式實驗場',
       latestPosts: '最新文章',
@@ -273,6 +278,11 @@ export const translations = {
     home: {
       heroTitle: 'Frontend Engineering Notes',
       intro: 'Antonio H. · Frontend engineer. Notes on React, TypeScript, Three.js / shaders, and bringing AI workflows to a frontend team.',
+      featured: 'Featured',
+      moreLabel: 'More posts',
+      topicsLabel: 'Topics',
+      statPosts: 'posts',
+      statTopics: 'topics',
       playgroundLabel: 'PLAYGROUND',
       playgroundCta: 'Interactive code playground',
       latestPosts: 'Latest posts',
