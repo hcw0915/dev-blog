@@ -3,7 +3,7 @@ import satori from 'satori'
 import { Resvg } from '@resvg/resvg-js'
 import fs from 'node:fs'
 import path from 'node:path'
-import { COLOR_MAP } from '@/config'
+import { paletteForTags } from '@/lib/tags'
 
 const fontPath = path.resolve('.fonts/NotoSansCJKtc-Bold.otf')
 
@@ -38,9 +38,9 @@ export const GET: APIRoute = async ({ props }) => {
     tags: string[]
     date: Date
   }
-  // 與 src/lib/tags.ts 的 colorForTags 同邏輯，但 fallback 用品牌青色而非文字灰：
-  // OG 圖的 accent 方塊需要可見的顏色
-  const accent = COLOR_MAP[(tags[0] ?? '').toLowerCase()] ?? '#22d3ee'
+  // 主題色統一由 lib/tags 的權重表決定；OG 圖只把 fallback 換成品牌青色，
+  // 因為 accent 方塊需要一個看得見的顏色
+  const accent = paletteForTags(tags)[0]?.base ?? '#22d3ee'
   const dateText = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`
 
   const svg = await satori(

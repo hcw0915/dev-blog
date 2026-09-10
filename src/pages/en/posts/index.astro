@@ -2,96 +2,24 @@
 import BaseHead from "@/components/BaseHead.astro"
 import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
-import { SITE_TITLE, SITE_DESCRIPTION, COLOR_MAP } from "@/config"
 import Body from "@/components/Body.astro"
 import Content from "@/components/Content.astro"
-import { getLocaleFromPath, formatDate } from "@/i18n/utils"
-import { getTranslations } from "@/i18n/translations"
-import fs from "node:fs"
-import path from "node:path"
+import PostGrid from "@/components/PostGrid.astro"
+import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
 
-const locale = getLocaleFromPath(Astro.url.pathname)
-const t = getTranslations(locale)
+const locale = "en"
 
-// 建置時掃描 public/hero/ 內現有的封面圖，避免逐篇做 fs 檢查
-const heroDir = path.resolve("public/hero")
-const heroSet = new Set(
-  fs.existsSync(heroDir)
-    ? fs.readdirSync(heroDir).map(f => f.replace(/\.(png|jpg|jpeg|webp)$/i, ""))
-    : []
-)
-const getSlug = (filePath: string) =>
-  filePath.split("/").pop()!.replace(/\.md$/, "")
-
-const posts = (await Astro.glob('../../posts/*.md'))
+const posts = (await Astro.glob("../../posts/*.md"))
   .filter((p: any) => p.frontmatter.public)
   .sort(
     (a: any, b: any) =>
       new Date(b.frontmatter.createdAt).valueOf() -
       new Date(a.frontmatter.createdAt).valueOf()
   )
-
-// 摘要：優先 frontmatter.description，否則取內文第一段（接受引言段，跳過標題/圖/程式碼/表格）
-const getExcerpt = (post: any): string => {
-  if (post.frontmatter.description) return post.frontmatter.description
-  const raw: string = post.rawContent()
-
-  const isSkippable = (s: string) =>
-    !s ||
-    s.startsWith('#') ||
-    s.startsWith('![') ||
-    s.startsWith('```') ||
-    s.startsWith('|') ||
-    s.startsWith('---') ||
-    s.startsWith('- ') ||
-    s.startsWith('* ') ||
-    s.startsWith('http')
-
-  const clean = (s: string) =>
-    s
-      .replace(/^>\s?/gm, '')
-      .replace(/[#*`_\[\]]/g, '')
-      .replace(/\(http[^)]*\)/g, '')
-      .replace(/\s+/g, ' ')
-      .trim()
-
-  const para = raw
-    .split(/\n{2,}/)
-    .map(s => s.trim())
-    .filter(s => !isSkippable(s))
-    .map(clean)
-    .find(s => s.length >= 10 && !s.startsWith('- ') && !s.startsWith('* ') && !s.startsWith('http'))
-
-  if (!para) return ''
-  return para.length > 80 ? para.slice(0, 80) + '…' : para
-}
-
-// 年份分隔：標記每年的第一篇
-let lastYear = 0
-const rows = posts.map((post: any) => {
-  const year = new Date(post.frontmatter.createdAt).getFullYear()
-  const isNewYear = year !== lastYear
-  lastYear = year
-  return { post, year: isNewYear ? year : null }
-})
-
-const tags = posts.map((p: any) => p.frontmatter.tags).flat()
-const uniqueTags = ['All', ...new Set(tags)]
-
-const getGradientStyle = (tagArray: string[]) => {
-  const colors = (tagArray ?? [])
-    .map(tag => COLOR_MAP[tag.toLowerCase()])
-    .sort()
-    .filter(Boolean)
-  if (colors.length === 0) {
-    return { background: `linear-gradient(135deg, #3f3f46, #18181b)` }
-  }
-  return { background: `linear-gradient(135deg, ${colors.join(', ')})` }
-}
 ---
 
 <!doctype html>
-<html lang={locale === 'zh' ? 'zh-TW' : 'en'}>
+<html lang="en">
   <head>
     <BaseHead title={`Posts - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
   </head>
@@ -100,167 +28,9 @@ const getGradientStyle = (tagArray: string[]) => {
     <Header />
     <main class="pt-[72px]">
       <Content>
-        {/* 搜尋 + 標籤篩選 */}
-        <section class="mb-8 space-y-4">
-          <input
-            id="blogSearch"
-            type="search"
-            placeholder={t.blog.searchPlaceholder}
-            aria-label={t.blog.searchPlaceholder}
-            class="w-full sm:max-w-sm rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/[0.04] px-4 py-2 text-sm outline-none focus:border-violet-400/60 placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
-          />
-          <div
-            class="flex flex-wrap gap-2"
-            id="tags"
-            data-tags={uniqueTags.join(',')}
-          >
-            {
-              uniqueTags.map(tag => (
-                <button
-                  data-type={tag}
-                  id="blogFilter"
-                  class="text-sm border border-zinc-300 dark:border-white/15 text-zinc-600 dark:text-zinc-400 rounded-full px-3 py-0.5 transition-colors"
-                >
-                  {tag === 'All' ? t.blog.all : tag}
-                </button>
-              ))
-            }
-          </div>
-        </section>
-
-        {/* 文章列表 */}
-        <section>
-          <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {
-              rows.map(({ post, year }: any) => {
-                const tagClasses = post.frontmatter.tags?.join(' ') || ''
-                const slug = getSlug(post.file)
-                const hasHero = heroSet.has(slug)
-                return (
-                  <>
-                    {year && (
-                      <li class="col-span-full flex items-center gap-3 mt-4 first:mt-0" data-year-divider={year}>
-                        <span class="font-serif text-xl font-bold text-zinc-400 dark:text-zinc-600">
-                          {year}
-                        </span>
-                        <span class="h-px flex-1 bg-zinc-200 dark:bg-white/5" />
-                      </li>
-                    )}
-                    <li class={tagClasses} data-post-title={post.frontmatter.title} data-year={new Date(post.frontmatter.createdAt).getFullYear()} data-post-tags={(post.frontmatter.tags ?? []).join('|')}>
-                      <a href={post.url} class="group block rounded-2xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/[0.04] overflow-hidden transition-transform duration-300 hover:-translate-y-1">
-                        <div
-                          class="relative w-full h-[150px] overflow-hidden"
-                          style={getGradientStyle(post.frontmatter.tags || [])}
-                        >
-                          {hasHero && (
-                            <img
-                              src={`/hero/${slug}.png`}
-                              alt=""
-                              loading="lazy"
-                              class="absolute inset-0 w-full h-full object-cover"
-                            />
-                          )}
-                          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                          <h2
-                            class="absolute inset-x-0 bottom-0 p-3 text-white font-bold leading-snug"
-                            style="text-shadow:0 1px 3px rgba(0,0,0,0.5);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden"
-                          >
-                            {post.frontmatter.title}
-                          </h2>
-                        </div>
-                        <div class="p-3">
-                          <div class="text-xs text-zinc-400 dark:text-zinc-500">
-                            {formatDate(new Date(post.frontmatter.createdAt), locale)}
-                          </div>
-                          {getExcerpt(post) && (
-                            <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">
-                              {getExcerpt(post)}
-                            </p>
-                          )}
-                        </div>
-                      </a>
-                    </li>
-                  </>
-                )
-              })
-            }
-          </ul>
-        </section>
+        <PostGrid posts={posts} locale={locale} />
       </Content>
     </main>
     <Footer />
-
-    <style is:global>
-      .hidden-by-filter {
-        display: none !important;
-      }
-    </style>
-
-    <script is:inline>
-      function applyVisibility() {
-        const tagEl = document.getElementById('tags')
-        const search = document.getElementById('blogSearch')
-        if (!tagEl) return
-        const activeTag = tagEl.dataset.activeTag || 'All'
-        const q = (search && search.value ? search.value : '').trim().toLowerCase()
-
-        // 卡片可見性 = 同時滿足「標籤」與「搜尋」兩個條件
-        document.querySelectorAll('li[data-post-title]').forEach(li => {
-          const tags = (li.getAttribute('data-post-tags') || '').split('|')
-          const matchTag = activeTag === 'All' || tags.includes(activeTag)
-          const title = (li.getAttribute('data-post-title') || '').toLowerCase()
-          const matchSearch = q === '' || title.includes(q)
-          li.classList.toggle('hidden-by-filter', !(matchTag && matchSearch))
-        })
-
-        // 年份分隔線：該年沒有任何可見卡片就一併隱藏
-        document.querySelectorAll('li[data-year-divider]').forEach(divider => {
-          const year = divider.getAttribute('data-year-divider')
-          const visible = document.querySelector(
-            `li[data-post-title][data-year="${year}"]:not(.hidden-by-filter)`
-          )
-          divider.classList.toggle('hidden-by-filter', !visible)
-        })
-      }
-
-      function initBlogFilter() {
-        const buttons = document.querySelectorAll('#blogFilter')
-        const tagEl = document.getElementById('tags')
-        if (!buttons.length || !tagEl) return
-
-        buttons.forEach(btn => {
-          btn.addEventListener('click', () => {
-            const selectedTag = btn.getAttribute('data-type')
-            tagEl.dataset.activeTag = selectedTag
-
-            if (selectedTag === 'All') {
-              history.pushState({ tag: selectedTag }, '', window.location.pathname)
-            } else {
-              history.pushState({ tag: selectedTag }, '', `?c=${selectedTag.toLowerCase()}`)
-            }
-
-            buttons.forEach(e => {
-              const active = e.getAttribute('data-type') === selectedTag
-              e.style.background = active ? '#7c3aed' : 'transparent'
-              e.style.color = active ? '#ffffff' : ''
-              e.style.borderColor = active ? '#7c3aed' : ''
-            })
-
-            applyVisibility()
-          })
-        })
-      }
-
-      function initBlogSearch() {
-        const search = document.getElementById('blogSearch')
-        if (!search) return
-        search.addEventListener('input', applyVisibility)
-      }
-
-      document.addEventListener('astro:page-load', () => {
-        initBlogFilter()
-        initBlogSearch()
-      })
-    </script>
   </Body>
 </html>

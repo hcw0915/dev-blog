@@ -125,7 +125,10 @@ export const translations = {
     // Blog list page
     blog: {
       all: '全部',
-      searchPlaceholder: '搜尋文章標題…'
+      searchPlaceholder: '搜尋文章標題…',
+      filterHint: '可複選，符合任一標籤即顯示',
+      clearFilter: '清除篩選',
+      empty: '沒有符合的文章'
     },
     // QR modal
     qr: {
@@ -278,7 +281,10 @@ export const translations = {
     // Blog list page
     blog: {
       all: 'All',
-      searchPlaceholder: 'Search posts…'
+      searchPlaceholder: 'Search posts…',
+      filterHint: 'Multi-select — matches any selected tag',
+      clearFilter: 'Clear filters',
+      empty: 'No matching posts'
     },
     // QR modal
     qr: {

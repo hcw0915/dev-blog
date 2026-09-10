@@ -9,6 +9,9 @@ cd "$(dirname "$0")/.." || exit 1
 
 NODE_BIN="${NODE_BIN:-/opt/homebrew/bin/node}"
 
+# inkdrop 會動到的東西，就這些
+POST_PATHS=('src/pages/posts/*.md' 'public/posts')
+
 "$NODE_BIN" --experimental-vm-modules tools/import.mjs &
 IMPORT_PID=$!
 trap 'kill $IMPORT_PID 2>/dev/null' EXIT
@@ -19,9 +22,22 @@ while sleep 120; do
   # 只會 commit、永遠拉不到新笔记的殭屍迴圈
   kill -0 "$IMPORT_PID" 2>/dev/null || exit 1
 
-  git add -A src/pages/posts public/posts
-  git diff --cached --quiet && continue
+  # 只圈 inkdrop 產出的檔案。兩個地方都必須帶 pathspec：
+  #   1. src/pages/posts/ 底下除了 .md 還有手寫的 index.astro，整個目錄 add 會把
+  #      正在改的頁面推上線。
+  #   2. `git commit` 不帶 pathspec 會提交「整個索引」，任何人 git add 過的東西
+  #      都會被掃進一筆 "post: sync from inkdrop" 裡送上 main。
+  git add -A -- "${POST_PATHS[@]}"
 
-  git commit -q -m "post: sync from inkdrop ($(date '+%Y-%m-%d %H:%M'))"
+  # 用「實際變動的檔名」提交，而不是 pathspec：pathspec 只要有一個對不上
+  # 已追蹤檔案，git commit 會整個報錯，daemon 就卡在無限重試。
+  CHANGED=()
+  while IFS= read -r f; do
+    [ -n "$f" ] && CHANGED+=("$f")
+  done < <(git diff --cached --name-only -- "${POST_PATHS[@]}")
+  [ ${#CHANGED[@]} -eq 0 ] && continue
+
+  git commit -q -m "post: sync from inkdrop ($(date '+%Y-%m-%d %H:%M'))" \
+    -- "${CHANGED[@]}"
   git push -q origin main || echo "[watch-publish] push failed $(date)" >&2
 done

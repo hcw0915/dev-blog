@@ -1,0 +1,357 @@
+---
+/**
+ * 文章列表（縮圖 + tag chips + 搜尋 + 可複選標籤篩選）。
+ * zh 與 en 兩個 /posts 頁面共用這一份 —— 先前兩邊是逐字複製的檔案，
+ * 只差 Astro.glob 的相對路徑，任何改動都得記得改兩處。
+ */
+import { formatDate } from "@/i18n/utils"
+import { getTranslations } from "@/i18n/translations"
+import { displayTags, tagStyle, paletteForTags } from "@/lib/tags"
+import { assignKinds, thumbSvg } from "@/lib/thumb"
+import fs from "node:fs"
+import path from "node:path"
+
+export interface Props {
+  posts: any[]
+  locale: "zh" | "en"
+}
+
+const { posts, locale } = Astro.props
+const t = getTranslations(locale)
+
+const slugOf = (post: any): string =>
+  post.frontmatter.slug ?? post.file.split("/").pop()!.replace(/\.md$/, "")
+
+// 建置時掃一次 public/hero/：真實封面圖優先於生成圖，避免逐篇做 fs 檢查
+const heroDir = path.resolve("public/hero")
+const heroMap = new Map<string, string>(
+  fs.existsSync(heroDir)
+    ? fs
+        .readdirSync(heroDir)
+        .filter(f => /\.(png|jpe?g|webp)$/i.test(f))
+        .map(f => [f.replace(/\.(png|jpe?g|webp)$/i, ""), f])
+    : []
+)
+
+/**
+ * 摘要：優先 frontmatter.description，否則取內文第一段。
+ * 關鍵是「先整段移除 fenced code block，再切段落」—— 直接對原文
+ * split(/\n{2,}/) 的話，程式碼區塊內部只要有空行，後半段就會被當成
+ * 普通段落，摘要於是變成一行沒有意義的程式碼。
+ */
+const stripCode = (raw: string): string => {
+  let s = raw.replace(/^[ \t]*(`{3,}|~{3,})[\s\S]*?^[ \t]*\1[ \t]*$/gm, "")
+  // 未閉合的 fence：從那裡截斷，後面整段都是程式碼
+  const stray = s.search(/^[ \t]*(`{3,}|~{3,})/m)
+  if (stray >= 0) s = s.slice(0, stray)
+  return s.replace(/<!--[\s\S]*?-->/g, "")
+}
+
+/** 先剝掉引言標記，可跳過與否要看引言「裡面」是什麼 */
+const unquote = (s: string) =>
+  s
+    .replace(/^\s*>\s?/gm, "")
+    .replace(/\s+$/gm, "")
+    .trim()
+
+const isSkippable = (s: string) =>
+  !s ||
+  s.startsWith("#") ||
+  s.startsWith("![") ||
+  s.startsWith("|") ||
+  s.startsWith("<") ||
+  /^[-*_]{3,}\s*$/.test(s) || // 分隔線
+  /^[-*+]\s/.test(s) || // 無序清單
+  /^\d+\.\s/.test(s) || // 有序清單
+  /^https?:\/\//.test(s) ||
+  /^\[[^\]]*\]\(/.test(s) // 整段只是一個連結
+
+const clean = (s: string) =>
+  s
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/<[^>]+>/g, "")
+    .replace(/[#*`_~]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+
+const getExcerpt = (post: any): string => {
+  if (post.frontmatter.description) return post.frontmatter.description
+  const para = stripCode(post.rawContent())
+    .split(/\n{2,}/)
+    .map(unquote)
+    .filter((s: string) => !isSkippable(s))
+    .map(clean)
+    // 太短的多半是「(有 Accumulative)」這種殘句，寧可不顯示也不要爛摘要
+    .find((s: string) => s.length >= 20)
+  if (!para) return ""
+  return para.length > 80 ? para.slice(0, 80) + "…" : para
+}
+
+// 同主題的文章輪流取圖案，系列內才不會撞
+const kinds = assignKinds(
+  posts.map(p => ({ slug: slugOf(p), tags: p.frontmatter.tags ?? [] }))
+)
+
+// 年份分隔：標記每年的第一篇
+let lastYear = 0
+const rows = posts.map((post: any) => {
+  const year = new Date(post.frontmatter.createdAt).getFullYear()
+  const isNewYear = year !== lastYear
+  lastYear = year
+  return { post, year: isNewYear ? year : null }
+})
+
+// 篩選列只列出實際會顯示的 tag（noise tag 已被 displayTags 濾掉）
+const filterTags = [
+  ...new Set(posts.flatMap((p: any) => displayTags(p.frontmatter.tags ?? [])))
+].sort(
+  (a, b) =>
+    (paletteForTags([b])[0] ? 1 : 0) - (paletteForTags([a])[0] ? 1 : 0) ||
+    a.localeCompare(b)
+)
+---
+
+<section class="mb-8 space-y-4">
+  <input
+    id="blogSearch"
+    type="search"
+    placeholder={t.blog.searchPlaceholder}
+    aria-label={t.blog.searchPlaceholder}
+    class="w-full sm:max-w-sm rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/[0.04] px-4 py-2 text-sm outline-none focus:border-violet-400/60 placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
+  />
+
+  <div>
+    <div
+      class="flex flex-wrap gap-2"
+      id="tags"
+      role="group"
+      aria-label={t.blog.filterHint}
+    >
+      <button
+        type="button"
+        data-filter-all
+        aria-pressed="true"
+        class="tag-btn text-sm border border-zinc-300 dark:border-white/15 text-zinc-600 dark:text-zinc-400 rounded-full px-3 py-0.5 transition-colors"
+      >
+        {t.blog.all}
+      </button>
+      {
+        filterTags.map(tag => (
+          <button
+            type="button"
+            data-filter-tag={tag}
+            aria-pressed="false"
+            style={tagStyle(tag)}
+            class="tag-btn text-sm border border-zinc-300 dark:border-white/15 text-zinc-600 dark:text-zinc-400 rounded-full px-3 py-0.5 transition-colors"
+          >
+            {tag}
+          </button>
+        ))
+      }
+    </div>
+    <p
+      id="filterHint"
+      class="mt-2 text-xs text-zinc-400 dark:text-zinc-600"
+      hidden
+    >
+      {t.blog.filterHint}
+    </p>
+  </div>
+</section>
+
+<section>
+  <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    {
+      rows.map(({ post, year }: any) => {
+        const slug = slugOf(post)
+        const tags = post.frontmatter.tags ?? []
+        const chips = displayTags(tags)
+        const excerpt = getExcerpt(post)
+        return (
+          <>
+            {year && (
+              <li
+                class="col-span-full flex items-center gap-3 mt-4 first:mt-0"
+                data-year-divider={year}
+              >
+                <span class="font-serif text-xl font-bold text-zinc-400 dark:text-zinc-600">
+                  {year}
+                </span>
+                <span class="h-px flex-1 bg-zinc-200 dark:bg-white/5" />
+              </li>
+            )}
+            <li
+              data-post-title={post.frontmatter.title}
+              data-year={new Date(post.frontmatter.createdAt).getFullYear()}
+              data-post-tags={chips.join("|")}
+            >
+              <a
+                href={post.url}
+                class="group flex h-full flex-col rounded-2xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/[0.04] overflow-hidden transition-transform duration-300 hover:-translate-y-1"
+              >
+                <div class="aspect-[8/3] w-full overflow-hidden">
+                  {heroMap.has(slug) ? (
+                    <img
+                      src={`/hero/${heroMap.get(slug)}`}
+                      alt=""
+                      loading="lazy"
+                      class="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <Fragment set:html={thumbSvg(slug, tags, kinds[slug])} />
+                  )}
+                </div>
+                <div class="flex flex-1 flex-col p-4">
+                  {chips.length > 0 && (
+                    <div class="flex flex-wrap gap-1.5">
+                      {chips.map(tag => (
+                        <span class="chip" style={tagStyle(tag)}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <h2 class="mt-2.5 font-semibold leading-snug text-zinc-800 dark:text-zinc-100 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-brand-gradient transition-colors">
+                    {post.frontmatter.title}
+                  </h2>
+                  <div class="mt-1.5 text-xs text-zinc-400 dark:text-zinc-500">
+                    {formatDate(new Date(post.frontmatter.createdAt), locale)}
+                  </div>
+                  {excerpt && (
+                    <p class="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">
+                      {excerpt}
+                    </p>
+                  )}
+                </div>
+              </a>
+            </li>
+          </>
+        )
+      })
+    }
+  </ul>
+  <p
+    id="blogEmpty"
+    class="py-16 text-center text-sm text-zinc-400 dark:text-zinc-600"
+    hidden
+  >
+    {t.blog.empty}
+  </p>
+</section>
+
+<style>
+  /* chip 是 10px 粗體小字，對比度要求比內文更高，所以兩個主題各用一組算好的文字色 */
+  .chip {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--tag-ink);
+    border: 1px solid color-mix(in srgb, var(--tag-color) 45%, transparent);
+    background: color-mix(in srgb, var(--tag-color) 12%, transparent);
+    border-radius: 9999px;
+    padding: 1px 7px;
+    line-height: 1.5;
+  }
+  :global(.dark) .chip {
+    color: var(--tag-ink-dark);
+  }
+  /* 選取狀態用 aria-pressed 驅動，不靠 JS 塞 inline style。
+     --tag-fg 由對比度算出來，所以 Javascript 的黃底會自動配黑字。 */
+  .tag-btn[aria-pressed="true"] {
+    color: var(--tag-fg, #fff);
+    background: var(--tag-color, #7c3aed);
+    border-color: var(--tag-color, #7c3aed);
+  }
+</style>
+
+<script is:inline>
+  ;(() => {
+    const KEY = 'c'
+
+    function readTagsFromUrl() {
+      const raw = new URLSearchParams(location.search).get(KEY)
+      return new Set(
+        (raw || '')
+          .split(',')
+          .map(s => s.trim().toLowerCase())
+          .filter(Boolean)
+      )
+    }
+
+    function writeTagsToUrl(active) {
+      const url = new URL(location.href)
+      if (active.size) url.searchParams.set(KEY, [...active].join(','))
+      else url.searchParams.delete(KEY)
+      history.replaceState({ tags: [...active] }, '', url)
+    }
+
+    function apply(active) {
+      const search = document.getElementById('blogSearch')
+      const q = (search && search.value ? search.value : '').trim().toLowerCase()
+
+      // 複選為聯集：符合任一選取標籤即顯示
+      let visible = 0
+      document.querySelectorAll('li[data-post-title]').forEach(li => {
+        const tags = (li.getAttribute('data-post-tags') || '')
+          .split('|')
+          .filter(Boolean)
+          .map(s => s.toLowerCase())
+        const matchTag = active.size === 0 || tags.some(t => active.has(t))
+        const title = (li.getAttribute('data-post-title') || '').toLowerCase()
+        const matchSearch = q === '' || title.includes(q)
+        const show = matchTag && matchSearch
+        li.hidden = !show
+        if (show) visible++
+      })
+
+      // 年份分隔線：該年沒有任何可見卡片就一併隱藏
+      document.querySelectorAll('li[data-year-divider]').forEach(divider => {
+        const year = divider.getAttribute('data-year-divider')
+        divider.hidden = !document.querySelector(
+          `li[data-post-title][data-year="${year}"]:not([hidden])`
+        )
+      })
+
+      const empty = document.getElementById('blogEmpty')
+      if (empty) empty.hidden = visible !== 0
+
+      const hint = document.getElementById('filterHint')
+      if (hint) hint.hidden = active.size === 0
+
+      document.querySelectorAll('[data-filter-tag]').forEach(btn => {
+        const tag = (btn.getAttribute('data-filter-tag') || '').toLowerCase()
+        btn.setAttribute('aria-pressed', active.has(tag) ? 'true' : 'false')
+      })
+      const all = document.querySelector('[data-filter-all]')
+      if (all) all.setAttribute('aria-pressed', active.size ? 'false' : 'true')
+    }
+
+    function init() {
+      const bar = document.getElementById('tags')
+      if (!bar) return
+      const active = readTagsFromUrl()
+
+      bar.addEventListener('click', e => {
+        const btn = e.target.closest('button')
+        if (!btn || !bar.contains(btn)) return
+        if (btn.hasAttribute('data-filter-all')) active.clear()
+        else {
+          const tag = (btn.getAttribute('data-filter-tag') || '').toLowerCase()
+          if (!tag) return
+          active.has(tag) ? active.delete(tag) : active.add(tag)
+        }
+        writeTagsToUrl(active)
+        apply(active)
+      })
+
+      const search = document.getElementById('blogSearch')
+      if (search) search.addEventListener('input', () => apply(active))
+
+      apply(active)
+    }
+
+    document.addEventListener('astro:page-load', init)
+  })()
+</script>
