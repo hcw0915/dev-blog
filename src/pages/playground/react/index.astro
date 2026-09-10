@@ -2,30 +2,22 @@
 import BaseHead from "@/components/BaseHead.astro"
 import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
-import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
 import Body from "@/components/Body.astro"
-import { getLocaleFromPath } from "@/i18n/utils"
-import { defaultLocale, getTranslations } from "@/i18n/translations"
-import type { Locale } from "@/i18n/translations"
-import ReactCodePlayground from "@/components/ReactCodePlayground"
+import PlaygroundList from "@/components/PlaygroundList.astro"
+import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
 
-const currentPath = Astro.url.pathname
-const locale = getLocaleFromPath(currentPath)
-const t = getTranslations(locale)
+const locale = "zh"
+const template = "react"
 ---
 
 <!doctype html>
-<html lang={locale === 'zh' ? 'zh-TW' : 'en'}>
+<html lang="zh-TW">
   <head>
-    <BaseHead title={`React ${t.playground.title} - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+    <BaseHead title={`Playground · react - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
   </head>
   <Body>
-    <Header title={SITE_TITLE} />
-    <main class="pt-[72px] min-h-screen">
-      <div class="w-full" style="height: calc(100vh - 72px); min-height: 600px;">
-        <ReactCodePlayground client:only="react" locale={locale} />
-      </div>
-    </main>
+    <Header />
+    <PlaygroundList template={template} locale={locale} />
     <Footer />
   </Body>
 </html>

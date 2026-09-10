@@ -1,38 +1,37 @@
-// 从文件系统读取 playgrounds
-import type { PlaygroundItem } from "./types"
+/**
+ * 每個 playground 是一個資料夾，裡面的任何檔案都算數（metadata.json 除外）。
+ * 先前只認 index.html / style.css / index.js 三個固定檔名，做不出多檔案專案。
+ */
+import type { PlaygroundItem, PlaygroundMeta } from "./types"
 
-// 使用 import.meta.glob 动态导入所有 playground 文件
-const htmlModules = import.meta.glob<string>('./*/index.html', { as: 'raw', eager: true })
-const cssModules = import.meta.glob<string>('./*/style.css', { as: 'raw', eager: true })
-const jsModules = import.meta.glob<string>('./*/index.js', { as: 'raw', eager: true })
-const metadataModules = import.meta.glob<{
-  title: string
-  description: string
-  tags: string[]
-  author: string
-  createdAt: string
-}>('./*/metadata.json', { eager: true })
-
-// 构建 playgrounds 数组
-export const playgrounds: PlaygroundItem[] = Object.keys(metadataModules).map((metadataPath) => {
-  // 从路径中提取 playground id（例如：./hello-world/metadata.json -> hello-world）
-  const id = metadataPath.replace('./', '').replace('/metadata.json', '')
-  
-  // 获取对应的文件内容
-  const htmlPath = `./${id}/index.html`
-  const cssPath = `./${id}/style.css`
-  const jsPath = `./${id}/index.js`
-  
-  const html = htmlModules[htmlPath] || ''
-  const css = cssModules[cssPath] || ''
-  const js = jsModules[jsPath] || ''
-  const metadata = metadataModules[metadataPath]
-  
-  return {
-    id,
-    html,
-    css,
-    js,
-    ...metadata
-  } as PlaygroundItem
+const raw = import.meta.glob<string>("./*/**", {
+  query: "?raw",
+  import: "default",
+  eager: true
 })
+const metas = import.meta.glob<PlaygroundMeta>("./*/metadata.json", {
+  import: "default",
+  eager: true
+})
+
+export const playgrounds: PlaygroundItem[] = Object.entries(metas)
+  .map(([metaPath, meta]) => {
+    const id = metaPath.slice(2, -"/metadata.json".length)
+    const prefix = `./${id}/`
+    const files: Record<string, string> = {}
+    for (const [p, content] of Object.entries(raw)) {
+      if (!p.startsWith(prefix) || p.endsWith("/metadata.json")) continue
+      files[p.slice(prefix.length)] = content
+    }
+    return {
+      ...meta,
+      id,
+      template: meta.template ?? "vanilla",
+      entry: meta.entry ?? "index.html",
+      files
+    }
+  })
+  .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+
+export const playgroundsByTemplate = (template: PlaygroundItem["template"]) =>
+  playgrounds.filter(p => p.template === template)

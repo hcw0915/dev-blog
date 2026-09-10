@@ -1,88 +1,31 @@
 ---
 import BaseHead from "@/components/BaseHead.astro"
 import Header from "@/components/Header.astro"
-import Footer from "@/components/Footer.astro"
-import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
 import Body from "@/components/Body.astro"
-import CodePlayground from "@/components/CodePlayground.tsx"
-import { playgrounds } from "@/data/playgrounds"
+import SandboxPage from "@/components/SandboxPage.astro"
+import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
+import { playgroundsByTemplate } from "@/data/playgrounds/index"
 
 export async function getStaticPaths() {
-  return playgrounds.map((playground) => ({
-    params: { id: playground.id }
-  }))
+  return playgroundsByTemplate("vanilla").map(p => ({ params: { id: p.id } }))
 }
 
+const locale = "zh"
 const { id } = Astro.params
-const playground = playgrounds.find((p) => p.id === id)
-
-// 调试信息
-if (!playground) {
-  console.warn(`Playground with id "${id}" not found. Available IDs:`, playgrounds.map(p => p.id))
-}
-
-// 如果找不到 playground，使用默认值
-const initialHtml = playground?.html || ""
-const initialCss = playground?.css || ""
-const initialJs = playground?.js || ""
-const pageTitle = playground ? `${playground.title} - 編輯` : "編輯 Playground"
+const playground = playgroundsByTemplate("vanilla").find(p => p.id === id)
+const listUrl = "/playground/vanilla"
 ---
 
 <!doctype html>
 <html lang="zh-TW">
   <head>
-    <BaseHead title={`${pageTitle} - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+    <BaseHead
+      title={`${playground?.title ?? "Playground"} - ${SITE_TITLE}`}
+      description={playground?.description ?? SITE_DESCRIPTION}
+    />
   </head>
   <Body>
-    <Header title={SITE_TITLE} />
-    <main class="pt-[72px] min-h-screen">
-      {playground ? (
-        <>
-          <div class="px-4 py-3 border-b border-zinc-200 dark:border-white/10">
-            <div class="container mx-auto flex items-center justify-between">
-              <a
-                href="/playground/vanilla"
-                class="px-4 py-2 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 rounded-lg text-sm font-medium text-zinc-800 dark:text-zinc-200 transition-colors"
-              >
-                ← 返回列表
-              </a>
-              <div>
-                <h1 class="text-xl font-bold text-zinc-800 dark:text-zinc-200 text-right">
-                  {playground.title}
-                </h1>
-                <p class="text-sm text-zinc-600 dark:text-zinc-400">
-                  {playground.description}
-                </p>
-              </div>
-          
-            </div>
-          </div>
-          <div class="w-full" style="height: calc(100vh - 72px - 73px); min-height: 600px;">
-            <CodePlayground
-              client:only="react"
-              initialHtml={initialHtml}
-              initialCss={initialCss}
-              initialJs={initialJs}
-            />
-          </div>
-        </>
-      ) : (
-        <div class="container mx-auto px-4 py-12 text-center">
-          <h1 class="text-2xl font-bold text-zinc-800 dark:text-zinc-200 mb-4">
-            Playground 未找到
-          </h1>
-          <p class="text-zinc-600 dark:text-zinc-400 mb-4">
-            找不到 ID 為 "{id}" 的 playground
-          </p>
-          <a
-            href="/playground/vanilla"
-            class="inline-block px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg transition-colors"
-          >
-            返回列表
-          </a>
-        </div>
-      )}
-    </main>
-    <Footer />
+    <Header />
+    <SandboxPage playground={playground} locale={locale} listUrl={listUrl} />
   </Body>
 </html>

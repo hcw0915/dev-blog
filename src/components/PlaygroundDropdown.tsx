@@ -55,7 +55,8 @@ export default function PlaygroundDropdown({ locale = "zh" }: PlaygroundDropdown
   const basePath = locale === "en" ? "/en" : ""
 
   const menuItems = [
-    { label: translations.playground.vanilla, href: `${basePath}/playground/vanilla` }
+    { label: translations.playground.vanilla, href: `${basePath}/playground/vanilla` },
+    { label: translations.playground.react, href: `${basePath}/playground/react` }
   ]
 
   // 檢查當前是否在 playground 頁面
@@ -82,7 +83,7 @@ export default function PlaygroundDropdown({ locale = "zh" }: PlaygroundDropdown
       {isOpen && (
         <div className="absolute top-full left-0 mt-2 w-32 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg z-50 overflow-hidden">
           {menuItems.map((item) => {
-            const isActive = currentPath === item.href
+            const isActive = currentPath === item.href || currentPath.startsWith(item.href + "/")
             return (
               <a
                 key={item.href}

@@ -2,48 +2,22 @@
 import BaseHead from "@/components/BaseHead.astro"
 import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
-import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
 import Body from "@/components/Body.astro"
-import PlaygroundCard from "@/components/PlaygroundCard.astro"
-import { playgrounds } from "@/data/playgrounds"
+import PlaygroundList from "@/components/PlaygroundList.astro"
+import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
+
+const locale = "zh"
+const template = "vanilla"
 ---
 
 <!doctype html>
 <html lang="zh-TW">
   <head>
-    <BaseHead title={`Pure Playground - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+    <BaseHead title={`Playground · vanilla - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
   </head>
   <Body>
-    <Header title={SITE_TITLE} />
-    <main class="pt-[72px] min-h-screen">
-      <div class="container mx-auto px-4 py-12">
-        <!-- Header -->
-        <div class="mb-12 text-center">
-          <h1 class="font-serif text-4xl font-bold text-zinc-800 dark:text-zinc-200 mb-4">
-            Pure Playground
-          </h1>
-          <p class="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
-            探索、學習和分享 HTML、CSS 和 JavaScript 程式碼範例。點擊任意卡片開始編輯和預覽。
-          </p>
-        </div>
-
-        <!-- Playground Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {playgrounds.map((playground) => (
-            <PlaygroundCard playground={playground} baseUrl="/playground/vanilla" />
-          ))}
-        </div>
-
-        <!-- Empty State (if no playgrounds) -->
-        {playgrounds.length === 0 && (
-          <div class="text-center py-20">
-            <p class="text-zinc-500 dark:text-zinc-400 text-lg">
-              暫無 playground 專案
-            </p>
-          </div>
-        )}
-      </div>
-    </main>
+    <Header />
+    <PlaygroundList template={template} locale={locale} />
     <Footer />
   </Body>
 </html>
