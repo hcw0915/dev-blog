@@ -150,7 +150,20 @@ function NameInput({
   )
 }
 
+const DND_MIME = "application/x-sandbox-path"
+const readDrag = (e: React.DragEvent): { path: string; isFolder: boolean } | null => {
+  try {
+    const raw = e.dataTransfer.getData(DND_MIME)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
 interface TreeActions {
+  onMove: (from: string, isFolder: boolean, toFolder: string) => void
+  dragOver: string | null
+  setDragOver: (folder: string | null) => void
   onRename: (p: string) => void
   onDelete: (p: string) => void
   onDeleteFolder: (p: string) => void
@@ -189,7 +202,30 @@ function Tree({
       {nodes.map(n =>
         n.children ? (
           <li key={n.path}>
-            <div className="group flex items-center pr-1">
+            <div
+              className={`group flex items-center pr-1 ${
+                actions.dragOver === n.path ? "bg-violet-500/15 ring-1 ring-inset ring-violet-400" : ""
+              }`}
+              draggable
+              onDragStart={e => {
+                e.dataTransfer.setData(DND_MIME, JSON.stringify({ path: n.path, isFolder: true }))
+                e.dataTransfer.effectAllowed = "move"
+              }}
+              onDragOver={e => {
+                e.preventDefault()
+                e.stopPropagation()
+                e.dataTransfer.dropEffect = "move"
+                if (actions.dragOver !== n.path) actions.setDragOver(n.path)
+              }}
+              onDragLeave={() => actions.dragOver === n.path && actions.setDragOver(null)}
+              onDrop={e => {
+                e.preventDefault()
+                e.stopPropagation()
+                actions.setDragOver(null)
+                const d = readDrag(e)
+                if (d) actions.onMove(d.path, d.isFolder, n.path)
+              }}
+            >
               <button
                 type="button"
                 onClick={() => onToggle(n.path)}
@@ -241,7 +277,30 @@ function Tree({
             />
           </li>
         ) : (
-          <li key={n.path} className="group flex items-center pr-1">
+          <li
+            key={n.path}
+            className="group flex items-center pr-1"
+            draggable={n.path !== actions.entry}
+            onDragStart={e => {
+              if (n.path === actions.entry) return e.preventDefault()
+              e.dataTransfer.setData(DND_MIME, JSON.stringify({ path: n.path, isFolder: false }))
+              e.dataTransfer.effectAllowed = "move"
+            }}
+            onDragOver={e => {
+              e.preventDefault()
+              e.stopPropagation()
+              const folder = n.path.includes("/") ? n.path.slice(0, n.path.lastIndexOf("/")) : ""
+              if (actions.dragOver !== folder) actions.setDragOver(folder)
+            }}
+            onDrop={e => {
+              e.preventDefault()
+              e.stopPropagation()
+              actions.setDragOver(null)
+              const d = readDrag(e)
+              const folder = n.path.includes("/") ? n.path.slice(0, n.path.lastIndexOf("/")) : ""
+              if (d) actions.onMove(d.path, d.isFolder, folder)
+            }}
+          >
             <button
               type="button"
               onClick={() => onOpen(n.path)}
@@ -320,6 +379,12 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
     return original
   })
   const [editing, setEditing] = useState<{ kind: "new" | "rename"; path: string; error?: string } | null>(null)
+  const [notice, setNoticeRaw] = useState<string | null>(null)
+  const setNotice = (msg: string) => {
+    setNoticeRaw(msg)
+    setTimeout(() => setNoticeRaw(null), 1800)
+  }
+  const [dragOver, setDragOver] = useState<string | null>(null) // 正被拖到上方的資料夾（"" = 根）
   const firstFile = files[entry] !== undefined ? entry : Object.keys(files)[0] ?? ""
   const [tabs, setTabs] = useState<string[]>([firstFile])
   const [active, setActive] = useState<string>(firstFile)
@@ -516,16 +581,45 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
     ensureModel(path, "")
     open(path)
   }
-  const renameFile = (from: string, to: string) => {
+  /** 批次改路徑：搬移整個資料夾時一次處理，避免多次 setState 用到過期的 files */
+  const renamePaths = (pairs: Array<[string, string]>) => {
+    if (!pairs.length) return
+    const map = new Map(pairs)
     setFiles(f => {
       const next: FileMap = {}
-      for (const [p, c] of Object.entries(f)) next[p === from ? to : p] = c
+      for (const [p, c] of Object.entries(f)) next[map.get(p) ?? p] = c
       return next
     })
-    ensureModel(to, files[from] ?? "")
-    disposeModel(from)
-    setTabs(ts => ts.map(p => (p === from ? to : p)))
-    if (active === from) setActive(to)
+    for (const [from, to] of pairs) {
+      ensureModel(to, files[from] ?? "")
+      disposeModel(from)
+    }
+    setTabs(ts => ts.map(p => map.get(p) ?? p))
+    if (map.has(active)) setActive(map.get(active)!)
+  }
+  const renameFile = (from: string, to: string) => renamePaths([[from, to]])
+
+  /**
+   * 拖放搬移：把檔案或資料夾放進 toFolder（"" 代表根目錄）。
+   * 入口不搬、不能搬進自己或自己的子資料夾、目標已有同名就拒絕，不覆蓋。
+   */
+  const moveEntry = (from: string, isFolder: boolean, toFolder: string) => {
+    if (from === entry) return
+    const base = from.split("/").pop()!
+    const parent = from.includes("/") ? from.slice(0, from.lastIndexOf("/")) : ""
+    if (parent === toFolder) return
+    if (isFolder && (toFolder === from || toFolder.startsWith(from + "/"))) return
+    const dest = toFolder ? `${toFolder}/${base}` : base
+    const pairs: Array<[string, string]> = isFolder
+      ? Object.keys(files)
+          .filter(p => p.startsWith(from + "/"))
+          .map(p => [p, dest + p.slice(from.length)] as [string, string])
+      : [[from, dest]]
+    if (pairs.some(([, to]) => files[to] !== undefined)) {
+      setNotice(t.nameExists)
+      return
+    }
+    renamePaths(pairs)
   }
   const deletePaths = (paths: string[]) => {
     const gone = new Set(paths)
@@ -609,7 +703,29 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
               </button>
               </div>
             </div>
-            <div className="flex-1 overflow-auto py-1.5">
+            <div
+              className={`flex-1 overflow-auto py-1.5 ${
+                dragOver === "" ? "bg-violet-500/10 ring-1 ring-inset ring-violet-400/60" : ""
+              }`}
+              onDragOver={e => {
+                e.preventDefault()
+                if (dragOver !== "") setDragOver("")
+              }}
+              onDragLeave={e => {
+                if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOver(null)
+              }}
+              onDrop={e => {
+                e.preventDefault()
+                setDragOver(null)
+                const d = readDrag(e)
+                if (d) moveEntry(d.path, d.isFolder, "")
+              }}
+            >
+              {notice && (
+                <div className="mx-2 mb-1 rounded bg-red-500/10 px-2 py-1 text-[11px] text-red-600 dark:text-red-300">
+                  {notice}
+                </div>
+              )}
               {editing?.kind === "new" && !editing.path.includes("/") && (
                 <NameInput
                   initial={editing.path}
@@ -629,6 +745,9 @@ export default function Sandbox({ id, files: original, entry = "index.html", loc
                 actions={{
                   entry,
                   editing,
+                  onMove: moveEntry,
+                  dragOver,
+                  setDragOver,
                   onRename: p => setEditing({ kind: "rename", path: p }),
                   onDelete: deleteFile,
                   onDeleteFolder: deleteFolder,
