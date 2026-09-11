@@ -31,7 +31,10 @@ const hero = heroFor(slug)
 >
   <!-- 大卡：縮圖吃掉多餘高度（SVG 是 slice 模式，填多大都不變形），文字區維持自然高度，
        卡片才不會在摘要只有一句話時下半留白 -->
-  <div class:list={["w-full overflow-hidden", size === "lg" ? "flex-1 min-h-[220px]" : "aspect-[8/3]"]}>
+  <div
+    transition:name={`post-thumb-${slug}`}
+    class:list={["w-full overflow-hidden", size === "lg" ? "flex-1 min-h-[220px]" : "aspect-[8/3]"]}
+  >
     {
       hero ? (
         <img src={hero} alt="" loading="lazy" class="h-full w-full object-cover" />

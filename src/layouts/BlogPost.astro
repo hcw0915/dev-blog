@@ -3,7 +3,9 @@ import BaseHead from "@/components/BaseHead.astro"
 import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
 import Body from "@/components/Body.astro"
-import { colorForTag } from "@/lib/tags"
+import { colorForTag, displayTags } from "@/lib/tags"
+import { assignKinds, thumbSvg } from "@/lib/thumb"
+import { slugOf } from "@/lib/post"
 import { getLocaleFromPath, formatDate } from "@/i18n/utils"
 import { getTranslations } from "@/i18n/translations"
 import fs from "node:fs"
@@ -60,6 +62,13 @@ const allPosts = Object.values(
   )
 const idx = allPosts.findIndex(p => p.frontmatter.slug === slug)
 const newerPost = idx > 0 ? allPosts[idx - 1] : null
+// 主視覺：有真封面用真封面，否則用跟卡片同一張生成縮圖 —— 圖案指派必須跟列表同一份，
+// 卡片 → 文章的形變才對得上
+const kinds = assignKinds(
+  allPosts.map(p => ({ slug: slugOf(p), tags: p.frontmatter.tags ?? [] }))
+)
+const heroSvg = customHero ? null : thumbSvg(slug, tags, kinds[slug])
+
 const olderPost = idx >= 0 && idx < allPosts.length - 1 ? allPosts[idx + 1] : null
 
 const toc = headings.filter(h => h.depth >= 2 && h.depth <= 3)
@@ -113,22 +122,26 @@ const jsonLd = JSON.stringify({
     <main class="pt-[88px] pb-8">
       <div class="mx-auto max-w-6xl px-4 xl:grid xl:grid-cols-[1fr_220px] xl:gap-10">
         <article class="markdown-content w-full max-w-[68ch] mx-auto min-w-0">
-          {
-            customHero && (
-              <img
-                class="border border-zinc-200 dark:border-white/10 rounded-2xl aspect-[15/6] w-full object-cover mb-8"
-                src={customHero}
-                alt=""
-              />
-            )
-          }
+          <div
+            transition:name={`post-thumb-${slug}`}
+            class="not-prose mb-8 aspect-[8/3] w-full overflow-hidden rounded-2xl border border-zinc-200 dark:border-white/10"
+            aria-hidden="true"
+          >
+            {
+              customHero ? (
+                <img class="!m-0 h-full w-full object-cover" src={customHero} alt="" />
+              ) : (
+                <Fragment set:html={heroSvg} />
+              )
+            }
+          </div>
 
           <div class="text-sm flex flex-wrap items-center gap-3 text-zinc-400 dark:text-zinc-500">
             <span>{formatDate(new Date(createdAt), locale)}</span>
             <span>·</span>
             <span>{minutes} {t.post.minRead}</span>
             {
-              tags.map(tag => (
+              displayTags(tags).map(tag => (
                 <span
                   class="text-xs font-bold tracking-wider uppercase"
                   style={`color:${colorForTag(tag)}`}
