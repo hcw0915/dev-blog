@@ -98,10 +98,10 @@ export const translations = {
           description: '主站引用 IIFE bundle 元件時，Tailwind 樣式缺失與互相覆蓋的排查，比較加前綴、Shadow DOM、調整插入順序三種方案後的取捨。',
           tags: ['Tailwind', 'Shadow DOM', 'IIFE']
         },
-        visualTesting: {
-          title: '視覺回歸測試實作',
-          description: '用 Cypress 搭配 Percy 做截圖比對，整合 Storybook 與 GitHub Actions，是前端測試指南第五章的配套專案。',
-          tags: ['Cypress', 'Percy', 'Storybook', 'GitHub Actions']
+        languageStrategy: {
+          title: '多語系語言來源的優先順序',
+          description: '多語系網站的語言可能來自 URL、Cookie、localStorage 或瀏覽器設定。沒有明確的優先順序時，會出現使用者選的語言被覆蓋、SSR 與前端語言不一致、hydration mismatch 與 SEO 問題。整理出以 URL 為最高權威的決策順序，並分開說明 Next.js SSR 與 SPA 的取捨和常見錯誤設計。',
+          tags: ['i18n', 'SSR', 'Next.js', 'SEO']
         },
         knowledge: {
           title: '團隊 AI 知識庫：Keyword RAG',
@@ -323,10 +323,10 @@ export const translations = {
           description: 'Debugging missing and overridden Tailwind styles when the main site loads components from an IIFE bundle, then weighing prefixing, Shadow DOM, and injection order.',
           tags: ['Tailwind', 'Shadow DOM', 'IIFE']
         },
-        visualTesting: {
-          title: 'Visual regression testing',
-          description: 'Screenshot diffing with Cypress and Percy, integrated with Storybook and GitHub Actions. Companion project to chapter 5 of my frontend testing series.',
-          tags: ['Cypress', 'Percy', 'Storybook', 'GitHub Actions']
+        languageStrategy: {
+          title: 'Language source priority for multilingual sites',
+          description: 'A multilingual site can take its language from the URL, a cookie, localStorage, or browser settings. Without a clear order, user choices get overwritten, SSR and the client disagree, hydration breaks, and SEO suffers. This defines a URL-first priority and compares the tradeoffs and common mistakes for Next.js SSR versus SPAs.',
+          tags: ['i18n', 'SSR', 'Next.js', 'SEO']
         },
         knowledge: {
           title: 'Team AI knowledge base with keyword RAG',

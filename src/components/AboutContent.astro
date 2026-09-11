@@ -55,7 +55,7 @@ const thumbOf = (slug: string, fallbackTags: string[]) => {
     : { svg: thumbSvg(slug, fallbackTags), morph: `project-thumb-${slug}` }
 }
 const projects: {
-  key: "knowledge" | "embeddedUi" | "visualTesting"
+  key: "knowledge" | "embeddedUi" | "languageStrategy"
   thumb: { svg: string; morph: string }
   links: LinkItem[]
 }[] = [
@@ -70,12 +70,9 @@ const projects: {
     links: [{ href: "/posts/tailwind-embedded-ui-css", label: a.links.article }]
   },
   {
-    key: "visualTesting",
-    thumb: thumbOf("chapter-5", []),
-    links: [
-      { href: "/posts/chapter-5", label: a.links.article },
-      { href: "https://github.com/hcw0915/Visual-Testing", label: a.links.source, external: true }
-    ]
+    key: "languageStrategy",
+    thumb: thumbOf("language-source-priority-strategy", []),
+    links: [{ href: "/posts/language-source-priority-strategy", label: a.links.article }]
   }
 ]
 
