@@ -55,18 +55,10 @@ const thumbOf = (slug: string, fallbackTags: string[]) => {
     : { svg: thumbSvg(slug, fallbackTags), morph: `project-thumb-${slug}` }
 }
 const projects: {
-  key: "thisSite" | "knowledge" | "embeddedUi" | "visualTesting"
+  key: "knowledge" | "embeddedUi" | "visualTesting"
   thumb: { svg: string; morph: string }
   links: LinkItem[]
 }[] = [
-  {
-    key: "thisSite",
-    thumb: thumbOf("this-site", ["Shader", "Three"]),
-    links: [
-      { href: `${prefix}/about/this-site`, label: a.links.caseStudy },
-      { href: "https://github.com/hcw0915/dev-blog", label: a.links.source, external: true }
-    ]
-  },
   {
     key: "knowledge",
     thumb: thumbOf("knowledge-keyword-rag", []),
@@ -153,7 +145,7 @@ const personJsonLd = JSON.stringify({
     <!-- 作品與案例 -->
     <BentoCard class="p-6 md:p-8">
       <SectionTitle title={a.projectsTitle} />
-      <div class="grid gap-4 md:grid-cols-2">
+      <div class="grid gap-4 lg:grid-cols-3">
         {
           projects.map(({ key, thumb, links }) => {
             const p = a.projects[key]
