@@ -4,6 +4,7 @@ import { Resvg } from '@resvg/resvg-js'
 import fs from 'node:fs'
 import path from 'node:path'
 import { paletteForTags } from '@/lib/tags'
+import { SITE_TITLE } from '@/config'
 
 const fontPath = path.resolve('.fonts/NotoSansCJKtc-Bold.otf')
 
@@ -79,7 +80,7 @@ export const GET: APIRoute = async ({ props }) => {
                   type: 'div',
                   props: {
                     style: { fontSize: '28px', color: '#a1a1aa' },
-                    children: tags.length ? tags.join(' · ') : 'DevLog'
+                    children: tags.length ? tags.join(' · ') : 'Antonio.dev'
                   }
                 }
               ]
@@ -110,7 +111,7 @@ export const GET: APIRoute = async ({ props }) => {
                 color: '#71717a'
               },
               children: [
-                { type: 'div', props: { children: 'Antonio - DevLog' } },
+                { type: 'div', props: { children: SITE_TITLE } },
                 { type: 'div', props: { children: dateText } }
               ]
             }

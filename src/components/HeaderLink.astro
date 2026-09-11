@@ -2,7 +2,9 @@
 export interface Props extends astroHTML.JSX.AnchorHTMLAttributes {}
 
 const { href, class: className, ...props } = Astro.props
-const isActive = href === Astro.url.pathname.replace(/\/$/, '')
+// 子頁面也算：在 /about/this-site 時「關於」要亮，在文章頁時「部落格」要亮
+const path = Astro.url.pathname.replace(/\/$/, '')
+const isActive = typeof href === 'string' && (path === href || path.startsWith(href + '/'))
 ---
 
 <a href={href} class:list={[className, { active: isActive }]} {...props}>

@@ -1,0 +1,22 @@
+---
+import BaseHead from "@/components/BaseHead.astro"
+import Header from "@/components/Header.astro"
+import Footer from "@/components/Footer.astro"
+import Body from "@/components/Body.astro"
+import ThisSiteCaseStudy from "@/components/ThisSiteCaseStudy.astro"
+import { SITE_TITLE } from "@/config"
+
+const locale = "zh"
+---
+
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <BaseHead title={`這個網站是怎麼做的 - ${SITE_TITLE}`} description="Antonio.dev 的案例：CodeSandbox 式 playground、生成式縮圖與 WCAG 配色、WebGL shader 首頁、Inkdrop 自動發佈，以及用實測數據決定的全站搜尋。" />
+  </head>
+  <Body>
+    <Header />
+    <ThisSiteCaseStudy locale={locale} />
+    <Footer />
+  </Body>
+</html>

@@ -1,0 +1,281 @@
+---
+/**
+ * 關於頁本體。zh 與 en 共用 —— 兩個 about/index.astro 先前是逐字複製，只差語系與網址。
+ *
+ * 作品集的閱讀順序：你是誰與怎麼聯絡（第一屏）、量化成果、作品與案例、經歷、技能、聯絡。
+ * 案例只放查得到依據的事實；履歷上只有一行的成果放在「成果」卡片，不替它編過程。
+ */
+import BentoCard from "@/components/BentoCard.astro"
+import SectionTitle from "@/components/SectionTitle.astro"
+import SkillTag from "@/components/SkillTag.astro"
+import WorkExperience from "@/components/WorkExperience.astro"
+import EducationCard from "@/components/EducationCard.astro"
+import SocialButton from "@/components/SocialButton.astro"
+import { IoDownloadOutline, IoLogoGithub, IoMailOutline, IoArrowForward } from "react-icons/io5"
+import { SITE_URL } from "@/config"
+import { getTranslations } from "@/i18n/translations"
+import type { Locale } from "@/i18n/translations"
+import {
+  socialMediaList,
+  familiarSkills,
+  experiencedSkills,
+  PDF_PATH,
+  GITHUB_URL,
+  EMAIL
+} from "@/config/about"
+
+export interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const t = getTranslations(locale)
+const a = t.about
+const prefix = locale === "en" ? "/en" : ""
+
+const workExperiences = (["brilliantGaming", "yingtong", "worldEntertainment", "heling"] as const).map(
+  k => a.work[k]
+)
+
+type LinkItem = { href: string; label: string; external?: boolean }
+const projects: { key: "thisSite" | "embeddedUi" | "visualTesting" | "froggy"; links: LinkItem[] }[] = [
+  {
+    key: "thisSite",
+    links: [
+      { href: `${prefix}/about/this-site`, label: a.links.caseStudy },
+      { href: "https://github.com/hcw0915/dev-blog", label: a.links.source, external: true }
+    ]
+  },
+  {
+    key: "embeddedUi",
+    links: [{ href: "/posts/tailwind-embedded-ui-css", label: a.links.article }]
+  },
+  {
+    key: "visualTesting",
+    links: [
+      { href: "/posts/chapter-5", label: a.links.article },
+      { href: "https://github.com/hcw0915/Visual-Testing", label: a.links.source, external: true }
+    ]
+  },
+  {
+    key: "froggy",
+    links: [{ href: "https://github.com/hcw0915/froggy_the_boardy", label: a.links.source, external: true }]
+  }
+]
+
+const personJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Antonio Hou",
+  jobTitle: "Frontend Engineer",
+  url: `${SITE_URL}${prefix}/about`,
+  email: `mailto:${EMAIL}`,
+  sameAs: [GITHUB_URL]
+})
+---
+
+<script type="application/ld+json" set:html={personJsonLd} />
+
+<main class="pt-[72px]">
+  <div class="mx-auto max-w-5xl space-y-6 px-4 py-8">
+    <!-- 第一屏：是誰、做什麼、怎麼聯絡 -->
+    <BentoCard class="p-6 md:p-10">
+      <div class="flex flex-col items-center gap-6 text-center md:flex-row md:items-start md:gap-10 md:text-left">
+        <img
+          src="/Frieza.png"
+          alt="Antonio Hou"
+          width="128"
+          height="128"
+          class="h-28 w-28 shrink-0 rounded-full border-4 border-violet-300/60 object-cover shadow-lg dark:border-violet-400/40 md:h-32 md:w-32"
+        />
+        <div class="min-w-0">
+          <h1 class="font-serif text-4xl font-bold text-zinc-900 dark:text-zinc-50">{a.title}</h1>
+          <p class="mt-2 bg-brand-gradient bg-clip-text text-lg font-semibold text-transparent">{a.subtitle}</p>
+          <p class="mt-4 max-w-2xl leading-relaxed text-zinc-600 dark:text-zinc-300">{a.intro}</p>
+          <div class="mt-6 flex flex-wrap justify-center gap-2 md:justify-start">
+            <a href={PDF_PATH} download class="about-cta about-cta-primary">
+              <IoDownloadOutline className="text-lg" />
+              {a.downloadResume}
+            </a>
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="about-cta">
+              <IoLogoGithub className="text-lg" />
+              {a.links.github}
+            </a>
+            <a href={`mailto:${EMAIL}`} class="about-cta">
+              <IoMailOutline className="text-lg" />
+              {a.links.email}
+            </a>
+          </div>
+        </div>
+      </div>
+    </BentoCard>
+
+    <!-- 成果：履歷上有數字的那幾項 -->
+    <section aria-labelledby="about-highlights">
+      <h2 id="about-highlights" class="sr-only">{a.highlightsTitle}</h2>
+      <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
+        {
+          a.highlights.map(h => (
+            <BentoCard class="p-4 md:p-5">
+              <div class="font-mono text-2xl font-bold text-zinc-900 dark:text-zinc-50 md:text-3xl">{h.value}</div>
+              <div class="mt-1 text-sm font-medium text-zinc-700 dark:text-zinc-200">{h.label}</div>
+              <div class="mt-0.5 text-xs text-zinc-400 dark:text-zinc-500">{h.note}</div>
+            </BentoCard>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 作品與案例 -->
+    <BentoCard class="p-6 md:p-8">
+      <SectionTitle title={a.projectsTitle} />
+      <div class="grid gap-4 md:grid-cols-2">
+        {
+          projects.map(({ key, links }) => {
+            const p = a.projects[key]
+            return (
+              <article class="flex flex-col rounded-xl border border-zinc-200 p-5 dark:border-white/10">
+                <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-50">{p.title}</h3>
+                <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{p.description}</p>
+                <div class="mt-3 flex flex-wrap gap-1.5">
+                  {p.tags.map(tag => (
+                    <SkillTag name={tag} />
+                  ))}
+                </div>
+                <div class="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                  {links.map(l => (
+                    <a
+                      href={l.href}
+                      target={l.external ? "_blank" : undefined}
+                      rel={l.external ? "noopener noreferrer" : undefined}
+                      class="inline-flex items-center gap-1 font-medium text-violet-600 hover:underline dark:text-violet-300"
+                    >
+                      {l.label}
+                      <IoArrowForward className="text-xs" />
+                    </a>
+                  ))}
+                </div>
+              </article>
+            )
+          })
+        }
+      </div>
+    </BentoCard>
+
+    <!-- 工作經驗 -->
+    <BentoCard class="p-6 md:p-8">
+      <SectionTitle title={a.workExperience} />
+      <div class="space-y-8">
+        {
+          workExperiences.map(w => (
+            <WorkExperience
+              title={w.title}
+              company={w.company}
+              period={w.period}
+              responsibilities={[...w.responsibilities]}
+            />
+          ))
+        }
+      </div>
+    </BentoCard>
+
+    <!-- 技能 -->
+    <BentoCard class="p-6 md:p-8">
+      <SectionTitle title={a.skills} />
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div>
+          <h3 class="mb-3 text-lg font-semibold text-zinc-800 dark:text-white">{a.familiarTech}</h3>
+          <div class="flex flex-wrap gap-2">
+            {familiarSkills.map(skill => <SkillTag name={skill} variant="primary" />)}
+          </div>
+        </div>
+        <div>
+          <h3 class="mb-3 text-lg font-semibold text-zinc-800 dark:text-white">{a.experiencedTech}</h3>
+          <div class="flex flex-wrap gap-2">
+            {experiencedSkills.map(skill => <SkillTag name={skill} variant="secondary" />)}
+          </div>
+        </div>
+      </div>
+    </BentoCard>
+
+    <!-- 聯絡方式 -->
+    <BentoCard class="p-6 md:p-8">
+      <SectionTitle title={a.contact} />
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        {
+          socialMediaList.map(s => (
+            <SocialButton
+              label={s.label}
+              url={s.url}
+              icon={s.icon}
+              hoverColor={s.hoverColor}
+              qr={s.qr}
+              qrLabel={a.links.qr}
+            />
+          ))
+        }
+      </div>
+    </BentoCard>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <BentoCard class="p-6 md:p-8">
+        <SectionTitle title={a.languages} />
+        <ul class="space-y-2 text-zinc-600 dark:text-zinc-400">
+          <li>{a.languageList.chinese}</li>
+          <li>{a.languageList.cantonese}</li>
+          <li>{a.languageList.english}</li>
+        </ul>
+      </BentoCard>
+      <BentoCard class="p-6 md:p-8">
+        <SectionTitle title={a.educationTitle} />
+        <EducationCard
+          degree={a.education.degree as string}
+          school={a.education.school as string}
+          period={a.education.period as string}
+        />
+      </BentoCard>
+    </div>
+  </div>
+</main>
+
+<style>
+  .about-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.5rem;
+    padding: 0 1rem;
+    border-radius: 0.625rem;
+    border: 1px solid rgb(228 228 231);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: rgb(63 63 70);
+    transition:
+      border-color 0.15s,
+      color 0.15s,
+      background-color 0.15s;
+  }
+  :global(.dark) .about-cta {
+    border-color: rgb(255 255 255 / 0.12);
+    color: rgb(228 228 231);
+  }
+  .about-cta:hover {
+    border-color: #a78bfa;
+    color: #7c3aed;
+  }
+  :global(.dark) .about-cta:hover {
+    color: #c4b5fd;
+  }
+  .about-cta-primary,
+  :global(.dark) .about-cta-primary {
+    background: #7c3aed;
+    border-color: #7c3aed;
+    color: #fff;
+  }
+  .about-cta-primary:hover,
+  :global(.dark) .about-cta-primary:hover {
+    background: #6d28d9;
+    border-color: #6d28d9;
+    color: #fff;
+  }
+</style>

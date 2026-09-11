@@ -1,0 +1,243 @@
+---
+/**
+ * 案例：這個網站是怎麼做的。zh 與 en 共用。
+ * 內容只寫實際做過、量過的事，數字都有來源（commit 訊息、檢查腳本輸出、實測紀錄）。
+ */
+import BentoCard from "@/components/BentoCard.astro"
+import { IoArrowForward, IoLogoGithub } from "react-icons/io5"
+import type { Locale } from "@/i18n/translations"
+
+export interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const prefix = locale === "en" ? "/en" : ""
+const REPO = "https://github.com/hcw0915/dev-blog"
+
+interface Section {
+  title: string
+  body: string[]
+  pitfall?: string
+  link?: { href: string; label: string }
+}
+
+const content = {
+  zh: {
+    back: "關於我",
+    eyebrow: "案例",
+    title: "這個網站是怎麼做的",
+    lede: "Antonio.dev 同時是作品集與技術部落格。這頁記錄幾個主要功能的做法、踩過的坑，以及用實測數據做出的決定。",
+    pitfallLabel: "踩到的坑",
+    stats: [
+      { value: "11", label: "種生成式縮圖圖案" },
+      { value: "64", label: "項標籤對比度檢查" },
+      { value: "0.77 → 1.00", label: "全站搜尋召回率" },
+      { value: "83KB", label: "壓縮後搜尋索引" }
+    ],
+    sections: [
+      {
+        title: "架構",
+        body: [
+          "Astro 5 輸出靜態頁面，需要互動的元件以 React island 按需載入，部署在 Vercel。",
+          "文章在 Inkdrop 撰寫，筆記標上 public 就會自動發佈，不需要打開 repo。"
+        ]
+      },
+      {
+        title: "寫筆記就上線",
+        body: [
+          "live-export 常駐監看本機的 Inkdrop，筆記一存檔就重寫對應的 markdown。背景程序每兩分鐘把變動提交並推送，Vercel 接手 build。"
+        ],
+        pitfall:
+          "早期提交時圈了整個文章目錄，也沒有限定提交路徑，正在修改的頁面原始碼被一起推上 main，部署失敗。改成只提交實際變動的文章檔，並在沙箱 repo 重現驗證。"
+      },
+      {
+        title: "生成式縮圖與可讀配色",
+        body: [
+          "縮圖不是圖片檔。文章 slug 的雜湊決定 11 種圖案之一，同一主題的文章輪流取用，不會撞圖；主色由標籤的特異度權重決定。",
+          "標籤的文字色一律由 WCAG 對比度算出來，不人工挑色。檢查腳本對 16 個標籤跑 64 項對比度檢查，全部達到 AA。"
+        ]
+      },
+      {
+        title: "CodeSandbox 式 playground",
+        body: [
+          "多檔案編輯器，支援檔案樹、分頁、新增、改名、刪除與拖放搬移。預覽從真正的 index.html 進入，iframe 內用 Babel standalone 做迷你模組系統，支援相對 import、CSS 與 JSON import，外部套件從 esm.sh 載入。",
+          "TypeScript 有真正的型別檢查。Prettier 在第一次格式化時才從 CDN 懶載入，不增加 bundle 大小。"
+        ],
+        pitfall:
+          "檔案內容裡的 </script> 會提早關閉注入的腳本，改成把 < 一律轉義。Monaco 是全域單例，會和無刷新換頁衝突，編輯頁改成整頁載入。",
+        link: { href: `${prefix}/playground/react`, label: "打開 playground" }
+      },
+      {
+        title: "Shader 首頁",
+        body: [
+          "首頁背景是一個 WebGL2 fragment shader，域扭曲的噪聲場會跟著游標偏移。",
+          "系統開啟減少動態效果或瀏覽器不支援 WebGL2 時，退回靜態背景。捲出畫面或切換分頁就停止繪製，並以半倍解析度渲染。這份 GLSL 同時是 playground 裡可以直接修改的範例。"
+        ],
+        link: { href: `${prefix}/playground/vanilla/hero-shader`, label: "在 playground 打開這個 shader" }
+      },
+      {
+        title: "用量測做決策：全站搜尋",
+        body: [
+          "先接了 Pagefind，再用文章原文算出的標準答案實測。中文設定的召回率只有 0.77，查「四元數」零命中還抓錯一篇。問題出在它的中文分詞會依上下文切詞，換語言設定也救不了。",
+          "改成 build 時輸出純文字索引、搜尋時做子字串比對。十二個測試詞的結果與原文完全一致，索引壓縮後 83KB，也省掉一個 57MB 的二進位依賴。"
+        ]
+      },
+      {
+        title: "可維護性",
+        body: [
+          "系列文章的設定在 build 時驗證，下架文章卻忘了改設定會直接 build 失敗。純文字轉換有回歸測試，每個抓到過的壞例子都寫成斷言。中英文頁面共用同一份元件，不會兩邊長歪。"
+        ]
+      }
+    ] as Section[],
+    source: "看原始碼"
+  },
+  en: {
+    back: "About me",
+    eyebrow: "Case study",
+    title: "How this site is built",
+    lede: "Antonio.dev is both a portfolio and a tech blog. This page covers how the main features work, what went wrong along the way, and the decisions made from measurements.",
+    pitfallLabel: "What went wrong",
+    stats: [
+      { value: "11", label: "generative thumbnail patterns" },
+      { value: "64", label: "tag contrast checks" },
+      { value: "0.77 → 1.00", label: "site search recall" },
+      { value: "83KB", label: "compressed search index" }
+    ],
+    sections: [
+      {
+        title: "Architecture",
+        body: [
+          "Astro 5 renders static pages, with interactive components loaded on demand as React islands and deployed on Vercel.",
+          "Posts are written in Inkdrop. Marking a note as public publishes it automatically, without opening the repo."
+        ]
+      },
+      {
+        title: "Publishing from notes",
+        body: [
+          "live-export watches the local Inkdrop app and rewrites the matching markdown file on every save. A background job commits and pushes changes every two minutes, and Vercel takes over the build."
+        ],
+        pitfall:
+          "The first version staged the whole posts directory without limiting the commit path, so page source that was still being edited got pushed to main and the deploy failed. It now commits only the post files that actually changed, verified by reproducing the case in a sandbox repo."
+      },
+      {
+        title: "Generative thumbnails with readable colors",
+        body: [
+          "Thumbnails are not image files. A hash of the post slug picks one of 11 patterns, posts on the same topic take turns so patterns do not repeat, and a specificity weight per tag picks the main color.",
+          "Tag text colors are computed from WCAG contrast rather than picked by hand. A check script runs 64 contrast checks across 16 tags, and all of them pass AA."
+        ]
+      },
+      {
+        title: "CodeSandbox-style playground",
+        body: [
+          "A multi-file editor with a file tree, tabs, create, rename, delete, and drag-and-drop moves. The preview starts from a real index.html, and a small module system built on Babel standalone runs inside the iframe, supporting relative imports, CSS and JSON imports, and external packages from esm.sh.",
+          "TypeScript gets real type checking. Prettier is lazy-loaded from a CDN on first format, so it adds nothing to the bundle."
+        ],
+        pitfall:
+          "A literal </script> inside file content closed the injected script early, so every < is now escaped. Monaco is a global singleton that clashed with client-side navigation, so editor pages now do full page loads.",
+        link: { href: `${prefix}/playground/react`, label: "Open the playground" }
+      },
+      {
+        title: "Shader hero",
+        body: [
+          "The homepage background is a WebGL2 fragment shader: a domain-warped noise field that follows the cursor.",
+          "It falls back to a static background when reduced motion is on or WebGL2 is missing, stops drawing when scrolled out of view or when the tab is hidden, and renders at half resolution. The same GLSL is an editable example in the playground."
+        ],
+        link: { href: `${prefix}/playground/vanilla/hero-shader`, label: "Open this shader in the playground" }
+      },
+      {
+        title: "Deciding by measurement: site search",
+        body: [
+          "Pagefind was tried first and tested against ground truth computed from the post sources. With Chinese settings recall was only 0.77, and searching for 四元數 returned no correct result plus one wrong one. Its Chinese segmentation splits words by context, and no language setting fixed that.",
+          "Search now uses a plain-text index generated at build time with substring matching. All twelve test terms match the sources exactly, the index is 83KB compressed, and a 57MB binary dependency is gone."
+        ]
+      },
+      {
+        title: "Maintainability",
+        body: [
+          "Series configuration is validated at build time, so unpublishing a post without updating the config fails the build. The plain-text conversion has regression tests where every bug found became an assertion. Chinese and English pages share the same components, so they cannot drift apart."
+        ]
+      }
+    ] as Section[],
+    source: "View source"
+  }
+}[locale]
+---
+
+<main class="pt-[88px] pb-16">
+  <div class="mx-auto max-w-3xl px-4">
+    <a
+      href={`${prefix}/about`}
+      class="text-sm font-medium text-zinc-500 hover:text-violet-600 dark:text-zinc-400 dark:hover:text-violet-300"
+    >
+      ← {content.back}
+    </a>
+
+    <div class="mt-6 text-[11px] font-bold uppercase tracking-[0.18em] text-violet-600 dark:text-violet-300">
+      {content.eyebrow}
+    </div>
+    <h1 class="mt-2 font-serif text-4xl font-bold text-zinc-900 dark:text-zinc-50 md:text-5xl">{content.title}</h1>
+    <div class="mt-5 h-1 w-14 rounded-full bg-brand-gradient"></div>
+    <p class="mt-5 text-lg leading-relaxed text-zinc-600 dark:text-zinc-300">{content.lede}</p>
+
+    <div class="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
+      {
+        content.stats.map(s => (
+          <BentoCard class="p-4">
+            <div class="font-mono text-xl font-bold text-zinc-900 dark:text-zinc-50">{s.value}</div>
+            <div class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{s.label}</div>
+          </BentoCard>
+        ))
+      }
+    </div>
+
+    <div class="mt-12 space-y-10">
+      {
+        content.sections.map((sec, i) => (
+          <section>
+            <h2 class="flex items-baseline gap-3 font-serif text-2xl font-bold text-zinc-900 dark:text-zinc-50">
+              <span class="font-mono text-sm font-normal text-zinc-400 dark:text-zinc-600">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              {sec.title}
+            </h2>
+            <div class="mt-3 space-y-3 leading-relaxed text-zinc-600 dark:text-zinc-300">
+              {sec.body.map(p => (
+                <p>{p}</p>
+              ))}
+            </div>
+            {sec.pitfall && (
+              <div class="mt-4 rounded-r-xl border-l-4 border-amber-400/70 bg-amber-500/5 px-4 py-3">
+                <div class="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300">
+                  {content.pitfallLabel}
+                </div>
+                <p class="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{sec.pitfall}</p>
+              </div>
+            )}
+            {sec.link && (
+              <a
+                href={sec.link.href}
+                class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-violet-600 hover:underline dark:text-violet-300"
+              >
+                {sec.link.label}
+                <IoArrowForward className="text-xs" />
+              </a>
+            )}
+          </section>
+        ))
+      }
+    </div>
+
+    <div class="mt-14 border-t border-zinc-200 pt-6 dark:border-white/10">
+      <a
+        href={REPO}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex h-10 items-center gap-2 rounded-lg border border-zinc-200 px-4 text-sm font-medium text-zinc-700 transition-colors hover:border-violet-400 hover:text-violet-600 dark:border-white/10 dark:text-zinc-200 dark:hover:text-violet-300"
+      >
+        <IoLogoGithub className="text-lg" />
+        {content.source}
+      </a>
+    </div>
+  </div>
+</main>

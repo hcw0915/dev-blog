@@ -8,8 +8,8 @@ export const translations = {
     // About page
     about: {
       title: 'Antonio Hou',
-      subtitle: 'Frontend Developer',
-      intro: '自學開始，2022.12 開始前端工程師生涯，熟悉 React 生態，具備前端工程化的認知與部分優化實踐。對於新知識與內容充滿好奇，且具備主動探索慾望。',
+      subtitle: '前端工程師',
+      intro: '化學材料工程系畢業，自學轉職前端，2022 年 12 月開始前端工程師生涯，目前在 Brilliant Gaming 擔任中高階前端工程師。工作重心是 Next.js 服務端渲染、首屏效能與多語系 SEO，也負責活動 SDK 與嵌入式 UI 的樣式隔離。工作之外研究 Three.js 與 Shader，並在團隊裡推動 AI 輔助開發流程。',
       downloadResume: '下載履歷 PDF',
       contact: '聯絡方式',
       skills: '技能',
@@ -18,6 +18,21 @@ export const translations = {
       workExperience: '工作經驗',
       languages: '語言能力',
       scanQRCode: '掃描二維碼訪問',
+      highlightsTitle: '成果',
+      highlights: [
+        { value: '3+', label: '年前端開發經驗', note: '2022 年 12 月起' },
+        { value: '−65%', label: 'webpack 建置時間', note: '187 秒降到 66 秒' },
+        { value: '+42%', label: '頁面圖片載入速度', note: '圖片策略優化' },
+        { value: '0 → 1', label: '多環境網站平台', note: 'Next.js 15 SSR' }
+      ],
+      links: {
+        github: 'GitHub',
+        email: 'Email',
+        qr: '顯示 QR code',
+        caseStudy: '看案例',
+        source: '原始碼',
+        article: '讀文章'
+      },
       // Work experience
       work: {
         brilliantGaming: {
@@ -71,15 +86,27 @@ export const translations = {
         }
       },
       // Projects
-      projectsTitle: '專案連結',
+      projectsTitle: '作品與案例',
       projects: {
-        blog: {
-          title: '個人技術部落格',
-          description: '使用 Astro、React 和 Tailwind CSS 建立的技術部落格，記錄學習筆記和開發心得。'
+        thisSite: {
+          title: 'Antonio.dev · 這個網站',
+          description: 'Astro 打造的作品集與技術部落格：CodeSandbox 式多檔案 playground、依 WCAG 對比度自動配色的生成式縮圖、WebGL shader 首頁，在 Inkdrop 寫筆記就自動發佈。',
+          tags: ['Astro', 'React', 'WebGL', 'Monaco']
         },
-        wegames: {
-          title: 'WeGames',
-          description: '遊戲平台專案'
+        embeddedUi: {
+          title: 'Embedded UI 的 CSS 隔離',
+          description: '主站引用 IIFE bundle 元件時，Tailwind 樣式缺失與互相覆蓋的排查，比較加前綴、Shadow DOM、調整插入順序三種方案後的取捨。',
+          tags: ['Tailwind', 'Shadow DOM', 'IIFE']
+        },
+        visualTesting: {
+          title: '視覺回歸測試實作',
+          description: '用 Cypress 搭配 Percy 做截圖比對，整合 Storybook 與 GitHub Actions，是前端測試指南第五章的配套專案。',
+          tags: ['Cypress', 'Percy', 'Storybook', 'GitHub Actions']
+        },
+        froggy: {
+          title: 'Froggy the Boardy',
+          description: '仿 Miro 的即時協作繪圖白板，包含登入驗證與雲端資料儲存。',
+          tags: ['Next.js', 'Liveblocks', 'Convex', 'Clerk', 'Zustand']
         }
       },
       // Languages
@@ -145,7 +172,9 @@ export const translations = {
       playgroundLabel: 'PLAYGROUND',
       playgroundCta: '互動程式實驗場',
       latestPosts: '最新文章',
-      viewAll: '全部文章'
+      viewAll: '全部文章',
+      ctaAbout: '關於我',
+      ctaResume: '履歷'
     },
     // Blog list page
     blog: {
@@ -204,8 +233,8 @@ export const translations = {
     // About page
     about: {
       title: 'Antonio Hou',
-      subtitle: 'Frontend Developer',
-      intro: 'Started self-learning and began my career as a frontend developer in December 2022. Familiar with the React ecosystem, I have knowledge of frontend engineering and some optimization practices. I am curious about new knowledge and content, and have the initiative to explore.',
+      subtitle: 'Frontend Engineer',
+      intro: 'I studied chemical engineering, taught myself frontend development, and have worked as a frontend engineer since December 2022. I am now a mid–senior frontend engineer at Brilliant Gaming, focused on Next.js server-side rendering, first-load performance, and multilingual SEO, plus SDKs and style isolation for embedded UIs. Outside work I explore Three.js and shaders, and I bring AI-assisted workflows to my team.',
       downloadResume: 'Download Resume PDF',
       contact: 'Contact',
       skills: 'Skills',
@@ -214,6 +243,21 @@ export const translations = {
       workExperience: 'Work Experience',
       languages: 'Languages',
       scanQRCode: 'Scan QR Code to Visit',
+      highlightsTitle: 'Highlights',
+      highlights: [
+        { value: '3+', label: 'years in frontend', note: 'since December 2022' },
+        { value: '−65%', label: 'webpack build time', note: '187s down to 66s' },
+        { value: '+42%', label: 'page image load speed', note: 'image optimization' },
+        { value: '0 → 1', label: 'multi-environment web platform', note: 'Next.js 15 SSR' }
+      ],
+      links: {
+        github: 'GitHub',
+        email: 'Email',
+        qr: 'Show QR code',
+        caseStudy: 'Read case study',
+        source: 'Source',
+        article: 'Read article'
+      },
       // Work experience
       work: {
         brilliantGaming: {
@@ -221,13 +265,13 @@ export const translations = {
           title: 'Mid–Sr. Frontend Developer',
           period: 'May 2025 - Present',
           responsibilities: [
-            'Solidjs website development, component integration and communication suggestions (legacy project)',
-            'Next.js 15 package network development (Server Side Render) (new project)',
-            'Participated in 0-1 project infrastructure, multi-environment setup for different betting networks',
-            'Basic component design management, communication with art team and component specification management',
-            'First screen resource performance optimization (server-side rendering, dynamic imports, etc.)',
-            'Dynamic SEO setup, creating corresponding sitemap and page tags for multi-language support',
-            'Event-type private package development, SDK export and iframe solution handling'
+            'Maintained a SolidJS site, handling component integration and technical recommendations (legacy project)',
+            'Built a white-label web platform on Next.js 15 with server-side rendering (new project)',
+            'Set up 0-to-1 project infrastructure with multi-environment configs for multiple brands',
+            'Owned base component design and specs, working directly with the art team',
+            'Improved first-load performance with server-side rendering and dynamic imports',
+            'Implemented dynamic SEO with per-locale sitemaps and meta tags',
+            'Built private campaign packages shipped as SDKs, including iframe-based integration'
           ]
         },
         yingtong: {
@@ -235,8 +279,8 @@ export const translations = {
           title: 'Mid. Frontend Developer',
           period: 'Dec 2024 - May 2025',
           responsibilities: [
-            'React 16 (class + function) Next 12, maintaining official website/backend',
-            'webpack optimization (build time reduced from 187s to 66s)'
+            'Maintained the marketing site and admin dashboard on React 16 (class and function components) and Next 12',
+            'Optimized webpack builds, cutting build time from 187s to 66s'
           ]
         },
         worldEntertainment: {
@@ -244,13 +288,13 @@ export const translations = {
           title: 'Jr. Frontend Developer',
           period: 'Oct 2023 - Oct 2024',
           responsibilities: [
-            'Mainly responsible for game development / website iteration / platform maintenance, private package maintenance (including Baccarat/Fantan/Roulette/Lottery)',
-            'Image optimization, improved webpage image loading speed by 42%',
-            'Wrote custom ESLint rules to ensure project style',
-            'Built web/h5 game interfaces using SVG, styled-components, and Tailwind',
-            'CDD component-driven development, providing components for other developers',
-            'Pixel perfect UI with high completion',
-            'Refactored native JS project, Next + Payload 3 official website/CMS development'
+            'Developed games, iterated on the marketing site, and maintained the platform and private packages (baccarat, fan-tan, roulette, lottery)',
+            'Optimized images, improving page image load speed by 42%',
+            'Wrote custom ESLint rules to enforce project conventions',
+            'Built web and mobile game UIs with SVG, styled-components, and Tailwind',
+            'Practiced component-driven development, publishing components for other developers',
+            'Delivered pixel-perfect UI implementations',
+            'Rebuilt a vanilla JS project as a Next.js and Payload 3 marketing site with CMS'
           ]
         },
         heling: {
@@ -258,24 +302,36 @@ export const translations = {
           title: 'Jr. Frontend Developer',
           period: 'Dec 2022 - Aug 2023',
           responsibilities: [
-            'Three.js smart factory project maintenance',
-            'Established project version control system (git)',
-            'Introduced Zustand to replace useContext rendering performance issues',
-            'Wrote project documentation and summaries',
-            'Developed hardware control system with React-hook-form'
+            'Maintained a Three.js smart-factory project',
+            'Introduced Git-based version control to the project',
+            'Replaced useContext with Zustand to fix re-render performance issues',
+            'Wrote and organized project documentation',
+            'Built a hardware control system UI with React Hook Form'
           ]
         }
       },
       // Projects
-      projectsTitle: 'Projects',
+      projectsTitle: 'Work & Case Studies',
       projects: {
-        blog: {
-          title: 'Personal Tech Blog',
-          description: 'A technical blog built with Astro, React, and Tailwind CSS, documenting learning notes and development insights.'
+        thisSite: {
+          title: 'Antonio.dev · this site',
+          description: 'Portfolio and tech blog built with Astro: a CodeSandbox-style multi-file playground, generative thumbnails colored with WCAG contrast math, a WebGL shader hero, and posts that publish straight from Inkdrop notes.',
+          tags: ['Astro', 'React', 'WebGL', 'Monaco']
         },
-        wegames: {
-          title: 'WeGames',
-          description: 'Gaming Platform Project'
+        embeddedUi: {
+          title: 'CSS isolation for embedded UI',
+          description: 'Debugging missing and overridden Tailwind styles when the main site loads components from an IIFE bundle, then weighing prefixing, Shadow DOM, and injection order.',
+          tags: ['Tailwind', 'Shadow DOM', 'IIFE']
+        },
+        visualTesting: {
+          title: 'Visual regression testing',
+          description: 'Screenshot diffing with Cypress and Percy, integrated with Storybook and GitHub Actions. Companion project to chapter 5 of my frontend testing series.',
+          tags: ['Cypress', 'Percy', 'Storybook', 'GitHub Actions']
+        },
+        froggy: {
+          title: 'Froggy the Boardy',
+          description: 'A Miro-style real-time collaborative drawing board with authentication and cloud data storage.',
+          tags: ['Next.js', 'Liveblocks', 'Convex', 'Clerk', 'Zustand']
         }
       },
       // Languages
@@ -341,7 +397,9 @@ export const translations = {
       playgroundLabel: 'PLAYGROUND',
       playgroundCta: 'Interactive code playground',
       latestPosts: 'Latest posts',
-      viewAll: 'All posts'
+      viewAll: 'All posts',
+      ctaAbout: 'About me',
+      ctaResume: 'Resume'
     },
     // Blog list page
     blog: {

@@ -1,28 +1,53 @@
 ---
-import { IoQrCodeOutline } from 'react-icons/io5'
+/**
+ * 聯絡方式卡片：整張是真正的連結，點了直接開。
+ * 先前整張是按鈕、點了只跳 QR code —— 在電腦上點 GitHub 或 Email 的人期待的是打開連結。
+ * 手機 app 類的聯絡方式（qr）右上角另外留一顆小按鈕顯示 QR code。
+ */
+import { IoQrCodeOutline } from "react-icons/io5"
 
 export interface Props {
   label: string
   url: string
   icon: any
   hoverColor: string
+  qr?: boolean
+  qrLabel?: string
 }
 
-const { label, url, icon: Icon, hoverColor } = Astro.props
+const { label, url, icon: Icon, hoverColor, qr = false, qrLabel = "QR code" } = Astro.props
+const external = !url.startsWith("mailto:")
 ---
 
-<button
-  onclick={`showQRModal('${label}', '${url}')`}
-  class="social-button w-full flex flex-col items-center gap-3 p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border-2 transition-all duration-300 cursor-pointer group hover:scale-105 hover:shadow-lg"
-  style={{
-    '--hover-color': hoverColor,
-    'border-color': hoverColor
-  }}
->
-  <Icon className="text-3xl text-zinc-600 dark:text-zinc-400 group-hover:text-white transition-colors duration-300" />
-  <span class="text-sm font-medium text-zinc-600 dark:text-zinc-400 group-hover:text-white transition-colors duration-300">{label}</span>
-  <IoQrCodeOutline className="text-lg text-zinc-500 dark:text-zinc-400 group-hover:text-white/90 transition-colors duration-300" />
-</button>
+<div class="relative">
+  <a
+    href={url}
+    target={external ? "_blank" : undefined}
+    rel={external ? "noopener noreferrer" : undefined}
+    class="social-button group flex w-full flex-col items-center gap-2 rounded-xl border-2 bg-zinc-50 px-3 py-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg dark:bg-zinc-900/50"
+    style={{ "--hover-color": hoverColor, "border-color": hoverColor }}
+  >
+    <Icon className="text-2xl text-zinc-600 transition-colors duration-200 group-hover:text-white dark:text-zinc-400" />
+    <span class="text-sm font-medium text-zinc-600 transition-colors duration-200 group-hover:text-white dark:text-zinc-400">
+      {label}
+    </span>
+  </a>
+  {
+    qr && (
+      <button
+        type="button"
+        class="qr-button absolute right-1.5 top-1.5 rounded-md p-1 text-zinc-400 transition-colors hover:bg-zinc-900/10 hover:text-zinc-700 dark:hover:bg-white/10 dark:hover:text-zinc-200"
+        aria-label={`${qrLabel}：${label}`}
+        title={qrLabel}
+        data-qr-label={label}
+        data-qr-url={url}
+        onclick="window.showQRModal && window.showQRModal(this.dataset.qrLabel, this.dataset.qrUrl)"
+      >
+        <IoQrCodeOutline className="text-base" />
+      </button>
+    )
+  }
+</div>
 
 <style>
   .social-button:hover {

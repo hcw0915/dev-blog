@@ -14,6 +14,8 @@ import { getTranslations } from "@/i18n/translations"
 import { displayTags, tagStyle, primaryTag } from "@/lib/tags"
 import { assignKinds } from "@/lib/thumb"
 import { slugOf } from "@/lib/post"
+import { PDF_PATH, GITHUB_URL, EMAIL } from "@/config/about"
+import { IoLogoGithub, IoMailOutline, IoDocumentTextOutline, IoPersonOutline } from "react-icons/io5"
 // 與 playground 的 hero-shader 範例共用同一份 GLSL —— 背景本身就是一篇可編輯的範例
 import heroFrag from "@/data/playgrounds/hero-shader/shader.frag?raw"
 
@@ -99,6 +101,25 @@ const topics = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8)
         >
           {t.home.intro}
         </p>
+        <!-- 作品集入口：第一次來的人要能立刻找到關於、履歷、GitHub、Email -->
+        <div class="mt-6 flex flex-wrap items-center gap-2">
+          <a href={`${prefix}/about`} class="hero-cta hero-cta-primary">
+            <IoPersonOutline className="text-base" />
+            {t.home.ctaAbout}
+          </a>
+          <a href={PDF_PATH} download class="hero-cta">
+            <IoDocumentTextOutline className="text-base" />
+            {t.home.ctaResume}
+          </a>
+          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="hero-cta">
+            <IoLogoGithub className="text-base" />
+            GitHub
+          </a>
+          <a href={`mailto:${EMAIL}`} class="hero-cta">
+            <IoMailOutline className="text-base" />
+            Email
+          </a>
+        </div>
 
         <div class="mt-auto pt-10">
           <div
@@ -298,6 +319,48 @@ void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);gl_Position=vec4(p*2.0
 </script>
 
 <style>
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    height: 2.25rem;
+    padding: 0 0.875rem;
+    border-radius: 9999px;
+    border: 1px solid rgb(228 228 231);
+    background: rgb(255 255 255 / 0.6);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgb(63 63 70);
+    backdrop-filter: blur(8px);
+    transition:
+      border-color 0.15s,
+      color 0.15s,
+      background-color 0.15s;
+  }
+  :global(.dark) .hero-cta {
+    border-color: rgb(255 255 255 / 0.12);
+    background: rgb(9 9 11 / 0.4);
+    color: rgb(228 228 231);
+  }
+  .hero-cta:hover {
+    border-color: #a78bfa;
+    color: #7c3aed;
+  }
+  :global(.dark) .hero-cta:hover {
+    color: #c4b5fd;
+  }
+  .hero-cta-primary,
+  :global(.dark) .hero-cta-primary {
+    background: #7c3aed;
+    border-color: #7c3aed;
+    color: #fff;
+  }
+  .hero-cta-primary:hover,
+  :global(.dark) .hero-cta-primary:hover {
+    background: #6d28d9;
+    border-color: #6d28d9;
+    color: #fff;
+  }
   .chip {
     font-size: 10px;
     font-weight: 700;

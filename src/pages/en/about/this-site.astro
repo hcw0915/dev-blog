@@ -1,0 +1,22 @@
+---
+import BaseHead from "@/components/BaseHead.astro"
+import Header from "@/components/Header.astro"
+import Footer from "@/components/Footer.astro"
+import Body from "@/components/Body.astro"
+import ThisSiteCaseStudy from "@/components/ThisSiteCaseStudy.astro"
+import { SITE_TITLE } from "@/config"
+
+const locale = "en"
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`How this site is built - ${SITE_TITLE}`} description="Case study of Antonio.dev: a CodeSandbox-style playground, generative thumbnails with WCAG-based colors, a WebGL shader hero, publishing from Inkdrop, and site search chosen by measurement." />
+  </head>
+  <Body>
+    <Header />
+    <ThisSiteCaseStudy locale={locale} />
+    <Footer />
+  </Body>
+</html>
