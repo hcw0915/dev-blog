@@ -62,7 +62,9 @@ for (const p of posts) {
 const topics = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8)
 ---
 
-<main class="relative overflow-x-clip pt-[88px] pb-16">
+<!-- isolate：main 自成 stacking context，canvas 的 -z-10 才是相對 main 而不是相對根。
+     否則 body 一旦自己畫背景（html 有背景時 body 的背景不再往上傳到畫布），就會蓋掉負 z-index 的 canvas -->
+<main class="relative isolate overflow-x-clip pt-[88px] pb-16">
   <!-- 背景 shader：全寬、頂到頁面最上方（header 有 backdrop-blur 會透出來），高度由 JS 依 hero 的位置算，
        底部用 mask 漸隱。跑起來後 .glow 隱藏；沒有 WebGL2 或 prefers-reduced-motion 時只剩靜態柔光 -->
   <canvas
