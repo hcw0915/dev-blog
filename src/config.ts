@@ -58,6 +58,41 @@ export const TAG_WEIGHT_DEFAULT = 40
 export const NOISE_TAGS = new Set(["blog"])
 
 /**
+ * 系列文章。陣列順序就是閱讀順序。
+ * 文章底部的上一篇／下一篇原本按發佈時間排，讀完系列中的一篇會跳到不相干的文章；
+ * 在系列裡的文章改成系列內導航，並在標題下列出整個系列。
+ * build 時會檢查每個 slug 都存在（lib/series.ts），下架或改名文章時會直接報錯提醒改這裡。
+ */
+export const SERIES: { id: string; title: { zh: string; en: string }; slugs: string[] }[] = [
+  {
+    id: "anti-three",
+    title: { zh: "AntiThree", en: "AntiThree" },
+    slugs: [
+      "anti-three-1-furniture",
+      "anti-three-2-banana",
+      "anti-three-3-lusion",
+      "anti-three-4-bruno-simon-20-k",
+      "anti-three-5-monitor-bunny",
+    ],
+  },
+  {
+    id: "frontend-testing",
+    title: { zh: "前端測試指南", en: "Frontend Testing Guide" },
+    slugs: ["chapter-1", "chapter-2-1-2-3", "chapter-2-4-2-6", "chapter-5"],
+  },
+  {
+    id: "shader-basics",
+    title: { zh: "Shader 入門", en: "Shader Basics" },
+    slugs: [
+      "shader-uniform-attribute-varying",
+      "shader-template",
+      "shader-color-offset",
+      "shader-built-in-variables",
+    ],
+  },
+]
+
+/**
  * 首頁「精選」要放哪幾篇。刻意與時間無關 —— 先前首頁把最新 3 篇做成卡片、
  * 第 4 篇之後做成列表並標上「最新文章」，等於標題在說謊。
  *

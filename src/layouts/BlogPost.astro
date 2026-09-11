@@ -6,6 +6,7 @@ import Body from "@/components/Body.astro"
 import { colorForTag, displayTags } from "@/lib/tags"
 import { assignKinds, thumbSvg } from "@/lib/thumb"
 import { slugOf } from "@/lib/post"
+import { seriesOf, assertSeries } from "@/lib/series"
 import { getLocaleFromPath, formatDate } from "@/i18n/utils"
 import { getTranslations } from "@/i18n/translations"
 import fs from "node:fs"
@@ -71,6 +72,17 @@ const heroSvg = customHero ? null : thumbSvg(slug, tags, kinds[slug])
 
 const olderPost = idx >= 0 && idx < allPosts.length - 1 ? allPosts[idx + 1] : null
 
+// 系列：在系列裡的文章，底部導航改成系列內的上一篇／下一篇，標題下列出整個系列
+assertSeries(allPosts.map(p => slugOf(p)))
+const bySlug = new Map(allPosts.map(p => [slugOf(p), p]))
+const series = seriesOf(slug)
+const seriesTitle = series ? series.title[locale === 'en' ? 'en' : 'zh'] : ''
+const seriesPosts = series ? series.slugs.map(s => bySlug.get(s)!) : []
+const prevLink = series ? (series.prev ? bySlug.get(series.prev) : null) : olderPost
+const nextLink = series ? (series.next ? bySlug.get(series.next) : null) : newerPost
+const prevLabel = series ? t.post.seriesPrev : t.post.prev
+const nextLabel = series ? t.post.seriesNext : t.post.next
+
 const toc = headings.filter(h => h.depth >= 2 && h.depth <= 3)
 
 const jsonLd = JSON.stringify({
@@ -121,7 +133,11 @@ const jsonLd = JSON.stringify({
 
     <main class="pt-[88px] pb-8">
       <div class="mx-auto max-w-6xl px-4 xl:grid xl:grid-cols-[1fr_220px] xl:gap-10">
-        <article class="markdown-content w-full max-w-[68ch] mx-auto min-w-0">
+        <article
+          class="markdown-content w-full max-w-[68ch] mx-auto min-w-0"
+          data-copy={t.post.copy}
+          data-copied={t.post.copied}
+        >
           <div
             transition:name={`post-thumb-${slug}`}
             class="not-prose mb-8 aspect-[8/3] w-full overflow-hidden rounded-2xl border border-zinc-200 dark:border-white/10"
@@ -157,6 +173,31 @@ const jsonLd = JSON.stringify({
           >
             {title}
           </h1>
+          {
+            series && (
+              <details class="series-box mt-5">
+                <summary>
+                  <span class="min-w-0 truncate">
+                    <span class="text-zinc-400 dark:text-zinc-500">{t.post.series}</span>
+                    <strong class="ml-1.5 font-semibold text-zinc-800 dark:text-zinc-100">{seriesTitle}</strong>
+                  </span>
+                  <span class="shrink-0 font-mono text-xs text-zinc-400 dark:text-zinc-500">
+                    {series.index + 1} / {series.slugs.length}
+                  </span>
+                </summary>
+                <ol>
+                  {seriesPosts.map((p, i) => (
+                    <li>
+                      <a href={p.url} aria-current={i === series.index ? 'page' : undefined}>
+                        <span class="series-num">{i + 1}</span>
+                        <span class="min-w-0 truncate">{p.frontmatter.title}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </details>
+            )
+          }
           <hr class="border-zinc-200 dark:border-white/10 my-6" />
 
           {
@@ -180,14 +221,14 @@ const jsonLd = JSON.stringify({
 
           <nav class="mt-12 grid sm:grid-cols-2 gap-3">
             {
-              olderPost ? (
+              prevLink ? (
                 <a
-                  href={olderPost.url}
+                  href={prevLink.url}
                   class="!no-underline block rounded-2xl border border-zinc-200 dark:border-white/10 p-4 hover:border-violet-400/50 transition-colors"
                 >
-                  <div class="text-xs text-zinc-400 dark:text-zinc-500 mb-1">← {t.post.prev}</div>
+                  <div class="text-xs text-zinc-400 dark:text-zinc-500 mb-1">← {prevLabel}</div>
                   <div class="text-sm font-semibold !text-zinc-700 dark:!text-zinc-200">
-                    {olderPost.frontmatter.title}
+                    {prevLink.frontmatter.title}
                   </div>
                 </a>
               ) : (
@@ -195,14 +236,14 @@ const jsonLd = JSON.stringify({
               )
             }
             {
-              newerPost && (
+              nextLink && (
                 <a
-                  href={newerPost.url}
+                  href={nextLink.url}
                   class="!no-underline block rounded-2xl border border-zinc-200 dark:border-white/10 p-4 text-right hover:border-violet-400/50 transition-colors"
                 >
-                  <div class="text-xs text-zinc-400 dark:text-zinc-500 mb-1">{t.post.next} →</div>
+                  <div class="text-xs text-zinc-400 dark:text-zinc-500 mb-1">{nextLabel} →</div>
                   <div class="text-sm font-semibold !text-zinc-700 dark:!text-zinc-200">
-                    {newerPost.frontmatter.title}
+                    {nextLink.frontmatter.title}
                   </div>
                 </a>
               )
@@ -236,7 +277,259 @@ const jsonLd = JSON.stringify({
         }
       </div>
     </main>
+    <dialog id="img-zoom" class="img-zoom" aria-label="image">
+      <img alt="" />
+    </dialog>
+
+    <style is:global>
+      /* 系列區塊 */
+      .series-box {
+        border: 1px solid rgb(228 228 231);
+        border-radius: 0.875rem;
+        font-size: 0.875rem;
+      }
+      :root.dark .series-box { border-color: rgb(255 255 255 / 0.1); }
+      .series-box summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.625rem 1rem;
+        cursor: pointer;
+        list-style: none;
+      }
+      .series-box summary::-webkit-details-marker { display: none; }
+      .series-box summary::after {
+        content: "";
+        width: 0.4rem;
+        height: 0.4rem;
+        flex-shrink: 0;
+        border-right: 1.5px solid currentColor;
+        border-bottom: 1.5px solid currentColor;
+        transform: rotate(45deg);
+        opacity: 0.45;
+        transition: transform 0.2s;
+      }
+      .series-box[open] summary::after { transform: rotate(-135deg); }
+      main article.markdown-content .series-box ol {
+        list-style: none;
+        margin: 0;
+        padding: 0.25rem 0.375rem 0.5rem;
+        border-top: 1px solid rgb(228 228 231);
+      }
+      :root.dark main article.markdown-content .series-box ol { border-color: rgb(255 255 255 / 0.1); }
+      .series-box li a {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        padding: 0.375rem 0.625rem;
+        border-radius: 0.5rem;
+        color: rgb(113 113 122);
+        text-decoration: none !important;
+      }
+      .series-box li a:hover { background: rgb(24 24 27 / 0.04); color: rgb(39 39 42); }
+      :root.dark .series-box li a:hover { background: rgb(255 255 255 / 0.05); color: rgb(228 228 231); }
+      .series-box li a[aria-current="page"] { color: #7c3aed; font-weight: 600; }
+      :root.dark .series-box li a[aria-current="page"] { color: #c4b5fd; }
+      .series-num {
+        width: 1.25rem;
+        flex-shrink: 0;
+        text-align: right;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.75rem;
+        opacity: 0.6;
+      }
+
+      /* 表格：欄位多的表格在手機上會把整頁撐出橫向捲動，改成表格自己捲 */
+      main article.markdown-content table {
+        display: block;
+        width: max-content;
+        max-width: 100%;
+        overflow-x: auto;
+      }
+
+      /* 程式碼區塊：語言標籤 + 複製鈕 */
+      .code-frame { position: relative; }
+      .code-bar {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 11px;
+        line-height: 1;
+      }
+      .code-lang {
+        color: rgb(161 161 170 / 0.8);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        text-transform: lowercase;
+        transition: opacity 0.15s;
+      }
+      .code-copy {
+        padding: 0.3rem 0.5rem;
+        border-radius: 0.375rem;
+        border: 1px solid rgb(255 255 255 / 0.12);
+        background: rgb(24 24 27 / 0.85);
+        color: rgb(212 212 216);
+        opacity: 0;
+        transition: opacity 0.15s, color 0.15s;
+      }
+      .code-frame:hover .code-copy,
+      .code-copy:focus-visible,
+      .code-copy[data-state="done"] { opacity: 1; }
+      .code-frame:hover .code-lang { opacity: 0; }
+      .code-copy[data-state="done"] { color: #6ee7b7; }
+      @media (hover: none) {
+        .code-copy { opacity: 1; }
+        .code-lang { display: none; }
+      }
+
+      /* 圖片放大 */
+      main article.markdown-content img.zoomable { cursor: zoom-in; }
+      .img-zoom {
+        max-width: none;
+        max-height: none;
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: zoom-out;
+      }
+      .img-zoom[open] { display: grid; place-items: center; }
+      .img-zoom::backdrop {
+        background: rgb(9 9 11 / 0.82);
+        backdrop-filter: blur(6px);
+      }
+      .img-zoom img {
+        max-width: min(92vw, 1400px);
+        max-height: 90vh;
+        object-fit: contain;
+        border-radius: 0.75rem;
+        box-shadow: 0 30px 80px rgb(0 0 0 / 0.5);
+      }
+      .img-zoom[open] img { animation: img-zoom-in 0.2s ease-out; }
+      @keyframes img-zoom-in { from { opacity: 0; transform: scale(0.96); } }
+      @media (prefers-reduced-motion: reduce) {
+        .img-zoom[open] img { animation: none; }
+      }
+    </style>
+
     <Footer />
+
+    <script is:inline>
+      ;(() => {
+        const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches
+
+        // 每頁都要做：包程式碼區塊、標記可放大的圖
+        function initPostUx() {
+          const article = document.querySelector('article.markdown-content')
+          if (!article) return
+          const copyText = article.dataset.copy || 'Copy'
+          const doneText = article.dataset.copied || 'Copied'
+
+          article.querySelectorAll('pre.astro-code').forEach(pre => {
+            if (pre.parentElement?.classList.contains('code-frame')) return
+            const frame = document.createElement('div')
+            frame.className = 'code-frame'
+            pre.replaceWith(frame)
+            frame.appendChild(pre)
+
+            const bar = document.createElement('div')
+            bar.className = 'code-bar'
+            const lang = pre.dataset.language
+            if (lang && lang !== 'plaintext') {
+              const tag = document.createElement('span')
+              tag.className = 'code-lang'
+              tag.textContent = lang
+              bar.appendChild(tag)
+            }
+            const btn = document.createElement('button')
+            btn.type = 'button'
+            btn.className = 'code-copy'
+            btn.textContent = copyText
+            bar.appendChild(btn)
+            frame.appendChild(bar)
+          })
+
+          article.querySelectorAll('img').forEach(img => {
+            if (img.closest('a, [aria-hidden="true"], .code-frame')) return
+            img.classList.add('zoomable')
+          })
+        }
+        document.addEventListener('astro:page-load', initPostUx)
+
+        // 全域委派只綁一次：ClientRouter 換頁時元素會換掉，監聽器掛在 document 上才不會失效
+        if (window.__postUxBound) return
+        window.__postUxBound = true
+
+        const copy = async text => {
+          try {
+            await navigator.clipboard.writeText(text)
+            return true
+          } catch {
+            // 非安全來源（http）沒有 clipboard API
+            const ta = document.createElement('textarea')
+            ta.value = text
+            ta.style.cssText = 'position:fixed;opacity:0'
+            document.body.appendChild(ta)
+            ta.select()
+            const ok = document.execCommand('copy')
+            ta.remove()
+            return ok
+          }
+        }
+
+        document.addEventListener('click', async e => {
+          // 複製
+          const btn = e.target.closest?.('.code-copy')
+          if (btn) {
+            const pre = btn.closest('.code-frame')?.querySelector('pre')
+            const article = btn.closest('article')
+            if (!pre) return
+            const ok = await copy((pre.querySelector('code') ?? pre).innerText.replace(/\n$/, ''))
+            if (!ok) return
+            btn.textContent = article?.dataset.copied || 'Copied'
+            btn.dataset.state = 'done'
+            clearTimeout(btn._t)
+            btn._t = setTimeout(() => {
+              btn.textContent = article?.dataset.copy || 'Copy'
+              delete btn.dataset.state
+            }, 1500)
+            return
+          }
+
+          // 圖片放大／關閉
+          const img = e.target.closest?.('article.markdown-content img.zoomable')
+          const dlg = document.getElementById('img-zoom')
+          if (img && dlg) {
+            const big = dlg.querySelector('img')
+            big.src = img.currentSrc || img.src
+            big.alt = img.alt
+            dlg.showModal()
+            return
+          }
+          if (dlg?.open && e.target.closest?.('#img-zoom')) {
+            dlg.close()
+            return
+          }
+
+          // TOC 與文內錨點：平滑捲動，不是直接跳
+          const a = e.target.closest?.('a[href^="#"]')
+          if (!a || !a.closest('#toc-nav, article.markdown-content')) return
+          const id = decodeURIComponent(a.getAttribute('href').slice(1))
+          const target = id && document.getElementById(id)
+          if (!target) return
+          e.preventDefault()
+          target.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' })
+          // replaceState 保留 ClientRouter 放在 history.state 裡的資料，也不會多一筆上一頁
+          history.replaceState(history.state, '', '#' + encodeURIComponent(id))
+          a.closest('details')?.removeAttribute('open')
+        })
+      })()
+    </script>
 
     <script is:inline>
       let tocObserver

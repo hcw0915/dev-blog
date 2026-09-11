@@ -2,20 +2,32 @@
 import HeaderLink from "./HeaderLink.astro"
 import LanguageToggle from "./LanguageToggle"
 import PlaygroundDropdown from "./PlaygroundDropdown"
-import { IoLogoGithub } from "react-icons/io5"
-import FootprintIcon from "./icons/footprint"
 import ThemeToggle from "./ThemeToggleButton"
+import SearchDialog from "./SearchDialog.astro"
 import { getLocaleFromPath } from "@/i18n/utils"
 import { defaultLocale, getTranslations } from "@/i18n/translations"
-import type { Locale } from "@/i18n/translations"
 
 const currentPath = Astro.url.pathname
 const locale = getLocaleFromPath(currentPath)
 const t = getTranslations(locale)
 
-const homePath = locale === defaultLocale ? '/' : `/${locale}/`
-const aboutPath = locale === defaultLocale ? '/about' : `/${locale}/about`
-const postsPath = locale === defaultLocale ? '/posts' : `/${locale}/posts`
+const prefix = locale === defaultLocale ? "" : `/${locale}`
+const homePath = `${prefix}/`
+const aboutPath = `${prefix}/about`
+const postsPath = `${prefix}/posts`
+const vanillaPath = `${prefix}/playground/vanilla`
+const reactPath = `${prefix}/playground/react`
+
+const path = currentPath.replace(/\/$/, "")
+const isUnder = (href: string) => path === href || path.startsWith(href + "/")
+const mobileLinks = [
+  { href: aboutPath, label: t.nav.about, active: isUnder(aboutPath) },
+  { href: postsPath, label: t.nav.blog, active: isUnder(postsPath) }
+]
+const mobilePlayground = [
+  { href: vanillaPath, label: t.playground.vanilla, active: isUnder(vanillaPath) },
+  { href: reactPath, label: t.playground.react, active: isUnder(reactPath) }
+]
 ---
 
 <header
@@ -23,25 +35,173 @@ const postsPath = locale === defaultLocale ? '/posts' : `/${locale}/posts`
 >
   <div class="mx-auto max-w-5xl">
     <nav class="w-full flex items-center gap-3 text-base font-ptsans">
-      <!-- 左侧：Logo -->
       <a href={homePath} class="group flex-shrink-0">
         <h2 class="font-bold tracking-tight p-2 text-lg dark:text-zinc-50">
           Antonio<span class="text-transparent bg-clip-text bg-brand-gradient">.dev</span>
         </h2>
       </a>
-      
-      <!-- 中间：导航链接 -->
-      <div class="flex-1 flex items-center justify-center gap-6">
+
+      <!-- 桌面：置中導航。手機放不下三個中文連結，會被擠成一字一行 -->
+      <div class="hidden md:flex flex-1 items-center justify-center gap-6">
         <HeaderLink href={aboutPath}>{t.nav.about}</HeaderLink>
         <HeaderLink href={postsPath}>{t.nav.blog}</HeaderLink>
         <PlaygroundDropdown client:visible locale={locale} />
       </div>
-      
-      <!-- 右侧：语言和主题切换 -->
-      <div class="flex items-center gap-6 flex-shrink-0">
+
+      <div class="ml-auto md:ml-0 flex items-center gap-2 md:gap-3 flex-shrink-0">
+        <SearchDialog locale={locale} />
+        <!-- 切語言是高頻操作，手機也留在頂欄；主題切換在手機收進選單 -->
         <LanguageToggle client:visible locale={locale} />
-        <ThemeToggle client:visible locale={locale} />
+        <div class="hidden md:flex items-center">
+          <ThemeToggle client:visible locale={locale} />
+        </div>
+        <button
+          type="button"
+          class="burger md:hidden inline-flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/60 text-zinc-600 dark:border-white/10 dark:bg-white/[0.04] dark:text-zinc-300"
+          popovertarget="mobile-nav"
+          aria-controls="mobile-nav"
+          aria-label={t.aria.menu}
+        >
+          <span class="burger-lines" aria-hidden="true"><span></span><span></span></span>
+        </button>
       </div>
     </nav>
   </div>
+
+  <!--
+    手機選單用原生 popover：點外面、按 Esc 自動關閉，不用自己寫；進到 top layer，
+    不受 header 的 backdrop-blur 裁切。ClientRouter 換頁時 header 重新渲染，選單自然收起。
+  -->
+  <div id="mobile-nav" popover class="mobile-nav md:hidden">
+    <ul class="flex flex-col">
+      {
+        mobileLinks.map(l => (
+          <li>
+            <a href={l.href} class="mobile-link" aria-current={l.active ? "page" : undefined}>
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+      <li>
+        <div class="mobile-group">{t.playground.title}</div>
+        <ul class="flex flex-col">
+          {
+            mobilePlayground.map(l => (
+              <li>
+                <a href={l.href} class="mobile-link pl-7" aria-current={l.active ? "page" : undefined}>
+                  {l.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </li>
+    </ul>
+    <div class="mt-2 flex items-center justify-between gap-3 border-t border-zinc-200 px-3 pt-3 pb-1 dark:border-white/10">
+      <span class="text-sm text-zinc-500 dark:text-zinc-400">{t.aria.toggleTheme}</span>
+      <ThemeToggle client:only="react" locale={locale} />
+    </div>
+  </div>
 </header>
+
+<style is:global>
+  .mobile-nav {
+    margin: 0;
+    inset: 64px 12px auto 12px;
+    width: auto;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    border: 1px solid rgb(228 228 231);
+    background: rgb(250 250 248 / 0.94);
+    color: rgb(39 39 42);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 20px 50px rgb(0 0 0 / 0.15);
+  }
+  :root.dark .mobile-nav {
+    border-color: rgb(255 255 255 / 0.1);
+    background: rgb(24 24 27 / 0.94);
+    color: rgb(228 228 231);
+    box-shadow: 0 20px 50px rgb(0 0 0 / 0.5);
+  }
+  .mobile-nav::backdrop {
+    background: rgb(9 9 11 / 0.3);
+  }
+  .mobile-nav:popover-open {
+    animation: mobile-nav-in 0.18s ease-out;
+  }
+  @keyframes mobile-nav-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-nav:popover-open {
+      animation: none;
+    }
+  }
+  .mobile-link {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 0.75rem;
+    border-radius: 0.625rem;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  .mobile-link:hover {
+    background: rgb(24 24 27 / 0.05);
+  }
+  :root.dark .mobile-link:hover {
+    background: rgb(255 255 255 / 0.06);
+  }
+  .mobile-link[aria-current="page"] {
+    color: #7c3aed;
+    font-weight: 700;
+  }
+  :root.dark .mobile-link[aria-current="page"] {
+    color: #c4b5fd;
+  }
+  .mobile-group {
+    padding: 0.625rem 0.75rem 0.25rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgb(161 161 170);
+  }
+
+  /* 漢堡圖示：兩條線，選單打開時轉成 × */
+  .burger-lines {
+    position: relative;
+    display: block;
+    width: 14px;
+    height: 10px;
+  }
+  .burger-lines span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    border-radius: 1px;
+    background: currentColor;
+    transition:
+      transform 0.2s ease,
+      top 0.2s ease;
+  }
+  .burger-lines span:first-child {
+    top: 2px;
+  }
+  .burger-lines span:last-child {
+    top: 7px;
+  }
+  header:has(#mobile-nav:popover-open) .burger-lines span:first-child {
+    top: 4.25px;
+    transform: rotate(45deg);
+  }
+  header:has(#mobile-nav:popover-open) .burger-lines span:last-child {
+    top: 4.25px;
+    transform: rotate(-45deg);
+  }
+</style>

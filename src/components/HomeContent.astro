@@ -145,9 +145,9 @@ const topics = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8)
           <h2 class="font-serif text-2xl font-bold mb-5 text-zinc-900 dark:text-zinc-50">
             {t.home.featured}
           </h2>
-          <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2">
+          <div class="grid gap-5 sm:grid-cols-2">
             {featured.map((post: any, i: number) => (
-              <div class:list={[i === 0 && "sm:col-span-2 lg:row-span-2"]}>
+              <div class:list={[i === 0 && "sm:col-span-2"]}>
                 <PostCard
                   post={post}
                   locale={locale}

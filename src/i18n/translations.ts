@@ -168,6 +168,7 @@ export const translations = {
     aria: {
       closeModal: '關閉',
       playgroundMenu: '遊戲場選單',
+      menu: '選單',
       switchLanguage: '切換語言',
       toggleTheme: '切換主題'
     },
@@ -182,7 +183,21 @@ export const translations = {
     post: {
       prev: '上一篇',
       next: '下一篇',
-      minRead: '分鐘閱讀'
+      minRead: '分鐘閱讀',
+      series: '系列',
+      seriesPrev: '系列上一篇',
+      seriesNext: '系列下一篇',
+      copy: '複製',
+      copied: '已複製'
+    },
+    // Site search
+    search: {
+      open: '搜尋文章',
+      button: '搜尋',
+      placeholder: '搜尋文章內容…',
+      hint: '輸入關鍵字搜尋全部文章的內容',
+      empty: '找不到符合的文章',
+      unavailable: '搜尋索引載入失敗，請重新整理再試一次'
     }
   },
   en: {
@@ -349,6 +364,7 @@ export const translations = {
     aria: {
       closeModal: 'Close',
       playgroundMenu: 'Playground menu',
+      menu: 'Menu',
       switchLanguage: 'Switch language',
       toggleTheme: 'Toggle theme'
     },
@@ -363,7 +379,21 @@ export const translations = {
     post: {
       prev: 'Previous',
       next: 'Next',
-      minRead: 'min read'
+      minRead: 'min read',
+      series: 'Series',
+      seriesPrev: 'Previous in series',
+      seriesNext: 'Next in series',
+      copy: 'Copy',
+      copied: 'Copied'
+    },
+    // Site search
+    search: {
+      open: 'Search posts',
+      button: 'Search',
+      placeholder: 'Search post content…',
+      hint: 'Type to search the full text of every post',
+      empty: 'No matching posts',
+      unavailable: 'Could not load the search index. Please refresh and try again.'
     }
   }
 } as const

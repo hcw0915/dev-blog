@@ -4,7 +4,6 @@ import {
   TAG_WEIGHT,
   TAG_WEIGHT_DEFAULT
 } from "@/config"
-// @ts-expect-error — 純 JS 模組，共用給 tools/check-contrast.mjs
 import { foregroundFor, inkOn } from "@/lib/color.mjs"
 
 const FALLBACK = ["#a1a1aa", "#d4d4d8"] as const

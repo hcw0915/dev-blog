@@ -27,13 +27,20 @@ const hero = heroFor(slug)
 
 <a
   href={post.url}
-  class="group flex h-full flex-col rounded-2xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/[0.04] overflow-hidden transition-transform duration-300 hover:-translate-y-1"
+  class:list={[
+    "group flex h-full flex-col rounded-2xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/[0.04] overflow-hidden transition-transform duration-300 hover:-translate-y-1",
+    size === "lg" && "md:flex-row"
+  ]}
 >
-  <!-- 大卡：縮圖吃掉多餘高度（SVG 是 slice 模式，填多大都不變形），文字區維持自然高度，
-       卡片才不會在摘要只有一句話時下半留白 -->
+  <!-- 大卡在桌面是橫式：圖左文右，文字垂直置中。先前是直式並橫跨兩列，寬螢幕上縮圖會被撐到
+       右邊兩張卡的總高度，捲下來第一眼只有一大塊花紋、標題被擠到下面。
+       SVG 是 slice 模式，填多大都不變形 -->
   <div
     transition:name={`post-thumb-${slug}`}
-    class:list={["w-full overflow-hidden", size === "lg" ? "flex-1 min-h-[220px]" : "aspect-[8/3]"]}
+    class:list={[
+      "w-full overflow-hidden",
+      size === "lg" ? "aspect-[8/3] shrink-0 md:aspect-auto md:min-h-[280px] md:w-[56%]" : "aspect-[8/3]"
+    ]}
   >
     {
       hero ? (
@@ -44,7 +51,7 @@ const hero = heroFor(slug)
     }
   </div>
 
-  <div class:list={["flex flex-col", size === "lg" ? "p-5 md:p-6" : "flex-1 p-4"]}>
+  <div class:list={["flex flex-1 flex-col", size === "lg" ? "p-5 md:justify-center md:p-8" : "p-4"]}>
     {
       chips.length > 0 && (
         <div class="flex flex-wrap gap-1.5">
