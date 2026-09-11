@@ -103,10 +103,10 @@ export const translations = {
           description: '用 Cypress 搭配 Percy 做截圖比對，整合 Storybook 與 GitHub Actions，是前端測試指南第五章的配套專案。',
           tags: ['Cypress', 'Percy', 'Storybook', 'GitHub Actions']
         },
-        froggy: {
-          title: 'Froggy the Boardy',
-          description: '仿 Miro 的即時協作繪圖白板，包含登入驗證與雲端資料儲存。',
-          tags: ['Next.js', 'Liveblocks', 'Convex', 'Clerk', 'Zustand']
+        knowledge: {
+          title: '團隊 AI 知識庫：Keyword RAG',
+          description: '為團隊導入 AI 設計的知識系統，解決跨對話、跨成員、跨 agent 反覆說明背景的問題。以 governance、agents、skills、knowledge 四層組織，知識依時效分成模組、運行鏈路、bug、決策、事件五類；靠命名約定與關鍵字檢索讓 agent 先查資料再回答，並用校驗器守住格式與交叉引用。',
+          tags: ['Keyword RAG', 'AI Agents', 'Skills', 'Governance']
         }
       },
       // Languages
@@ -328,10 +328,10 @@ export const translations = {
           description: 'Screenshot diffing with Cypress and Percy, integrated with Storybook and GitHub Actions. Companion project to chapter 5 of my frontend testing series.',
           tags: ['Cypress', 'Percy', 'Storybook', 'GitHub Actions']
         },
-        froggy: {
-          title: 'Froggy the Boardy',
-          description: 'A Miro-style real-time collaborative drawing board with authentication and cloud data storage.',
-          tags: ['Next.js', 'Liveblocks', 'Convex', 'Clerk', 'Zustand']
+        knowledge: {
+          title: 'Team AI knowledge base with keyword RAG',
+          description: 'A knowledge system for bringing AI into a team, so context no longer has to be re-explained across conversations, teammates, and agents. It is organized into governance, agents, skills, and knowledge layers, with knowledge split by lifespan into modules, runtime flows, bugs, decisions, and events. Naming conventions and keyword search let agents look things up before answering, and a validator enforces format and cross-references.',
+          tags: ['Keyword RAG', 'AI Agents', 'Skills', 'Governance']
         }
       },
       // Languages
