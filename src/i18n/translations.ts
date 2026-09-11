@@ -21,8 +21,8 @@ export const translations = {
       highlightsTitle: '成果',
       highlights: [
         { value: '3+', label: '年前端開發經驗', note: '2022 年 12 月起' },
-        { value: '−65%', label: 'webpack 建置時間', note: '187 秒降到 66 秒' },
-        { value: '+42%', label: '頁面圖片載入速度', note: '圖片策略優化' },
+        { value: 'RAG', label: '團隊 AI 知識庫', note: 'Keyword RAG · 四層架構' },
+        { value: 'SDK', label: '活動私有包', note: 'SDK 導出 · iframe 方案' },
         { value: '0 → 1', label: '多環境網站平台', note: 'Next.js 15 SSR' }
       ],
       links: {
@@ -98,10 +98,10 @@ export const translations = {
           description: '主站引用 IIFE bundle 元件時，Tailwind 樣式缺失與互相覆蓋的排查，比較加前綴、Shadow DOM、調整插入順序三種方案後的取捨。',
           tags: ['Tailwind', 'Shadow DOM', 'IIFE']
         },
-        languageStrategy: {
-          title: '多語系語言來源的優先順序',
-          description: '多語系網站的語言可能來自 URL、Cookie、localStorage 或瀏覽器設定。沒有明確的優先順序時，會出現使用者選的語言被覆蓋、SSR 與前端語言不一致、hydration mismatch 與 SEO 問題。整理出以 URL 為最高權威的決策順序，並分開說明 Next.js SSR 與 SPA 的取捨和常見錯誤設計。',
-          tags: ['i18n', 'SSR', 'Next.js', 'SEO']
+        eslintRule: {
+          title: '專案內自訂 ESLint 規則',
+          description: '把「圖片 import 一律用 webp」這條團隊約定寫成 ESLint 規則，從 AST 的 ImportDeclaration 攔下 png / jpg 匯入。規則放在專案內的 eslint-plugins 目錄、以 file: 依賴安裝，不發佈到 npm；RuleTester 與 plugin 結構衝突，改用 Linter API 寫測試。',
+          tags: ['ESLint', 'AST', 'Tooling']
         },
         knowledge: {
           title: '團隊 AI 知識庫：Keyword RAG',
@@ -234,7 +234,7 @@ export const translations = {
     about: {
       title: 'Antonio Hou',
       subtitle: 'Frontend Engineer',
-      intro: 'I studied chemical engineering, taught myself frontend development, and have worked as a frontend engineer since December 2022. I am now a mid–senior frontend engineer at Brilliant Gaming, focused on Next.js server-side rendering, first-load performance, and multilingual SEO, plus SDKs and style isolation for embedded UIs. Outside work I explore Three.js and shaders, and I bring AI-assisted workflows to my team.',
+      intro: "I studied Chemical and Materials Engineering, taught myself frontend development, and have been a frontend engineer since December 2022. I'm currently a mid-to-senior frontend engineer at Brilliant Gaming, where I focus on Next.js server-side rendering, first-load performance, and multilingual SEO, and also own the campaign SDK and style isolation for embedded UIs. Outside of work, I explore Three.js and shaders and help my team adopt AI-assisted development workflows.",
       downloadResume: 'Download Resume PDF',
       contact: 'Contact',
       skills: 'Skills',
@@ -246,8 +246,8 @@ export const translations = {
       highlightsTitle: 'Highlights',
       highlights: [
         { value: '3+', label: 'years in frontend', note: 'since December 2022' },
-        { value: '−65%', label: 'webpack build time', note: '187s down to 66s' },
-        { value: '+42%', label: 'page image load speed', note: 'image optimization' },
+        { value: 'RAG', label: 'team AI knowledge base', note: 'keyword RAG · four layers' },
+        { value: 'SDK', label: 'private campaign packages', note: 'SDK exports · iframe integration' },
         { value: '0 → 1', label: 'multi-environment web platform', note: 'Next.js 15 SSR' }
       ],
       links: {
@@ -323,10 +323,10 @@ export const translations = {
           description: 'Debugging missing and overridden Tailwind styles when the main site loads components from an IIFE bundle, then weighing prefixing, Shadow DOM, and injection order.',
           tags: ['Tailwind', 'Shadow DOM', 'IIFE']
         },
-        languageStrategy: {
-          title: 'Language source priority for multilingual sites',
-          description: 'A multilingual site can take its language from the URL, a cookie, localStorage, or browser settings. Without a clear order, user choices get overwritten, SSR and the client disagree, hydration breaks, and SEO suffers. This defines a URL-first priority and compares the tradeoffs and common mistakes for Next.js SSR versus SPAs.',
-          tags: ['i18n', 'SSR', 'Next.js', 'SEO']
+        eslintRule: {
+          title: 'Project-local ESLint rules',
+          description: 'Turned the team convention of importing images as webp into an ESLint rule that flags png and jpg imports at the ImportDeclaration node. The rule lives in an in-repo eslint-plugins folder installed as a file: dependency rather than published to npm, and is tested through the Linter API after RuleTester clashed with the plugin structure.',
+          tags: ['ESLint', 'AST', 'Tooling']
         },
         knowledge: {
           title: 'Team AI knowledge base with keyword RAG',
