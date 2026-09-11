@@ -62,16 +62,18 @@ for (const p of posts) {
 const topics = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8)
 ---
 
-<main class="overflow-x-clip pt-[88px] pb-16">
+<main class="relative overflow-x-clip pt-[88px] pb-16">
+  <!-- 背景 shader：全寬、頂到頁面最上方（header 有 backdrop-blur 會透出來），高度由 JS 依 hero 的位置算，
+       底部用 mask 漸隱。跑起來後 .glow 隱藏；沒有 WebGL2 或 prefers-reduced-motion 時只剩靜態柔光 -->
+  <canvas
+    id="hero-shader"
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-x-0 top-0 -z-10 w-full opacity-0 transition-opacity duration-700 [mask-image:linear-gradient(to_bottom,black_0%,black_55%,transparent_100%)]"
+    style="height: 640px"
+  ></canvas>
   <div class="mx-auto max-w-5xl px-4">
     <!-- Hero：文字直接落在頁面上，只留 Playground 一張 accent 卡 -->
     <section id="hero" class="relative grid gap-6 md:grid-cols-3 md:gap-8">
-      <!-- 背景 shader：跑起來後 .glow 隱藏；沒有 WebGL2 或 prefers-reduced-motion 時只剩靜態柔光 -->
-      <canvas
-        id="hero-shader"
-        aria-hidden="true"
-        class="pointer-events-none absolute -inset-x-8 -top-24 -bottom-8 -z-10 h-[calc(100%+8rem)] w-[calc(100%+4rem)] opacity-0 transition-opacity duration-700 [mask-image:radial-gradient(ellipse_at_35%_40%,black_35%,transparent_78%)]"
-      ></canvas>
       <div
         aria-hidden="true"
         class="glow pointer-events-none absolute -left-16 -top-20 h-72 w-72 rounded-full bg-cyan-400/25 blur-3xl dark:bg-cyan-400/10"
@@ -242,6 +244,8 @@ void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);gl_Position=vec4(p*2.0
 
     // 背景不需要高解析：渲染 0.5x DPR 再放大，四倍便宜，模糊本來就是它的樣子
     const resize = () => {
+      // 蓋到 hero 底部再多 96px，讓 mask 有空間漸隱
+      canvas.style.height = `${hero.offsetTop + hero.offsetHeight + 96}px`
       const r = canvas.getBoundingClientRect()
       const dpr = Math.min(devicePixelRatio, 2) * 0.5
       canvas.width = Math.max(1, Math.round(r.width * dpr))
@@ -249,7 +253,8 @@ void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);gl_Position=vec4(p*2.0
       gl.viewport(0, 0, canvas.width, canvas.height)
     }
     resize()
-    new ResizeObserver(resize).observe(canvas)
+    new ResizeObserver(resize).observe(hero)
+    addEventListener("resize", resize, { passive: true })
 
     // 游標：緩動追蹤，沒有滑鼠（觸控）就停在中間
     const mouse = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 }

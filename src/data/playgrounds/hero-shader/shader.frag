@@ -63,12 +63,12 @@ void main() {
   float k = smoothstep(-0.6, 0.6, n);
   vec3 tint = mix(CYAN, VIOLET, k);
 
-  // 邊緣淡出，讓它安靜地待在文字後面
-  float vignette = smoothstep(1.15, 0.25, length(p * vec2(0.8, 1.2)));
+  // 邊緣淡出，讓它安靜地待在文字後面（放很寬：這片是全寬背景，左右不該黑掉）
+  float vignette = smoothstep(1.9, 0.2, length(p * vec2(0.55, 1.1)));
   float glow = vignette * (0.35 + 0.65 * smoothstep(-0.2, 0.9, n));
 
   // 深色主題：黑底加色光；淺色主題：白底減一點點色，都留得很淡
-  vec3 dark  = vec3(0.035, 0.035, 0.043) + tint * glow * 0.42;
-  vec3 light = vec3(0.98, 0.98, 0.973) - (1.0 - tint) * glow * 0.22;
+  vec3 dark  = vec3(0.035, 0.035, 0.043) + tint * glow * 0.20;
+  vec3 light = vec3(0.98, 0.98, 0.973) - (1.0 - tint) * glow * 0.11;
   outColor = vec4(mix(light, dark, u_dark), 1.0);
 }
