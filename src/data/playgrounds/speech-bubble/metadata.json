@@ -1,0 +1,11 @@
+{
+  "title": "Speech Bubble",
+  "description": "單一 div 做成的對話泡泡，尾巴是 ::after 的 border 三角形。原本以 LESS mixin 產生顏色變體，這裡放的是編譯後的 CSS。",
+  "tags": [
+    "CSS",
+    "Pseudo-element",
+    "LESS"
+  ],
+  "author": "Antonio",
+  "createdAt": "2026-02-14"
+}

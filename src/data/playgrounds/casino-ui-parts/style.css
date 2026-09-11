@@ -1,0 +1,733 @@
+  :root {
+
+    /* 金色渐层色标 */
+    --g0: #fff7c0;
+    --g1: #ffe24a;
+    --g2: #fff3a0;
+    --g3: #ffcb1c;
+    --g4: #ffa310;
+    --g5: #ff8400;
+
+    /* 描边 / 挤出暗色 */
+    --edge: #5a2c00;
+    --ext1: #8a4a12;
+    --ext2: #5f350d;
+  }
+
+.gold {
+    font-size: 150px;
+    display: inline-block;
+    white-space: nowrap;
+    max-width: 100%;
+    font-weight: 900;
+    line-height: 1; 
+    letter-spacing: -2px;
+    /* ① 渐层 */
+    background-image: linear-gradient(
+      180deg,
+      var(--g0) 0%, var(--g1) 26%, var(--g2) 46%,
+      var(--g3) 56%, var(--g4) 80%, var(--g5) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: #ffb320;
+    -webkit-text-fill-color: transparent;
+
+    /* ② 立体 = 全 drop-shadow：
+       - 前 4 层：上下左右 1px 暗色 → 细描边(跟字形走，无尖刺)
+       - 中 2 层：往下 0 偏移 → 3D 挤出厚度
+       - 末 1 层：柔和落地投影 */
+    filter:
+      drop-shadow(2px 0 0 var(--edge))
+      drop-shadow(-2px 0 0 var(--edge))
+      drop-shadow(0 3px 0 var(--edge))
+      drop-shadow(0 -3px 0 var(--edge))
+      drop-shadow(0 8px 0 var(--ext1))
+      drop-shadow(0 8px 0 var(--ext2))
+      drop-shadow(0 12px 12px rgba(255,255,255,.55));
+
+  }
+
+
+
+.text-stroke {
+  margin: 40px;
+  font-size: 120px;
+  color: white;
+
+  -webkit-text-stroke: 4px #9b0000; /* 外层红描边 */
+}
+
+
+.play {
+  position: relative;
+  width: 425px;
+  height: 135px;
+  background: blue;
+  border-radius: 67px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  overflow: hidden; /* 讓 ::before 不超出去 */
+}
+
+.play::before {
+  content: "PLAY";
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 7.5px;
+  left: 7.5px;
+  right: 7.5px;
+  bottom: 7.5px;
+  border-radius: 67px;
+  background: linear-gradient(180deg, #00ff95, #00cc66);
+  pointer-events: none;
+}
+
+/* Group 2131332804 */
+
+position: absolute;
+width: 85px;
+height: 27px;
+
+filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.13)) drop-shadow(0px 4px 4px rgba(8, 8, 8, 0.3));
+
+
+
+
+/* DB-v2 10x 放大*/ 
+
+
+.DB-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  gap: 8px;
+
+  position: relative;
+  width: 375px;
+  height: 48px;
+
+  background: radial-gradient(100% 100% at 50% 0%, #FFFFFF 39.57%, #F4F4F4 70%, #F4F4F4 80%);
+  box-shadow: 0px 1px 2px rgba(138, 148, 168, 0.25);
+  border-radius: 16px 16px 0px 0px;
+
+}
+
+.DB-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.DB-right {
+  height: 32px;
+  background-color: white;
+  background: radial-gradient(45.35% 108.91% at 4.65% 0%, rgba(255, 255, 255, 0.4) 40%, rgba(255, 255, 255, 0) 100%) , #DCDFE5;
+  border-radius: 0 16px 16px 0;
+  border-bottom: 1px solid #FFFFFF;
+  box-shadow: inset 0px 1.5px 1px rgba(138, 148, 168, 0.4);
+}
+
+.DB-left {
+  background: #e9e9e9;
+  font-size: 10px;
+  color: #576275;
+  height: 32px;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-style: italic;
+  font-weight: 500;
+
+  background: radial-gradient(83.01% 83.01% at 50% 16.99%, #FFFFFF 60%, #F4F4F4 80%);
+  border-radius: 16px 0px 0px 16px;
+  border: 1px black solid;
+
+}
+
+
+
+/* 轉盤 */
+.wheel-container{
+  margin: 200px;
+  width: 500px;
+  height: 500px;
+  background: white;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+}
+
+.sector1{
+  top: 0;
+  left: 0;
+  background: yellow;
+  width: 250px;
+  height: 250px;
+  color: black;
+  transform: skew(0deg);
+  transform-origin: bottom right;
+  z-index: 1;
+}
+
+
+
+.sector2{
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: red;
+  color: black;
+  width: 250px;
+  height: 250px;
+  color: black;
+  transform: skew(30deg);
+  transform-origin: bottom right;
+  z-index:2;
+}
+
+.sector2:before{
+  content: '50';
+  position: absolute;
+  bottom: 0px;
+  left: 10%;
+  color: white;
+  transform: skew(-60deg);
+}
+.sector3{
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: blue;
+  color: white;
+  width: 250px;
+  height: 250px;
+  color: black;
+  transform: skew(60deg);
+  transform-origin: bottom right;
+  z-index:3;
+}
+.sector3:before{
+  content: '50';
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  color: white;
+  transform: skew(-60deg);
+}
+
+
+/* 文字陰影 + 模糊 */
+.shadow {
+  font-size: 5rem;
+  font-weight: 700;
+  text-shadow: 0 -3px 0px #8E3605;
+/*     filter: "drop-shadow(0 -3px 0 red)", */
+
+}
+
+.banner2 {
+  position: relative;
+  width: 1040px;
+  height: 201px;
+  background: linear-gradient(80deg, #FF470000 0%,#FF0000 50%,  #FF470000 100%);
+}
+
+.banner2:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: '';
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(80deg, #FF000000 0%, #FF9E9E 50%,  #FF000000 100%);
+}
+
+
+.banner2:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(80deg, #FF000000 0%, #FF9E9E 50%,  #FF000000 100%);
+}
+
+/* deposit 2 漸層文字粗體邊緣含陰影 */
+.deposit2{
+  position: relative;
+  font-size: 10rem;
+  font-weight: 700;
+  letter-spacing: 0.375rem;
+  background: linear-gradient(180deg, #F5D980, #C99033);
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 15px transparent;
+  text-shadow: 0px 4px 0 #93510F;
+}
+
+.deposit2:before{
+  content: attr(data-content);
+  color: transparent ;
+  position: absolute ;
+  bottom:-5px;
+  z-index: -1;
+  background: #9A5010;
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 15px transparent;
+  text-shadow: none;
+}
+
+/* .deposit2:after{
+  content: attr(data-content);
+  color: transparent;
+  position: absolute ;
+  left: 0;
+  bottom: -10px;
+  z-index: -2;
+  background: #532C0E;
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 20px transparent;
+  text-shadow: none;
+} */
+
+/* deposit 1 漸層文字粗體邊緣 */
+.deposit{
+  font-size: 10rem;
+  background: -webkit-linear-gradient(270deg, #ff4d00, #ffc700);
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 1rem transparent;
+  font-style: italic;
+}
+
+
+body {
+  font-family: 'Arial';
+  background-color: #1C1C1C;
+  color: white;
+}
+
+.result-container {
+  position: relative;
+  width: 1970px;
+  height: 965px;
+/*   background-color: red; */
+}
+
+/* Card Result */
+.wrapper {
+  filter: drop-shadow(0rem 0.75rem 0.25rem rgba(50, 50, 0, 0.5));
+  z-index: 1;
+}
+
+.game-result {
+  position: relative; 
+  background-color: #53B1FD;
+  width: 710px;
+  height: 355px;
+  clip-path: polygon(7.746% 0, 92.254% 0, 100% 15.49%, 100% 84.51%, 92.254% 100%, 7.746% 100%, 0 84.51%, 0 15.49%);
+}
+
+.game-result::before{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 7rem;
+  
+  content: '-'; /* attr(data-result) */
+  position: absolute;
+  background-color: #022249;
+  top: 0;
+  left: 0;
+  width: 710px;
+  height: 355px;
+  
+  clip-path: polygon(
+    8% 1.5%, 66% 1.5%, 
+    68% 6%, 88.5% 6%, 
+    96.5% 22%, 99.5% 22%, 
+    99.5% 84%, 92% 99%, 
+    40% 99%, 38% 94.5%, 
+    15% 94.5%, 0.8% 65%, 
+    0.8% 16%);
+    
+}
+
+
+.card-result {
+  position: absolute;
+  right:0;
+  bottom:0;
+  width: 1920px;
+  height: 830px;
+  background-color: #4386E3;
+  z-index: -1;
+  
+  clip-path: polygon(
+    /*  左上角    */
+    0.75% 20%, 0 20%, 0 1%, 9.375% 1%, 9.375% 3%, 
+    /*  右上角    */
+    90.625% 3%, 90.625% 2%, 99.75% 2%, 99.75% 21.686%, 99.5% 21.686%, 
+    /*  右下角    */
+    99.5% 80%, 100% 80%, 100% 99%, 90.625% 99%, 90.625% 97%,  
+    /*  中下位置    */
+    61% 97%, 61.5% 98%, 36.5% 98%, 37% 97%,
+    /*  左下角  */
+    9.375% 97%, 9.375% 99%, 0 99%, 0 80%, 0.75% 80%
+  );
+  mask-image: 
+    /* 左上三角 */
+    linear-gradient(
+      135deg, #4386E3 0, #4386E3 1.75rem, transparent 0, transparent 2.25rem, #4386E3 0
+    ),
+    /* 右上三角 */
+    linear-gradient(
+      -135deg, #4386E3 0, #4386E3 2.2rem, transparent 0, transparent 2.7rem, #4386E3 0
+    ),    
+    /* 左下三角 */
+    linear-gradient(
+      45deg, #4386E3 0, #4386E3 1.75rem, transparent 0, transparent 2.25rem, #4386E3 0
+    ),
+    /* 右下三角 */
+    linear-gradient(
+      -45deg, #4386E3 0, #4386E3 1.75rem, transparent 0, transparent 2.25rem, #4386E3 0
+    );
+  mask-position: 0 0, 100% 0, 0 100%, 100% 100%;
+  mask-repeat: no-repeat;
+  /* 分成四等份 */
+  mask-size: 50% 50%;
+}
+
+.card-result::before{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 7rem;
+  
+  content: '閒1'; /* attr(data-result) */
+  background-color: #013C8E;
+  width: 1920px;
+  height: 830px;
+  clip-path: polygon(
+    /* 左上角 */
+    1% 8%, 2.75% 3.75%, 
+    /* 右上角 */
+    90.7% 3.75%, 90.7% 4.2%, 97.4% 4.2%, 99% 8%, 99% 21.625%, 99.25% 21.625%, 
+    /* 右中間區塊 */
+    99.25% 40%, 98.1% 43%, 98.1% 77.25%, 99.25% 80.25%,
+    /* 右下角 */
+    99% 80.25%, 99% 93%, 97.5% 96.25%,
+    /* 中下區塊 */
+    60.7% 96.25%, 59.85% 94.5%, 38% 94.5%, 37.3% 96.25%,
+    /* 左下角 */
+    2.75% 96.25%, 1% 92.5%,
+    /* 左中間區塊 */
+    1% 80%, 2% 77%, 2% 44%, 1% 41%
+  );
+}
+
+.decorate {
+  position: absolute;
+  top: 4.5rem;
+  left: 41.5rem;
+  width: 557.5px;
+  height: 62.25px;
+  background: linear-gradient(
+    60deg,
+    #4386E3 7%, #4386E3 10%,
+    transparent 10%, transparent 12.5%,
+    #4386E3 12.5%, #4386E3 15%,
+    transparent 15%, transparent 17.5%,
+    #4386E3 17.5%, #4386E3 20%,
+    transparent 20%, transparent 22.5%,
+    #4386E3 22.5%, #4386E3 25%,
+    transparent 25%, transparent 27.5%,
+    #4386E3 27.5%, #4386E3 30%,
+    transparent 30%, transparent 32.5%,
+    #4386E3 32.5%, #4386E3 35%,
+    transparent 35%, transparent 37.5%,
+    #4386E3 37.5%, #4386E3 40%,
+    transparent 40%, transparent 42.5%,
+    #4386E3 42.5%, #4386E3 45%,
+    transparent 45%, transparent 47.5%,
+    #4386E3 47.5%, #4386E3 50%,
+    transparent 50%, transparent 52.5%,
+    #4386E3 52.5%, #4386E3 55%,
+    transparent 55%, transparent 57.5%,
+    #4386E3 57.5%, #4386E3 60%,
+    transparent 60%, transparent 62.5%,
+    #4386E3 62.5%, #4386E3 65%,
+    transparent 65%,transparent 67.5%,
+    #4386E3 67.5%,#4386E3 70%,
+    transparent 70%, transparent 72.5%,
+    #4386E3 72.5%, #4386E3 75%,
+    transparent 75%, transparent 77.5%,
+    #4386E3 77.5%, #4386E3 80%,
+    transparent 80%, transparent 82.5%
+  );
+
+}
+
+.player {
+  position: absolute;
+  top: 6rem;
+  right: 9rem;
+  font-size: 4.5rem;
+}
+
+.card-wrapper {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1710px;
+  height: 453.95px;
+}
+
+.empty-card {
+  width: 310px;
+  height: 453.95px;
+  background-color: #0E121E;
+  border: 0.25rem solid #4386E3;
+  border-radius: 20px;
+  box-shadow: inset 0px 0px 2rem #4386E3;
+}
+
+
+
+
+
+/* 區塊鏈牌背 */
+.card {
+  background-color: #022249;
+  width: 620px;
+  height: 907.9px;
+  border-radius: 20px;
+  border: 20px solid #7ADFFF;
+  position: relative;
+  z-index: -1;
+}
+
+.card-corner{
+  background-color: #7ADFFF;
+  position: absolute;
+  bottom: -1px;
+  left: -1px;
+  width: 310px;
+  height: 366.4px;
+  clip-path: polygon(0 0, 0% 100%, 100% 100%); 
+  z-index: -1;
+}
+
+.stroke-container{
+  position: absolute;
+  bottom: -3rem;
+  left: 5.8rem;
+}
+
+.strokeText{
+  font-size: 22rem;
+  font-weight: 700;
+  color: #022249;
+}
+
+.strokeText::before {
+  content: attr(data-storke);
+  position: absolute;
+  z-index: -1;
+  -webkit-text-stroke: 3.75rem #7ADFFF;
+  text-stroke: 3.75rem #7ADFFF;
+}
+
+
+
+
+
+/* ----------- 中間花紋 ----------- */
+.container {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  border: 1px #e9e9e9 solid;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem
+}
+
+.container::before {
+  content: '';
+  background: #494F65;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 10px;
+  height: 294px;
+  transform: translate(0, -50%);
+  clip-path: polygon(0 0,30% 0, 30% 28.57%, 100% 30.92%, 100% 69.05%, 30% 71.43%, 30% 100%, 0 100%)
+
+
+}
+
+.container::after{
+  content:'';
+  background: #494F65;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 10px;
+  height: 294px;
+  transform: translate(0, -50%);
+  clip-path: polygon(100% 0, 70% 0, 70% 28.57%, 0 30.92%, 0 69.05%, 70% 71.43%, 70% 100%, 100% 100%);
+}
+
+/* ----------- 莊 ---------- */
+.static-banker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7rem;
+  color: white;
+  
+  height: 220px;
+  width: 660px;
+  background: linear-gradient(#C41C14, #C41C14) top left, 
+              linear-gradient(#C41C14, #C41C14) top left,
+              linear-gradient(#C41C14, #C41C14) top right,
+              linear-gradient(#C41C14, #C41C14) top right,
+              linear-gradient(#C41C14, #C41C14) bottom left,
+              linear-gradient(#C41C14, #C41C14) bottom left,
+              linear-gradient(#C41C14, #C41C14) bottom right,
+              linear-gradient(#C41C14, #C41C14) bottom right;
+  background-size: 10px 120px, 25px 10px; /* (縱向 width height, 橫向 height, width) */
+  background-repeat: no-repeat;
+  background-color: #D92D2066;
+}
+
+/* ----------- 閒 ----------- */
+.static-player {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7rem;
+  color: white;
+  
+  height: 220px;
+  width: 660px;
+  background: linear-gradient(#095EC7, #095EC7) top left, 
+              linear-gradient(#095EC7, #095EC7) top left,
+              linear-gradient(#095EC7, #095EC7) top right,
+              linear-gradient(#095EC7, #095EC7) top right,
+              linear-gradient(#095EC7, #095EC7) bottom left,
+              linear-gradient(#095EC7, #095EC7) bottom left,
+              linear-gradient(#095EC7, #095EC7) bottom right,
+              linear-gradient(#095EC7, #095EC7) bottom right;
+  background-size: 10px 120px, 25px 10px; /* (縱向 width length, 橫向 length, width) */
+  background-repeat: no-repeat;
+  background-color: #1468DC66;
+}
+
+
+/* ----------- 彎曲角落 ----------- */
+/* https://ambientimpact.com/web/snippets/bevelled-box-corners-with-css-and-sass */
+.corner {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  border: 1px #e9e9e9 solid;
+  
+  /*  重要  */
+  border-radius: 1rem; 
+  background: #F9BDB9;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem
+}
+
+
+.corner-top::before{
+  content: '';
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #292D3C;
+  clip-path: polygon(35% 0, 100% 0, 100% 15%, 42.5% 15%, 15% 42.5%, 15% 100%, 0 100%, 0 35%)
+}
+
+.corner-top::after{
+  content: '';
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #292D3C;
+  clip-path: polygon(65% 0, 0 0, 0 15%, 57.5% 15%, 85% 42.5%, 85% 100%, 100% 100%, 100% 35%);
+
+}
+
+
+.corner-bottom::before{
+  content: '';
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: #292D3C;
+  clip-path: polygon(35% 100%, 100% 100%, 100% 85%, 42.5% 85%, 15% 57.5%, 15% 0, 0 0, 0 65%);
+
+}
+
+.corner-bottom::after{
+  content: '';
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #292D3C;
+  clip-path: polygon(65% 100%, 0 100%, 0 85%, 57.5% 85%, 85% 57.5%, 85% 0, 100% 0, 100% 65%);
+}
+
+
+/* ----------- bevel test ----------- */
+.polygon {
+  height: 96px;
+  width: 246px;
+  background-color: #4386E3;
+  clip-path: polygon(0 0, 95% 0, 100% 10%, 100% 100%, 0 100%);
+    clip-path: polygon(0 0, 95% 0, 100% 10%, 100% 100%, 0 100%);
+}
+
+.polygon::before {
+  content: "";
+  display: block;
+  position: relative;
+  top: 5px;
+  left: 5px;
+  /*  origin(W/H) - (top/left) * 2  */
+  height: 86px; 
+  width: 236px;
+  background-color: #00275E;
+  clip-path: inherit;
+}

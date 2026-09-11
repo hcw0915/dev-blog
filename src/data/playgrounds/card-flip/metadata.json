@@ -1,0 +1,11 @@
+{
+  "title": "Card Flip",
+  "description": "滑鼠移上去卡片會先上浮、連轉兩圈、放大再落回原位，用一段 @keyframes 加上 preserve-3d 與 backface-visibility。",
+  "tags": [
+    "CSS",
+    "3D",
+    "Animation"
+  ],
+  "author": "Antonio",
+  "createdAt": "2025-10-05"
+}

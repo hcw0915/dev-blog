@@ -1,0 +1,11 @@
+{
+  "title": "Card Blur Gradient",
+  "description": "卡片底部用 backdrop-filter 加 mask 漸層，做出從清楚到模糊的過渡，類似 Apple 2025 的卡片風格。",
+  "tags": [
+    "CSS",
+    "backdrop-filter",
+    "mask"
+  ],
+  "author": "Antonio",
+  "createdAt": "2026-03-19"
+}

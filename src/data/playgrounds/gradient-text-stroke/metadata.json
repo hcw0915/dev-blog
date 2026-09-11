@@ -1,0 +1,11 @@
+{
+  "title": "Gradient Text Stroke",
+  "description": "用 -webkit-text-stroke 搭配 background-clip: text 做出漸層描邊文字，並和 text-shadow 描邊對照。改自 YouTube 教學範例。",
+  "tags": [
+    "CSS",
+    "Typography",
+    "Text Stroke"
+  ],
+  "author": "Antonio",
+  "createdAt": "2024-12-05"
+}

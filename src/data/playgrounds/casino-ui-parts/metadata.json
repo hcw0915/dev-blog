@@ -1,0 +1,11 @@
+{
+  "title": "Casino UI Parts",
+  "description": "遊戲介面零件的 CSS 實驗：金色立體字、PLAY 按鈕、轉盤扇區、百家樂結果框、牌背與斜角邊框，多用 clip-path、mask 與 drop-shadow 堆疊。",
+  "tags": [
+    "CSS",
+    "clip-path",
+    "Game UI"
+  ],
+  "author": "Antonio",
+  "createdAt": "2024-10-16"
+}

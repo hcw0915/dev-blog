@@ -1,0 +1,11 @@
+{
+  "title": "Sweet Stuff",
+  "description": "多層 text-shadow 疊出立體標題，::before 讀 data-text 再疊一層描邊，整組用 skew 斜切。靈感來自 makesweetbeats。",
+  "tags": [
+    "CSS",
+    "Typography",
+    "text-shadow"
+  ],
+  "author": "Antonio",
+  "createdAt": "2026-07-07"
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Warning Bar",
+  "description": "純 CSS 斜紋進度條：repeating-linear-gradient 畫條紋、background-position 讓它持續滑動，尺寸都用 CSS 變數算。",
+  "tags": [
+    "CSS",
+    "Animation",
+    "Gradient"
+  ],
+  "author": "Antonio",
+  "createdAt": "2026-09-11"
+}

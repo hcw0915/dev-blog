@@ -1,0 +1,61 @@
+:root {
+  --speed: 10s;                  
+  --stripe-unit: 4px;       /* 基础间距单位 */
+  --stripe-width: calc(var(--stripe-unit) * 2.85); /* 条纹宽 = 4 * 间距 */
+  --stripe-gap: var(--stripe-unit);             /* 间距 = 1 */
+  --fundamentalBase: calc(var(--stripe-width) + var(--stripe-gap) * 1.8); /* 总周期 */
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: #2c3e50;
+}
+
+.container {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 胶囊背景 */
+.bar {
+  position: relative;
+  width: 216px;
+  height: 7px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(to right, #004d00, #00ff66); /* 深绿→浅绿 */
+}
+
+/* 条纹填充 */
+.bar .fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+
+  background-image: repeating-linear-gradient(
+    120deg,
+    rgba(0,0,0,0),                             /* 间距开始 */
+    rgba(0,0,0,0) var(--stripe-gap),           /* 间距结束 = 1 份 */
+    rgba(0,255,0,0.3) var(--stripe-gap),       /* 条纹开始 */
+    rgba(0,255,0,0.3) calc(var(--stripe-gap) + var(--stripe-width)) /* 条纹结束 */
+  );
+
+  background-size: var(--fundamentalBase) 100%;
+  animation: slide var(--speed) linear infinite;
+}
+
+/* 条纹动画 */
+@keyframes slide {
+  from { background-position-x: 0; }
+  to { background-position-x: 100%; }
+}
+
+/* 响应式 */
+@media (max-width: 450px) { .bar { width: 400px; } }
+@media (max-width: 350px) { .bar { width: 300px; } }
