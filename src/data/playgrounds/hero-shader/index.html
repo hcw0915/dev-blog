@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hero Shader</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #09090b; overflow: hidden; }
+    canvas { display: block; width: 100vw; height: 100vh; }
+    .hint { position: fixed; left: 16px; bottom: 14px; font: 12px/1.4 system-ui, sans-serif; color: rgba(255,255,255,.45); }
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <div class="hint">動一動滑鼠。改 shader.frag 裡的 SPEED / SCALE / 顏色試試。</div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

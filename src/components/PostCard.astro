@@ -54,6 +54,7 @@ const hero = heroFor(slug)
       )
     }
     <h3
+      transition:name={`post-title-${slug}`}
       class:list={[
         "mt-2.5 font-semibold leading-snug text-zinc-800 dark:text-zinc-100 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-brand-gradient transition-colors",
         size === "lg" && "text-xl md:text-2xl leading-snug"

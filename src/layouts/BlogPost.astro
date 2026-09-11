@@ -138,7 +138,10 @@ const jsonLd = JSON.stringify({
               ))
             }
           </div>
-          <h1 class="font-serif text-3xl md:text-4xl my-3 !mt-2 text-zinc-900 dark:text-zinc-50">
+          <h1
+            transition:name={`post-title-${slug}`}
+            class="font-serif text-3xl md:text-4xl my-3 !mt-2 text-zinc-900 dark:text-zinc-50"
+          >
             {title}
           </h1>
           <hr class="border-zinc-200 dark:border-white/10 my-6" />

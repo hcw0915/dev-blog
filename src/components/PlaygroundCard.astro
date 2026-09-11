@@ -14,12 +14,17 @@ const { playground, baseUrl, locale } = Astro.props
 const t = getTranslations(locale).playground
 const editUrl = `${baseUrl}/${playground.id}`
 
-// 縮圖就是真的預覽，縮小 0.4 倍；跟編輯頁走同一條 buildPreview，不會兩邊長不一樣
+// 縮圖就是真的預覽；跟編輯頁走同一條 buildPreview，不會兩邊長不一樣。
+// 縮放做在 iframe 元素本身（放大 250% 再 transform 縮回 0.4），而不是 iframe 裡的 body：
+// body 的 transform 不會影響 100vw / innerWidth，全螢幕 canvas 的 demo 會只畫到左上角 40%。
+// 縮圖不該永遠動：2.5 秒後停止 requestAnimationFrame，任何 demo 都定格在一幀（CSS 動畫照舊，很便宜）。
+// 沒有這行，一張全螢幕 shader 的縮圖就會在列表頁上以 250% 尺寸無限跑 GPU。
 const thumb = buildPreview(playground.files, { entry: playground.entry }).replace(
   /<head[^>]*>/i,
   m =>
     m +
-    `<style>html{overflow:hidden}body{transform:scale(.4);transform-origin:top left;width:250%;height:250%;overflow:hidden;pointer-events:none}</style>`
+    `<style>html,body{overflow:hidden}</style>` +
+    `<script>(function(){var t0=Date.now(),raf=window.requestAnimationFrame.bind(window);window.requestAnimationFrame=function(cb){return Date.now()-t0<2500?raf(cb):0}})()</script>`
 )
 const fileCount = Object.keys(playground.files).length
 ---
@@ -31,7 +36,7 @@ const fileCount = Object.keys(playground.files).length
   <div class="relative aspect-[8/5] w-full overflow-hidden bg-zinc-100 dark:bg-zinc-900">
     <iframe
       srcdoc={thumb}
-      class="pointer-events-none h-full w-full border-0"
+      class="pointer-events-none absolute left-0 top-0 h-[250%] w-[250%] origin-top-left scale-[.4] border-0"
       sandbox="allow-scripts allow-same-origin"
       loading="lazy"
       tabindex="-1"

@@ -90,6 +90,8 @@ window.__sandbox_run=async function(entry){
     var mod={exports:{}}; cache[path]=mod;
     if(/\\.css$/.test(path)){ var st=document.createElement('style'); st.setAttribute('data-src',path); st.textContent=src; document.head.appendChild(st); return mod.exports }
     if(/\\.json$/.test(path)){ mod.exports=JSON.parse(src); return mod.exports }
+    // 不是 js/ts/css/json 的一律當純文字模組（像 Vite 的 ?raw）：shader、markdown 都能 import
+    if(!/\\.(m?jsx?|tsx?)$/.test(path)){ mod.exports={__esModule:true,default:src}; return mod.exports }
     var isTS=/\\.tsx?$/.test(path);
     var presets=[['env',{modules:'commonjs',targets:{esmodules:true}}],['react',{runtime:'automatic'}]];
     if(isTS)presets.push(['typescript',{isTSX:/\\.tsx$/.test(path),allExtensions:true}]);
@@ -181,7 +183,10 @@ export const languageOf = (path: string): string => {
       tsx: "typescript",
       json: "json",
       md: "markdown",
-      svg: "xml"
+      svg: "xml",
+      glsl: "cpp",
+      frag: "cpp",
+      vert: "cpp"
     }[ext] ?? "plaintext"
   )
 }

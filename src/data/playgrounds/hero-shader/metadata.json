@@ -1,0 +1,7 @@
+{
+  "title": "Hero Shader",
+  "description": "首頁 hero 背後那片會呼吸、跟著游標偏移的噪聲場。同一份 shader.frag，改了立刻看得到。",
+  "tags": ["Shader", "WebGL", "GLSL"],
+  "author": "Antonio",
+  "createdAt": "2026-09-11"
+}
