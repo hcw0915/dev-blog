@@ -8,10 +8,30 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class='container'>
-  <div class='bar'>
-    <div class="fill"></div>
+
+<main class="panel">
+  <h1 class="panel-title">Deploy status</h1>
+
+  <div class="task">
+    <div class="task-head"><span>Build</span><span>100%</span></div>
+    <div class="bar" role="progressbar" aria-label="Build" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+      <div class="fill" style="--value: 100%"></div>
+    </div>
   </div>
-</div>
+
+  <div class="task task--warning">
+    <div class="task-head"><span>Uploading assets</span><span>64%</span></div>
+    <div class="bar" role="progressbar" aria-label="Uploading assets" aria-valuemin="0" aria-valuemax="100" aria-valuenow="64">
+      <div class="fill" style="--value: 64%"></div>
+    </div>
+  </div>
+
+  <div class="task task--danger">
+    <div class="task-head"><span>Disk usage</span><span>88%</span></div>
+    <div class="bar" role="progressbar" aria-label="Disk usage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="88">
+      <div class="fill" style="--value: 88%"></div>
+    </div>
+  </div>
+</main>
 </body>
 </html>

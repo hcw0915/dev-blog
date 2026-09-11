@@ -1,6 +1,6 @@
 {
   "title": "Warning Bar",
-  "description": "純 CSS 斜紋進度條：repeating-linear-gradient 畫條紋、background-position 讓它持續滑動，尺寸都用 CSS 變數算。",
+  "description": "純 CSS 斜紋進度條。條紋底圖寬度用 sin() 從角度與週期算出來，動畫剛好移動一格底圖，循環時不會跳、交界也對得上；顏色變體只換 CSS 變數。",
   "tags": [
     "CSS",
     "Animation",

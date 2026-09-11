@@ -5,145 +5,153 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Casino UI Parts</title>
   <!-- 原始 pen：https://codepen.io/hcw0915/pen/MWNmjbE -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/text-effects.css">
+  <link rel="stylesheet" href="css/play-button.css">
+  <link rel="stylesheet" href="css/balance-bar.css">
+  <link rel="stylesheet" href="css/ribbon.css">
+  <link rel="stylesheet" href="css/wheel.css">
+  <link rel="stylesheet" href="css/result-panel.css">
+  <link rel="stylesheet" href="css/card-back.css">
+  <link rel="stylesheet" href="css/bet-tags.css">
+  <link rel="stylesheet" href="css/frames.css">
 </head>
 <body>
-<span class="gold">MULTIPLICADOR</span>
-<span class="gold">1250x</span>
 
-<div class="text-stroke">text-stroke</div>
+<main class="gallery">
+  <header class="gallery-head">
+    <h1>Casino UI Parts</h1>
+    <p>Game UI pieces built with CSS only. Each part lives in its own file under css/.</p>
+  </header>
 
-<div class="play">PLAY</div>
-
-<!-- https://codepen.io/ZoranJambor/pen/RwxKOKM -->
-
-
-<div class='DB-container'>
-  <div class="DB-wrapper">
-    <div class="DB-left" style="width:66px;">Blance</div>
-    <div class="DB-right" style="width:142px;"></div>
-  </div>
-  <div class="DB-wrapper">
-    <div class="DB-left" style="width:56px;">Total Bet</div>
-    <div class="DB-right" style="width:87px;"></div>
-  </div>
-</div>
-
-<div class="wheel-container">
-  <div class="sector1">50</div>
-  <div class="sector2">50</div>
-  <div class="sector3">50</div>
-
-  
-</div>
-<br/>
-
-
-<div class='shadow'>How to Participate:</div>
-<br/>
-
-<div class="banner2"></div>
-<br/>
-
-<div class="deposit2" data-content='FIRST DEPOSIT 1,000,000'>FIRST DEPOSIT 1,000,000</div>
-<br/>
-
-<div class="deposit">FIRST DEPOSIT</div>
-<br/>
-  
-  
-<!--  Combination  -->
-<div class="result-container">
-  <!--  左上角  -->
-  <div class="wrapper">
-    <div class="game-result"></div>
-  </div>
-  <div class="card-result">
-  <!--  主體  -->
-    <div class="decorate"></div>
-    <div class="player"> 閒1 </div>
-    <div class="card-wrapper">
-      <div class='empty-card'></div>
-      <div class='empty-card'></div>
-      <div class='empty-card'></div>
-      <div class='empty-card'></div>
-      <div class='empty-card'></div>
+  <section class="tile tile--wide">
+    <h2 class="tile-label">Gold text · background-clip + stacked drop-shadow</h2>
+    <div class="tile-body">
+      <span class="gold">1250x</span>
     </div>
-  </div>
-  
-</div>
- 
-<br/>
-  
-  
-<br/>
-  
-<!-- <div class="card-result">
-  <div class="decorate"></div>
-  <div class="player"> 閒1 </div>
-  <div class="card-wrapper">
-    <div class='empty-card'></div>
-    <div class='empty-card'></div>
-    <div class='empty-card'></div>
-    <div class='empty-card'></div>
-    <div class='empty-card'></div>
-  </div>
-</div> -->
-  
-  
-<br/>
+  </section>
 
+  <section class="tile">
+    <h2 class="tile-label">Text stroke</h2>
+    <div class="tile-body">
+      <span class="text-stroke">BONUS</span>
+    </div>
+  </section>
 
-<!-- 卡牌牌背 -->
-<div class="card">
-  <div class="card-corner"></div>
-  <div class='stroke-container'>
-    <div class="strokeText" data-storke="5" id="title">5</div>
-  </div>  
-</div>
+  <section class="tile">
+    <h2 class="tile-label">Pill button · inset gradient layer</h2>
+    <div class="tile-body">
+      <button class="play" type="button">PLAY</button>
+    </div>
+  </section>
 
-<br/>
+  <section class="tile">
+    <h2 class="tile-label">Prize wheel · conic-gradient</h2>
+    <div class="tile-body">
+      <div class="wheel">
+        <div class="wheel-disc">
+          <span style="--i: 0">50</span>
+          <span style="--i: 1">100</span>
+          <span style="--i: 2">20</span>
+          <span style="--i: 3">500</span>
+          <span style="--i: 4">50</span>
+          <span style="--i: 5">200</span>
+          <span style="--i: 6">10</span>
+          <span style="--i: 7">1000</span>
+        </div>
+        <div class="wheel-pointer"></div>
+      </div>
+    </div>
+  </section>
 
-<div class="container">
-  中間花紋
- <!-- {children} -->
-</div> 
+  <section class="tile">
+    <h2 class="tile-label">Balance bar · layered radial-gradient</h2>
+    <div class="tile-body">
+      <div class="balance-bar">
+        <div class="balance-item"><span class="balance-label">Balance</span><span class="balance-value">12,480.00</span></div>
+        <div class="balance-item"><span class="balance-label">Total Bet</span><span class="balance-value">250.00</span></div>
+      </div>
+    </div>
+  </section>
 
-<hr/>
+  <section class="tile">
+    <h2 class="tile-label">Card back · clip-path corner + stroked number</h2>
+    <div class="tile-body">
+      <div class="scaled scaled--card">
+        <div class="card">
+          <div class="card-corner"></div>
+          <div class="stroke-container">
+            <div class="strokeText" data-stroke="5">5</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<div class="static-banker">
-  莊 ＯＯ／
-  <!-- {children} -->
-</div> 
+  <section class="tile">
+    <h2 class="tile-label">Bet tags · corner brackets from gradients</h2>
+    <div class="tile-body">
+      <div class="scaled scaled--tags">
+        <div class="bet-tags">
+          <div class="static-banker">莊 1 : 0.95</div>
+          <div class="static-player">閒 1 : 1</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<br/>
+  <section class="tile tile--wide">
+    <h2 class="tile-label">Extruded gradient text · transparent stroke + attr()</h2>
+    <div class="tile-body tile-body--stack">
+      <div class="deposit2" data-content="FIRST DEPOSIT">FIRST DEPOSIT</div>
+      <div class="deposit">+100% BONUS</div>
+    </div>
+  </section>
 
-<div class="static-player">
-  閒 ＯＯ／
-  <!-- {children} -->
-</div> 
+  <section class="tile tile--wide">
+    <h2 class="tile-label">Ribbon banner · transparent gradient edges</h2>
+    <div class="tile-body">
+      <div class="ribbon"><span class="ribbon-text">How to Participate</span></div>
+    </div>
+  </section>
 
-<hr/>
+  <section class="tile tile--wide">
+    <h2 class="tile-label">Result panel · clip-path outline + mask corners (scaled down)</h2>
+    <div class="tile-body">
+      <div class="scaled scaled--result">
+        <div class="result-container">
+          <div class="wrapper">
+            <div class="game-result"></div>
+          </div>
+          <div class="card-result">
+            <div class="decorate"></div>
+            <div class="player">閒1</div>
+            <div class="card-wrapper">
+              <div class="empty-card"></div>
+              <div class="empty-card"></div>
+              <div class="empty-card"></div>
+              <div class="empty-card"></div>
+              <div class="empty-card"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<div class="corner">
-  彎曲角落
-  <!-- {children} -->
-  <div class="corner-top"></div>
-  <div class="corner-bottom"></div>
-</div> 
-
-<hr/>
-
-
-<div class="container">
-  彎曲角落＋花紋 
-  <!-- {children} -->
-  <div class="corner-top"></div>
-  <div class="corner-bottom"></div>
-</div> 
-
-<hr/>
-
-<div class="polygon"></div>
+  <section class="tile tile--wide tile--frames">
+    <h2 class="tile-label">Frames · ornament, bevelled corners, clip-path bevel</h2>
+    <div class="tile-body">
+      <div class="scaled scaled--frame"><div class="container">Ornament</div></div>
+      <div class="scaled scaled--frame">
+        <div class="corner">Bevel<div class="corner-top"></div><div class="corner-bottom"></div></div>
+      </div>
+      <div class="scaled scaled--frame">
+        <div class="container">Both<div class="corner-top"></div><div class="corner-bottom"></div></div>
+      </div>
+      <div class="polygon"></div>
+    </div>
+  </section>
+</main>
 </body>
 </html>

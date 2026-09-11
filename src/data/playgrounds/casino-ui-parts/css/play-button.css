@@ -1,0 +1,45 @@
+/* 外圈藍色是按鈕本體，::before 往內縮一圈疊綠色漸層，看起來像有描邊的膠囊按鈕 */
+.play {
+  position: relative;
+  width: 240px;
+  height: 76px;
+  padding: 0;
+  border: 0;
+  border-radius: 38px;
+  background: #1d4ed8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 36px/1 Arial, sans-serif;
+  color: white;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.play::before {
+  content: "PLAY";
+  position: absolute;
+  inset: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 38px;
+  background: linear-gradient(180deg, #00ff95, #00cc66);
+  pointer-events: none;
+}
+
+.play:hover {
+  filter: brightness(1.08);
+}
+
+.play:active {
+  transform: translateY(2px) scale(0.98);
+}
+
+.play:focus-visible {
+  outline: 3px solid #fde047;
+  outline-offset: 4px;
+}

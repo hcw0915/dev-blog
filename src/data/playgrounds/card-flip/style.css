@@ -1,76 +1,164 @@
+:root {
+  --card-w: min(240px, 56vw);
+  --radius: 18px;
+  --spin: 1.8s;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  display: flex;
-  justify-content: center; 
-  align-items: center;
-  height: 100vh;
-  background: #090909;
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 35%, #1f2937, #09090b 70%);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #e5e7eb;
+}
+
+.stage {
+  display: grid;
+  justify-items: center;
+  gap: 28px;
+  perspective: 1200px;
 }
 
 .card {
-  height: 500px;
-  width: 300px;
-  border-radius: 10px;
+  width: var(--card-w);
+  aspect-ratio: 5 / 7;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  cursor: pointer;
 }
 
+.card:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 8px;
+}
+
+/* 轉的是內層；外層按鈕不動，點擊範圍才不會跟著翻走 */
 .card-inner {
   position: relative;
+  display: block;
   width: 100%;
-  height: 150px;
-  padding-bottom: 100%;
+  height: 100%;
   transform-style: preserve-3d;
   will-change: transform;
 }
 
-/* 鼠标悬停触发动画 */
-.card:hover .card-inner {
-  animation: fancySpin 2.5s ease-in-out forwards;
+.card.is-up .card-inner {
+  animation: flip-up var(--spin) ease-in-out forwards;
 }
 
-/* ✨ 动画阶段：
-   0%   - 初始
-   20%  - 上移完成（先给点小期待）
-   80%  - 多圈旋转完成并停留翻面
-   90%  - 放大
-   100% - 回归原位和原始大小
-*/
-@keyframes fancySpin {
+.card.is-down .card-inner {
+  animation: flip-down var(--spin) ease-in-out forwards;
+}
+
+/* 上浮 → 連轉兩圈半 → 放大 → 落回。900deg 視覺上等於 180deg，停在另一面 */
+@keyframes flip-up {
   0% {
-    transform: translateY(0px) rotateY(0deg) scale(1);
+    transform: translateY(0) rotateY(0deg) scale(1);
   }
   20% {
-    transform: translateY(-20px) rotateY(0deg) scale(1); /* 📤 上移 */
+    transform: translateY(-20px) rotateY(0deg) scale(1);
   }
-  60% {
-    transform: translateY(-20px) rotateY(720deg) scale(1); /* 🔄 旋转8圈 + 翻面 */
+  65% {
+    transform: translateY(-20px) rotateY(900deg) scale(1);
   }
-  77.5% {
-    transform: translateY(-20px) rotateY(720deg) scale(1.1); /* 🔍 放大 */
-  }
-  90% {
-    transform: translateY(-20px) rotateY(720deg) scale(1); /* 📥 回原位置和大小 */
+  80% {
+    transform: translateY(-20px) rotateY(900deg) scale(1.08);
   }
   100% {
-    transform: translateY(0px) rotateY(720deg) scale(1); /* 📥 回原位置和大小 */
+    transform: translateY(0) rotateY(900deg) scale(1);
   }
 }
 
-.card-front, .card-back {
+/* 從 180deg（和 900deg 同一面）轉回來：180 - 900 = -720deg，等於回到 0deg */
+@keyframes flip-down {
+  0% {
+    transform: translateY(0) rotateY(180deg) scale(1);
+  }
+  20% {
+    transform: translateY(-20px) rotateY(180deg) scale(1);
+  }
+  65% {
+    transform: translateY(-20px) rotateY(-720deg) scale(1);
+  }
+  80% {
+    transform: translateY(-20px) rotateY(-720deg) scale(1.08);
+  }
+  100% {
+    transform: translateY(0) rotateY(-720deg) scale(1);
+  }
+}
+
+.face {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  inset: 0;
+  border-radius: var(--radius);
   backface-visibility: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 20px;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 24px 48px rgb(0 0 0 / 0.5);
 }
 
-.card-front {
-  background: yellow;
+.face-down {
+  border: 10px solid #fef3c7;
+  background-color: #9f1239;
+  background-image:
+    repeating-linear-gradient(45deg, rgb(254 243 199 / 0.22) 0 4px, transparent 4px 14px),
+    repeating-linear-gradient(-45deg, rgb(254 243 199 / 0.22) 0 4px, transparent 4px 14px);
 }
 
-.card-back {
-  background: #ff0066;
-  color: #fff;
+.face-up {
+  display: grid;
+  place-items: center;
+  background: #fffdf7;
+  color: #111827;
   transform: rotateY(180deg);
+}
+
+.pip {
+  font-size: calc(var(--card-w) * 0.42);
+  line-height: 1;
+}
+
+.corner {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  font-size: calc(var(--card-w) * 0.1);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.corner-top {
+  top: 7%;
+  left: 9%;
+}
+
+.corner-bottom {
+  right: 9%;
+  bottom: 7%;
+  transform: rotate(180deg);
+}
+
+.hint {
+  margin: 0;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card.is-up .card-inner,
+  .card.is-down .card-inner {
+    animation: none;
+  }
+
+  .card.is-up .card-inner {
+    transform: rotateY(180deg);
+  }
 }

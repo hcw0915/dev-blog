@@ -1,61 +1,114 @@
 :root {
-  --speed: 10s;                  
-  --stripe-unit: 4px;       /* 基础间距单位 */
-  --stripe-width: calc(var(--stripe-unit) * 2.85); /* 条纹宽 = 4 * 间距 */
-  --stripe-gap: var(--stripe-unit);             /* 间距 = 1 */
-  --fundamentalBase: calc(var(--stripe-width) + var(--stripe-gap) * 1.8); /* 总周期 */
+  --angle: 120deg;
+  --stripe-width: 11px;
+  --stripe-gap: 5px;
+  /* 條紋沿著漸層方向重複一次的長度 */
+  --period: calc(var(--stripe-width) + var(--stripe-gap));
+  /*
+    底圖寬度 = 水平方向的條紋週期 = 週期 / sin(角度)。
+    寬度只要不是它的整數倍，每塊底圖交界的條紋就會錯開；先前用 2.85、1.8 這種手調常數湊，湊不準。
+  */
+  --tile: calc(var(--period) / sin(var(--angle)));
+  --seconds-per-tile: 0.9s;
 }
 
-html, body {
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
   height: 100%;
   margin: 0;
+}
+
+body {
+  display: grid;
+  place-items: center;
   background: #2c3e50;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #e2e8f0;
 }
 
-.container {
-  height: 100px;
+.panel {
+  width: min(460px, 86vw);
+  display: grid;
+  gap: 22px;
+  padding: 28px;
+  border-radius: 20px;
+  background: rgb(15 23 42 / 0.45);
+  box-shadow: 0 20px 50px rgb(0 0 0 / 0.35);
+}
+
+.panel-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* 顏色變體只換變數，條紋與動畫共用同一套 */
+.task {
+  --from: #004d00;
+  --to: #00ff66;
+  --stripe: rgb(0 255 0 / 0.3);
+  display: grid;
+  gap: 8px;
+}
+
+.task--warning {
+  --from: #7c2d12;
+  --to: #fbbf24;
+  --stripe: rgb(255 237 160 / 0.35);
+}
+
+.task--danger {
+  --from: #7f1d1d;
+  --to: #f87171;
+  --stripe: rgb(255 210 210 / 0.3);
+}
+
+.task-head {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #cbd5e1;
+  font-variant-numeric: tabular-nums;
 }
 
-/* 胶囊背景 */
 .bar {
-  position: relative;
-  width: 216px;
-  height: 7px;
-  border-radius: 20px;
+  height: 10px;
+  border-radius: 999px;
   overflow: hidden;
-  background: linear-gradient(to right, #004d00, #00ff66); /* 深绿→浅绿 */
+  background: rgb(255 255 255 / 0.08);
 }
 
-/* 条纹填充 */
-.bar .fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+.fill {
+  width: var(--value);
   height: 100%;
-  border-radius: 20px;
-
-  background-image: repeating-linear-gradient(
-    120deg,
-    rgba(0,0,0,0),                             /* 间距开始 */
-    rgba(0,0,0,0) var(--stripe-gap),           /* 间距结束 = 1 份 */
-    rgba(0,255,0,0.3) var(--stripe-gap),       /* 条纹开始 */
-    rgba(0,255,0,0.3) calc(var(--stripe-gap) + var(--stripe-width)) /* 条纹结束 */
-  );
-
-  background-size: var(--fundamentalBase) 100%;
-  animation: slide var(--speed) linear infinite;
+  border-radius: inherit;
+  background:
+    repeating-linear-gradient(
+      var(--angle),
+      transparent 0 var(--stripe-gap),
+      var(--stripe) var(--stripe-gap) var(--period)
+    ),
+    linear-gradient(to right, var(--from), var(--to));
+  background-size: var(--tile) 100%, 100% 100%;
+  animation: slide var(--seconds-per-tile) linear infinite;
 }
 
-/* 条纹动画 */
+/* 剛好移動一塊底圖：循環的第一幀和最後一幀長得一樣，不會跳 */
 @keyframes slide {
-  from { background-position-x: 0; }
-  to { background-position-x: 100%; }
+  from {
+    background-position: 0 0, 0 0;
+  }
+  to {
+    background-position: var(--tile) 0, 0 0;
+  }
 }
 
-/* 响应式 */
-@media (max-width: 450px) { .bar { width: 400px; } }
-@media (max-width: 350px) { .bar { width: 300px; } }
+@media (prefers-reduced-motion: reduce) {
+  .fill {
+    animation: none;
+  }
+}

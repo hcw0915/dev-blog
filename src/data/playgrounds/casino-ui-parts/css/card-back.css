@@ -1,0 +1,47 @@
+/* 區塊鏈牌背 */
+.card {
+  background-color: #022249;
+  width: 620px;
+  height: 907.9px;
+  border-radius: 20px;
+  border: 20px solid #7ADFFF;
+  position: relative;
+  z-index: -1;
+}
+
+.card-corner{
+  background-color: #7ADFFF;
+  position: absolute;
+  bottom: -1px;
+  left: -1px;
+  width: 310px;
+  height: 366.4px;
+  clip-path: polygon(0 0, 0% 100%, 100% 100%); 
+  z-index: -1;
+}
+
+.stroke-container{
+  position: absolute;
+  bottom: -3rem;
+  left: 5.8rem;
+}
+
+.strokeText{
+  font-size: 22rem;
+  font-weight: 700;
+  color: #022249;
+}
+
+.strokeText::before {
+  content: attr(data-stroke);
+  position: absolute;
+  z-index: -1;
+  -webkit-text-stroke: 3.75rem #7ADFFF;
+  text-stroke: 3.75rem #7ADFFF;
+}
+
+.scaled--card {
+  --w: 660px;
+  --h: 990px;
+  --scale: 0.3;
+}

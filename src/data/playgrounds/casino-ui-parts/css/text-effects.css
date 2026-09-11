@@ -1,0 +1,106 @@
+:root {
+
+    /* 金色渐层色标 */
+    --g0: #fff7c0;
+    --g1: #ffe24a;
+    --g2: #fff3a0;
+    --g3: #ffcb1c;
+    --g4: #ffa310;
+    --g5: #ff8400;
+
+    /* 描边 / 挤出暗色 */
+    --edge: #5a2c00;
+    --ext1: #8a4a12;
+    --ext2: #5f350d;
+  }
+
+.gold {
+    font-size: clamp(64px, 12vw, 132px);
+    display: inline-block;
+    white-space: nowrap;
+    max-width: 100%;
+    font-weight: 900;
+    line-height: 1; 
+    letter-spacing: -2px;
+    /* ① 渐层 */
+    background-image: linear-gradient(
+      180deg,
+      var(--g0) 0%, var(--g1) 26%, var(--g2) 46%,
+      var(--g3) 56%, var(--g4) 80%, var(--g5) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: #ffb320;
+    -webkit-text-fill-color: transparent;
+
+    /* ② 立体 = 全 drop-shadow：
+       - 前 4 层：上下左右 1px 暗色 → 细描边(跟字形走，无尖刺)
+       - 中 2 层：往下 0 偏移 → 3D 挤出厚度
+       - 末 1 层：柔和落地投影 */
+    filter:
+      drop-shadow(2px 0 0 var(--edge))
+      drop-shadow(-2px 0 0 var(--edge))
+      drop-shadow(0 3px 0 var(--edge))
+      drop-shadow(0 -3px 0 var(--edge))
+      drop-shadow(0 8px 0 var(--ext1))
+      drop-shadow(0 8px 0 var(--ext2))
+      drop-shadow(0 12px 12px rgba(255,255,255,.55));
+
+  }
+
+
+/* 白字 + 暗紅描邊 */
+.text-stroke {
+  font-size: clamp(48px, 7vw, 72px);
+  font-weight: 800;
+  line-height: 1;
+  color: white;
+  -webkit-text-stroke: 4px #9b0000; /* 外層紅描邊 */
+}
+
+/*
+  漸層粗體字 + 立體厚度：
+  透明描邊把字撐粗，background-clip: text 讓漸層只畫在字形上；
+  ::before 用 attr() 複製同一段字、往下偏移、塗成深色，當作字的側面。
+  描邊與偏移都用 em，字級改了比例不變。
+*/
+.deposit2 {
+  position: relative;
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  background: linear-gradient(180deg, #f5d980, #c99033);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 0.09em transparent;
+  text-shadow: 0 0.025em 0 #93510f;
+}
+
+.deposit2::before {
+  content: attr(data-content);
+  position: absolute;
+  left: 0;
+  bottom: -0.03em;
+  z-index: -1;
+  color: transparent;
+  background: #9a5010;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 0.09em transparent;
+  text-shadow: none;
+}
+
+/* 漸層文字 + 粗邊（斜體） */
+.deposit {
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  background: linear-gradient(180deg, #ff4d00, #ffc700);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 0.1em transparent;
+}

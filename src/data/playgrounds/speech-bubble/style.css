@@ -1,43 +1,108 @@
-.container {
-  margin: 50px auto;
-  max-width: 300px;
+/*
+  每個泡泡都是單一元素：本體是圓角方塊，尾巴是 ::after 的 border 三角形。
+  原本的 LESS 用 mixin 產生顏色變體，這裡改成 CSS 變數：換色只要改 --bubble 和 --ink。
+*/
+:root {
+  --radius: 22px;
+  --tail: 14px;
 }
-.speech-bubble {
-  padding: 20px;
-  background: #EEEEEE;
-  color: #000000;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #e0e7ff, #fce7f3);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.chat {
+  width: min(380px, 90vw);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 28px 22px 32px;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgb(30 41 59 / 0.15);
+}
+
+.bubble {
+  --bubble: #eeeeee;
+  --ink: #111827;
   position: relative;
-  box-shadow: rgba(0, 0, 0, 0.5) 0 3px 5px -3px;
-  margin: 15px 0;
+  max-width: 78%;
+  margin: 0;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  background: var(--bubble);
+  color: var(--ink);
+  box-shadow: rgb(0 0 0 / 0.35) 0 3px 5px -3px;
 }
-.speech-bubble:after {
-  content: '';
-  display: block;
-  width: 0;
-  height: 0;
-  border-style: solid;
+
+.bubble::after {
+  content: "";
   position: absolute;
-  top: 0px;
-  border-color: #EEEEEE;
+  border-style: solid;
+  border-color: transparent;
 }
-.speech-bubble.speech-bubble-bottom-left {
-  margin-bottom: 35px;
-  border-radius: 50px;
+
+/* 尾巴在左上：只留右邊框上色，三角形尖端朝左 */
+.bubble--left {
+  align-self: flex-start;
+  margin-left: var(--tail);
+  border-top-left-radius: 0;
 }
-.speech-bubble.speech-bubble-bottom-left:after {
-  border-width: 0 0 20px 24px;
-  border-top-color: transparent !important;
-  border-right-color: transparent !important;
-  border-bottom-color: transparent !important;
-  top: 81.5%;
-  transform: rotate(25deg);
-  left: 2px;
-  bottom: -20px;
+
+.bubble--left::after {
+  top: 0;
+  left: calc(var(--tail) * -1);
+  border-width: 0 var(--tail) calc(var(--tail) * 1.2) 0;
+  border-right-color: var(--bubble);
 }
-.speech-bubble.speech-bubble-red {
-  color: #ffffff;
-  background: #F44336;
+
+/* 尾巴在右上：只留左邊框上色 */
+.bubble--right {
+  align-self: flex-end;
+  margin-right: var(--tail);
+  border-top-right-radius: 0;
 }
-.speech-bubble.speech-bubble-red:after {
-  border-color: #F44336;
+
+.bubble--right::after {
+  top: 0;
+  right: calc(var(--tail) * -1);
+  border-width: 0 0 calc(var(--tail) * 1.2) var(--tail);
+  border-left-color: var(--bubble);
+}
+
+/* 尾巴在右下，往下垂 */
+.bubble--bottom-right {
+  align-self: flex-end;
+  margin-bottom: var(--tail);
+}
+
+.bubble--bottom-right::after {
+  right: var(--radius);
+  bottom: calc(var(--tail) * -1);
+  border-width: 0 calc(var(--tail) * 1.2) var(--tail) 0;
+  border-right-color: var(--bubble);
+}
+
+.bubble--purple {
+  --bubble: #9c27b0;
+  --ink: #fff;
+}
+
+.bubble--green {
+  --bubble: #8bc34a;
+  --ink: #000;
+}
+
+.bubble--red {
+  --bubble: #f44336;
+  --ink: #fff;
 }

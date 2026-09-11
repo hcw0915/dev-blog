@@ -1,0 +1,61 @@
+/*
+  轉盤：原稿用 skew 拼扇形，三塊以上就對不齊。
+  conic-gradient 一行畫出等分扇形，數字各自旋轉到扇形中線。
+*/
+.wheel {
+  position: relative;
+  width: 220px;
+  aspect-ratio: 1;
+}
+
+.wheel-disc {
+  position: absolute;
+  inset: 0;
+  border: 6px solid #ffcb1c;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px #5a2c00, 0 12px 24px rgb(0 0 0 / 0.5);
+  background: conic-gradient(
+    #e11d48 0 45deg,
+    #f59e0b 0 90deg,
+    #2563eb 0 135deg,
+    #16a34a 0 180deg,
+    #e11d48 0 225deg,
+    #f59e0b 0 270deg,
+    #2563eb 0 315deg,
+    #16a34a 0 360deg
+  );
+}
+
+/* 每個數字是一個滿版的層，轉 (i × 45° + 22.5°) 對到扇形中線，文字靠上貼近外圈 */
+.wheel-disc span {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 14px;
+  font: 700 15px/1 Arial, sans-serif;
+  color: #fff;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.6);
+  transform: rotate(calc(var(--i) * 45deg + 22.5deg));
+}
+
+.wheel-disc::after {
+  content: "";
+  position: absolute;
+  inset: 38%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff7c0, #ffa310 60%, #8a4a12);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.5);
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 24px;
+  height: 28px;
+  transform: translateX(-50%);
+  background: #fff;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.5));
+}

@@ -5,23 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Speech Bubble</title>
   <!-- 原始 pen：https://codepen.io/hcw0915/pen/yyJwmvE -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
-<!-- <div class="speech-bubble speech-bubble-right">
- I'm in a bubble from right
-</div>
-<div class="speech-bubble speech-bubble-left speech-bubble-purple">
- I'm in a bubble from left
-</div>
-  <div class="speech-bubble speech-bubble-bottom-right speech-bubble-green">
- I'm in a bubble from bottom
-</div> -->
-  <div class="speech-bubble speech-bubble-bottom-left speech-bubble-red">
- I'm in a bubble from bottom
-</div>
-</div>
+
+<main class="chat" aria-label="Chat">
+  <p class="bubble bubble--left">Did the new build pass?</p>
+  <p class="bubble bubble--right bubble--purple">All green. Deploying now.</p>
+  <p class="bubble bubble--left bubble--green">Nice, ping me when it is live.</p>
+  <p class="bubble bubble--bottom-right bubble--red">It's live. The preview link is in the channel.</p>
+</main>
 </body>
 </html>

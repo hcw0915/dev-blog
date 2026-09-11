@@ -8,15 +8,20 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class='card'>
-  <div class='card-inner'>
-    <div class='card-front'>
-      <h2>Front of Card</h2>
-    </div>
-    <div class='card-back'>
-      <h2>Back of Card</h2>
-    </div>
-  </div>
-</div>
+
+<main class="stage">
+  <button class="card" type="button" aria-pressed="false" aria-label="Flip card">
+    <span class="card-inner">
+      <span class="face face-down"></span>
+      <span class="face face-up">
+        <span class="corner corner-top"><span>A</span><span>&spades;</span></span>
+        <span class="pip" aria-hidden="true">&spades;</span>
+        <span class="corner corner-bottom"><span>A</span><span>&spades;</span></span>
+      </span>
+    </span>
+  </button>
+  <p class="hint">Click the card to flip</p>
+</main>
+<script src="index.js"></script>
 </body>
 </html>

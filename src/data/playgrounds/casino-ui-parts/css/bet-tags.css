@@ -1,0 +1,56 @@
+/* ----------- 莊 ---------- */
+.static-banker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7rem;
+  color: white;
+  
+  height: 220px;
+  width: 660px;
+  background: linear-gradient(#C41C14, #C41C14) top left, 
+              linear-gradient(#C41C14, #C41C14) top left,
+              linear-gradient(#C41C14, #C41C14) top right,
+              linear-gradient(#C41C14, #C41C14) top right,
+              linear-gradient(#C41C14, #C41C14) bottom left,
+              linear-gradient(#C41C14, #C41C14) bottom left,
+              linear-gradient(#C41C14, #C41C14) bottom right,
+              linear-gradient(#C41C14, #C41C14) bottom right;
+  background-size: 10px 120px, 25px 10px; /* (縱向 width height, 橫向 height, width) */
+  background-repeat: no-repeat;
+  background-color: #D92D2066;
+}
+
+/* ----------- 閒 ----------- */
+.static-player {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7rem;
+  color: white;
+  
+  height: 220px;
+  width: 660px;
+  background: linear-gradient(#095EC7, #095EC7) top left, 
+              linear-gradient(#095EC7, #095EC7) top left,
+              linear-gradient(#095EC7, #095EC7) top right,
+              linear-gradient(#095EC7, #095EC7) top right,
+              linear-gradient(#095EC7, #095EC7) bottom left,
+              linear-gradient(#095EC7, #095EC7) bottom left,
+              linear-gradient(#095EC7, #095EC7) bottom right,
+              linear-gradient(#095EC7, #095EC7) bottom right;
+  background-size: 10px 120px, 25px 10px; /* (縱向 width length, 橫向 length, width) */
+  background-repeat: no-repeat;
+  background-color: #1468DC66;
+}
+
+.bet-tags {
+  display: grid;
+  gap: 40px;
+}
+
+.scaled--tags {
+  --w: 660px;
+  --h: 480px;
+  --scale: 0.45;
+}

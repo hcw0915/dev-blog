@@ -1,0 +1,52 @@
+/*
+  餘額列：左邊標籤、右邊數值，兩層 radial-gradient 疊出塑膠質感。
+  原稿這段前面混進一塊從設計稿貼上、沒有選擇器的屬性，會把 .DB-container 的選擇器吃掉，整段樣式失效；這裡已經拿掉。
+*/
+.balance-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 375px;
+  max-width: 100%;
+  height: 48px;
+  padding: 8px;
+  background: radial-gradient(100% 100% at 50% 0%, #ffffff 39.57%, #f4f4f4 70%, #f4f4f4 80%);
+  box-shadow: 0 1px 2px rgba(138, 148, 168, 0.25);
+  border-radius: 16px 16px 0 0;
+}
+
+.balance-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  height: 32px;
+}
+
+.balance-label {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font: italic 500 10px/1 system-ui, -apple-system, sans-serif;
+  color: #576275;
+  white-space: nowrap;
+  background: radial-gradient(83.01% 83.01% at 50% 16.99%, #ffffff 60%, #f4f4f4 80%);
+  border: 1px solid #d5d9e0;
+  border-radius: 16px 0 0 16px;
+}
+
+.balance-value {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 12px;
+  font: 600 12px/1 system-ui, -apple-system, sans-serif;
+  color: #1f2937;
+  font-variant-numeric: tabular-nums;
+  background: radial-gradient(45.35% 108.91% at 4.65% 0%, rgba(255, 255, 255, 0.4) 40%, rgba(255, 255, 255, 0) 100%), #dcdfe5;
+  border-bottom: 1px solid #ffffff;
+  border-radius: 0 16px 16px 0;
+  box-shadow: inset 0 1.5px 1px rgba(138, 148, 168, 0.4);
+}
