@@ -1,0 +1,169 @@
+---
+/**
+ * 頁首背景 shader。首頁與關於頁共用，錨定在某個區塊上：高度蓋到錨點底部再往下漸隱。
+ * 沒有 WebGL2 或 prefers-reduced-motion 時什麼都不畫（canvas 維持透明）。
+ */
+export interface Props {
+  /** 要覆蓋的區塊 id：canvas 高度依它計算，它捲出畫面就暫停 */
+  anchor: string
+  /**
+   * 深色主題淡入後的不透明度。深色時卡片半透明、shader 會透到文字後面，需要淡一點；
+   * 淺色卡片不透明，shader 只露在周圍，維持 1，否則幾乎看不見
+   */
+  darkOpacity?: number
+  /** 色相旋轉角度（度）；0 = 首頁的青紫，其他頁可以換一組色、共用同一份 GLSL */
+  hue?: number
+}
+
+const { anchor, darkOpacity = 1, hue = 0 } = Astro.props
+---
+
+<!-- 父層需要 relative isolate：canvas 的 -z-10 才是相對父層，不會被 body 背景蓋掉 -->
+<canvas
+  id="hero-shader"
+  data-anchor={anchor}
+  data-hue={hue}
+  aria-hidden="true"
+  class="pointer-events-none absolute inset-x-0 top-0 -z-10 w-full opacity-0 transition-opacity duration-700 [mask-image:linear-gradient(to_bottom,black_0%,black_55%,transparent_100%)]"
+  style={`height: 640px; --dark-opacity: ${darkOpacity}`}
+></canvas>
+
+<script>
+  // 與 playground 的 hero-shader 範例共用同一份 GLSL —— 背景本身就是一篇可編輯的範例
+  import heroFrag from "@/data/playgrounds/hero-shader/shader.frag?raw"
+
+  // 打包後的 script 整個站只執行一次；ClientRouter 每次換頁都會換掉 canvas，
+  // 所以換頁前要把上一頁的監聽、observer、動畫迴圈和 GL context 收乾淨，否則會越積越多。
+  let cleanup = () => {}
+
+  const init = () => {
+    cleanup()
+    const canvas = document.getElementById("hero-shader") as HTMLCanvasElement | null
+    const hero = canvas && document.getElementById(canvas.dataset.anchor!)
+    if (!canvas || !hero) return
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return
+    const gl = canvas.getContext("webgl2", { antialias: false, alpha: false, powerPreference: "low-power" })
+    if (!gl) return
+
+    const vert = `#version 300 es
+void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);gl_Position=vec4(p*2.0-1.0,0.0,1.0);}`
+    const compile = (type: number, src: string) => {
+      const sh = gl.createShader(type)!
+      gl.shaderSource(sh, src)
+      gl.compileShader(sh)
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh) || "shader")
+      return sh
+    }
+    const prog = gl.createProgram()!
+    try {
+      gl.attachShader(prog, compile(gl.VERTEX_SHADER, vert))
+      gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, heroFrag))
+      gl.linkProgram(prog)
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog) || "link")
+    } catch (e) {
+      console.warn("[hero-shader]", e)
+      return
+    }
+    gl.useProgram(prog)
+    const U = Object.fromEntries(
+      ["u_resolution", "u_time", "u_mouse", "u_dark", "u_hue"].map(n => [n, gl.getUniformLocation(prog, n)])
+    )
+    gl.uniform1f(U.u_hue, ((Number(canvas.dataset.hue) || 0) * Math.PI) / 180)
+
+    const ac = new AbortController()
+    const { signal } = ac
+
+    // 背景不需要高解析：渲染 0.5x DPR 再放大，四倍便宜，模糊本來就是它的樣子
+    const resize = () => {
+      // 蓋到錨點底部再多 96px，讓 mask 有空間漸隱
+      canvas.style.height = `${hero.offsetTop + hero.offsetHeight + 96}px`
+      const r = canvas.getBoundingClientRect()
+      const dpr = Math.min(devicePixelRatio, 2) * 0.5
+      canvas.width = Math.max(1, Math.round(r.width * dpr))
+      canvas.height = Math.max(1, Math.round(r.height * dpr))
+      gl.viewport(0, 0, canvas.width, canvas.height)
+    }
+    resize()
+    const ro = new ResizeObserver(resize)
+    ro.observe(hero)
+    addEventListener("resize", resize, { passive: true, signal })
+
+    // 游標：緩動追蹤，沒有滑鼠（觸控）就停在中間
+    const mouse = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 }
+    addEventListener(
+      "mousemove",
+      e => {
+        const r = canvas.getBoundingClientRect()
+        mouse.tx = (e.clientX - r.left) / r.width
+        mouse.ty = 1 - (e.clientY - r.top) / r.height
+      },
+      { passive: true, signal }
+    )
+
+    let dark = document.documentElement.classList.contains("dark")
+    const mo = new MutationObserver(() => {
+      dark = document.documentElement.classList.contains("dark")
+    })
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
+
+    // 只在看得到的時候畫：捲出畫面或切到別的分頁就停
+    let visible = true
+    let raf = 0
+    const io = new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting
+      if (visible && !raf) raf = requestAnimationFrame(frame)
+    })
+    io.observe(hero)
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (!document.hidden && visible && !raf) raf = requestAnimationFrame(frame)
+      },
+      { signal }
+    )
+
+    const t0 = performance.now()
+    function frame() {
+      raf = 0
+      if (!visible || document.hidden) return
+      mouse.x += (mouse.tx - mouse.x) * 0.06
+      mouse.y += (mouse.ty - mouse.y) * 0.06
+      gl!.uniform2f(U.u_resolution, canvas!.width, canvas!.height)
+      gl!.uniform1f(U.u_time, (performance.now() - t0) / 1000)
+      gl!.uniform2f(U.u_mouse, mouse.x, mouse.y)
+      gl!.uniform1f(U.u_dark, dark ? 1 : 0)
+      gl!.drawArrays(gl!.TRIANGLES, 0, 3)
+      raf = requestAnimationFrame(frame)
+    }
+    raf = requestAnimationFrame(frame)
+
+    cleanup = () => {
+      ac.abort()
+      ro.disconnect()
+      io.disconnect()
+      mo.disconnect()
+      cancelAnimationFrame(raf)
+      // 瀏覽器同時存活的 GL context 有上限，換頁不等 GC，直接釋放
+      gl.getExtension("WEBGL_lose_context")?.loseContext()
+      cleanup = () => {}
+    }
+
+    canvas.classList.add("is-on")
+    // 首頁：shader 跑起來後藏掉靜態柔光、顯示「在 playground 打開」連結
+    hero.querySelectorAll<HTMLElement>(".glow").forEach(g => (g.style.display = "none"))
+    document.getElementById("hero-shader-link")?.classList.replace("hidden", "inline-flex")
+  }
+
+  document.addEventListener("astro:page-load", init)
+  document.addEventListener("astro:before-swap", () => cleanup())
+</script>
+
+<style>
+  /* 用 class 而不是寫死 style.opacity：切換主題時不用重跑 JS 就跟著變 */
+  canvas.is-on {
+    opacity: 1;
+  }
+  :global(.dark) canvas.is-on {
+    opacity: var(--dark-opacity);
+  }
+</style>

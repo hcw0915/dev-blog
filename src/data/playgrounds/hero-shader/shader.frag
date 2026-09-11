@@ -13,6 +13,7 @@ uniform vec2  u_resolution;
 uniform float u_time;
 uniform vec2  u_mouse;   // 0..1，左下為原點
 uniform float u_dark;    // 1 = 深色主題，0 = 淺色
+uniform float u_hue;     // 色相旋轉（弧度）；沒設定就是 0 = 上面的原色
 
 out vec4 outColor;
 
@@ -40,6 +41,13 @@ float snoise(vec2 v) {
   return 130.0 * dot(m, g);
 }
 
+// 繞灰階軸 (1,1,1) 旋轉顏色：亮度大致不變，只換色相
+vec3 hueRotate(vec3 c, float a) {
+  const vec3 k = vec3(0.57735);
+  float cs = cos(a);
+  return clamp(c * cs + cross(k, c) * sin(a) + k * dot(k, c) * (1.0 - cs), 0.0, 1.0);
+}
+
 // 疊幾層噪聲 = fbm
 float fbm(vec2 p) {
   float v = 0.0, a = 0.5;
@@ -61,7 +69,7 @@ void main() {
 
   // 兩個品牌色之間來回，noise 決定在哪
   float k = smoothstep(-0.6, 0.6, n);
-  vec3 tint = mix(CYAN, VIOLET, k);
+  vec3 tint = hueRotate(mix(CYAN, VIOLET, k), u_hue);
 
   // 邊緣淡出，讓它安靜地待在文字後面（放很寬：這片是全寬背景，左右不該黑掉）
   float vignette = smoothstep(1.9, 0.2, length(p * vec2(0.55, 1.1)));
