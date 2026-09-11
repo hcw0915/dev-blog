@@ -8,6 +8,20 @@
 @import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&display=swap');
 
+/*
+  整頁載入時（進出 playground 編輯頁、重新整理）瀏覽器在新文件畫出第一幀前用「畫布底色」填畫面，
+  html 沒有背景時那個底色是白的 —— 深色主題就會閃一下白。給 html 本身跟主題一致的背景 +
+  color-scheme，畫布從第一幀就是對的顏色（捲軸、表單控制項也跟著變深）。
+ */
+html {
+  background-color: #fafaf8;
+  color-scheme: light;
+}
+html.dark {
+  background-color: #09090b;
+  color-scheme: dark;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
     sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
