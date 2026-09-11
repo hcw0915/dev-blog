@@ -45,9 +45,9 @@ const fileCount = Object.keys(playground.files).length
   </div>
 
   <div class="flex flex-1 flex-col p-4">
-    <div class="flex flex-wrap gap-1.5">
+    <div class="flex flex-wrap gap-1">
       {playground.tags.map(tag => (
-        <span class="rounded-full bg-zinc-900/[0.05] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-500 dark:bg-white/[0.06] dark:text-zinc-400">
+        <span class="rounded-full bg-zinc-900/[0.05] px-1.5 py-px text-[9px] font-semibold uppercase leading-[14px] tracking-wide text-zinc-500 dark:bg-white/[0.06] dark:text-zinc-400">
           {tag}
         </span>
       ))}

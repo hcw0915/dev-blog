@@ -35,9 +35,9 @@ const t = getTranslations(locale).playground
           <p class="hidden truncate text-xs text-zinc-400 dark:text-zinc-500 md:block">
             {playground.description}
           </p>
-          <div class="ml-auto flex shrink-0 gap-1.5">
+          <div class="ml-auto flex shrink-0 gap-1">
             {playground.tags.map(tag => (
-              <span class="rounded-full bg-zinc-900/[0.05] px-2 py-0.5 text-[11px] text-zinc-500 dark:bg-white/[0.06] dark:text-zinc-400">
+              <span class="rounded-full bg-zinc-900/[0.05] px-1.5 py-px text-[10px] leading-[14px] text-zinc-500 dark:bg-white/[0.06] dark:text-zinc-400">
                 {tag}
               </span>
             ))}
