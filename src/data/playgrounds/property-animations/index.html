@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@property Animations</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/jackpot.css">
+  <link rel="stylesheet" href="css/gradient-button.css">
+  <link rel="stylesheet" href="css/progress-ring.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+</head>
+<body>
+<main class="page">
+  <header class="intro">
+    <h1>@property Animations</h1>
+    <p>A custom property only animates once the browser knows its type. Register it with @property and integers, colors, numbers and percentages all interpolate.</p>
+  </header>
+
+  <div class="grid">
+    <section class="panel">
+      <h2 class="panel-title">Jackpot counter <code>&lt;integer&gt;</code></h2>
+      <div class="panel-body">
+        <div class="jackpot is-playing" role="img" aria-label="Jackpot $1,250,000"></div>
+      </div>
+      <button class="replay" type="button" data-replay=".jackpot">Replay</button>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">Gradient hover <code>&lt;color&gt;</code></h2>
+      <div class="panel-body">
+        <button class="gradient-btn is-registered" type="button">Registered</button>
+        <button class="gradient-btn is-unregistered" type="button">Unregistered</button>
+      </div>
+      <p class="panel-note">Hover both. Only the registered one fades between gradients.</p>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">Progress ring <code>&lt;number&gt;</code></h2>
+      <div class="panel-body">
+        <div class="ring is-playing" style="--target: 72" role="img" aria-label="72 percent">
+          <span class="ring-label"></span>
+        </div>
+      </div>
+      <button class="replay" type="button" data-replay=".ring">Replay</button>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">Skeleton shimmer <code>&lt;percentage&gt;</code></h2>
+      <div class="panel-body">
+        <div class="skeleton" aria-hidden="true">
+          <span class="sk sk-avatar"></span>
+          <span class="sk sk-line"></span>
+          <span class="sk sk-line sk-line--short"></span>
+          <span class="sk sk-line"></span>
+        </div>
+      </div>
+      <p class="panel-note">The highlight moves by animating --shine, not background-position.</p>
+    </section>
+  </div>
+</main>
+<script src="index.js"></script>
+</body>
+</html>

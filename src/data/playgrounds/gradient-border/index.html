@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gradient Borders</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/border-image.css">
+  <link rel="stylesheet" href="css/background-clip.css">
+  <link rel="stylesheet" href="css/mask-composite.css">
+  <link rel="stylesheet" href="css/rotating-glow.css">
+</head>
+<body>
+<main class="page">
+  <header class="intro">
+    <h1>Gradient Borders</h1>
+    <p>Same goal, four techniques. The backdrop is busy on purpose: it shows which ones keep the inside transparent.</p>
+  </header>
+
+  <div class="grid">
+    <section class="demo">
+      <div class="box border-image">
+        <h2>border-image</h2>
+        <p>One declaration on top of a normal border.</p>
+      </div>
+      <ul class="notes">
+        <li class="good">Shortest to write</li>
+        <li class="bad">Ignores border-radius</li>
+      </ul>
+    </section>
+
+    <section class="demo">
+      <div class="box bg-clip">
+        <h2>background-clip</h2>
+        <p>A solid layer on padding-box over a gradient on border-box.</p>
+      </div>
+      <ul class="notes">
+        <li class="good">Rounded corners</li>
+        <li class="bad">Inside needs a solid fill</li>
+      </ul>
+    </section>
+
+    <section class="demo">
+      <div class="box mask-border">
+        <h2>mask-composite</h2>
+        <p>A pseudo-element masked down to just the border ring.</p>
+      </div>
+      <ul class="notes">
+        <li class="good">Rounded and truly transparent</li>
+        <li class="bad">Uses up a pseudo-element</li>
+      </ul>
+    </section>
+
+    <section class="demo">
+      <div class="box glow-border">
+        <span class="glow-halo" aria-hidden="true"><span class="glow-ring"></span></span>
+        <h2>Rotating glow</h2>
+        <p>@property registers the angle so the conic-gradient can spin.</p>
+      </div>
+      <ul class="notes">
+        <li class="good">Animated, still transparent</li>
+        <li class="bad">Needs @property support</li>
+      </ul>
+    </section>
+  </div>
+</main>
+</body>
+</html>

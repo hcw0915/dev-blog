@@ -1,0 +1,64 @@
+/*
+  counter() 只吃整數，所以把 --jackpot 註冊成 <integer>，動畫中每一格都是整數。
+  千分位：用 round() 和 mod() 拆成百萬、千、個三段，後兩段補零到三位數。
+*/
+@property --jackpot {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: true;
+}
+
+@property --millions {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+@property --thousands {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+@property --units {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+@counter-style pad3 {
+  system: extends decimal;
+  pad: 3 "0";
+}
+
+.jackpot {
+  --target: 1250000;
+  --millions: round(down, var(--jackpot) / 1000000, 1);
+  --thousands: mod(round(down, var(--jackpot) / 1000, 1), 1000);
+  --units: mod(var(--jackpot), 1000);
+  counter-reset: millions var(--millions) thousands var(--thousands) units var(--units);
+  font: 800 clamp(2.4rem, 7vw, 3.4rem)/1 Arial, sans-serif;
+  font-variant-numeric: tabular-nums;
+  background-image: linear-gradient(180deg, #fff7c0 0%, #ffe24a 30%, #ffcb1c 55%, #ffa310 80%, #ff8400 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 3px 0 #5a2c00) drop-shadow(0 8px 12px rgb(0 0 0 / 0.45));
+}
+
+.jackpot::after {
+  content: "$" counter(millions) "," counter(thousands, pad3) "," counter(units, pad3);
+}
+
+.jackpot.is-playing {
+  animation: jackpot 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes jackpot {
+  from {
+    --jackpot: 0;
+  }
+  to {
+    --jackpot: var(--target);
+  }
+}

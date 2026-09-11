@@ -1,0 +1,11 @@
+{
+  "title": "Gradient Borders",
+  "description": "同一個漸層邊框的四種做法並排比較：border-image 最短但沒有圓角、background-clip 內部要實心底、mask-composite 有圓角且內部真正透明，再加上用 @property 讓 conic-gradient 旋轉的光邊。",
+  "tags": [
+    "CSS",
+    "mask-composite",
+    "@property"
+  ],
+  "author": "Antonio",
+  "createdAt": "2026-09-11"
+}

@@ -1,0 +1,30 @@
+/*
+  ::before 疊在元件上、畫滿漸層，padding 等於邊框寬度。
+  遮罩兩層：一層只蓋 content-box、一層蓋全部，exclude 之後只剩 padding 那一圈 —— 也就是邊框。
+  內部完全沒有東西，背景照樣透出來。
+*/
+.mask-border {
+  position: relative;
+  border-radius: var(--radius);
+}
+
+.mask-border > * {
+  position: relative;
+}
+
+.mask-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: var(--border);
+  border-radius: inherit;
+  background: var(--gradient);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  pointer-events: none;
+}

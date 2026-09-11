@@ -1,0 +1,104 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #f1f5f9;
+  background: radial-gradient(circle at 50% 0%, #1e293b, #0b1020 65%);
+}
+
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 44px 24px 64px;
+}
+
+.intro h1 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.intro p {
+  margin: 8px 0 0;
+  max-width: 62ch;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #cbd5e1;
+}
+
+.grid {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.panel {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 12px;
+  padding: 18px 20px 20px;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 18px;
+  background: rgb(255 255 255 / 0.04);
+}
+
+.panel-title {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.panel-title code {
+  font-size: 12px;
+  color: #a5b4fc;
+}
+
+.panel-body {
+  min-height: 180px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.panel-note {
+  margin: 0;
+  font-size: 13px;
+  text-align: center;
+  color: #94a3b8;
+}
+
+.replay {
+  justify-self: center;
+  padding: 8px 16px;
+  border: 1px solid rgb(255 255 255 / 0.15);
+  border-radius: 999px;
+  background: transparent;
+  color: #e2e8f0;
+  font: 600 13px/1 system-ui, -apple-system, sans-serif;
+  cursor: pointer;
+}
+
+.replay:hover {
+  background: rgb(255 255 255 / 0.06);
+}
+
+/* 減少動態效果：動畫直接跳到結果，閃光停住 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}

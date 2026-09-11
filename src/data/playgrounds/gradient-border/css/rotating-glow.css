@@ -1,0 +1,64 @@
+/* 註冊成 <angle> 之後，瀏覽器才知道怎麼在 0deg 和 360deg 之間插值；沒註冊的自訂屬性只會瞬間跳過去 */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.glow-border {
+  position: relative;
+  border-radius: var(--radius);
+}
+
+.glow-border > :not(.glow-halo) {
+  position: relative;
+}
+
+/* 清楚的那圈邊框和外發光共用同一套：旋轉的 conic-gradient，再用 mask 挖成環 */
+.glow-border::before,
+.glow-ring {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: var(--border);
+  border-radius: var(--radius);
+  background: conic-gradient(from var(--angle), #22d3ee, #a78bfa, #f472b6, #22d3ee);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  animation: spin 4s linear infinite;
+  pointer-events: none;
+}
+
+/*
+  模糊要做在外層：filter 比 mask 先套用，直接在有遮罩的元素上 blur，
+  糊開的部分會被自己的遮罩切掉，發不出光。包一層再 blur，糊的是已經挖好的環。
+*/
+.glow-halo {
+  position: absolute;
+  inset: 0;
+  filter: blur(14px);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.glow-ring {
+  padding: calc(var(--border) * 2);
+}
+
+@keyframes spin {
+  to {
+    --angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-border::before,
+  .glow-ring {
+    animation: none;
+  }
+}

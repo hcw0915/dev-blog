@@ -1,0 +1,11 @@
+{
+  "title": "@property Animations",
+  "description": "自訂屬性註冊型別後才能做動畫：整數做 Jackpot 數字跳動（含千分位）、顏色做漸層按鈕過渡並和沒註冊的版本對照、數字做進度環、百分比做骨架屏閃光。",
+  "tags": [
+    "CSS",
+    "@property",
+    "Animation"
+  ],
+  "author": "Antonio",
+  "createdAt": "2026-09-11"
+}

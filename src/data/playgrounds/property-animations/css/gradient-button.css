@@ -1,0 +1,47 @@
+@property --from {
+  syntax: "<color>";
+  initial-value: #7c3aed;
+  inherits: false;
+}
+
+@property --to {
+  syntax: "<color>";
+  initial-value: #db2777;
+  inherits: false;
+}
+
+.gradient-btn {
+  padding: 14px 22px;
+  border: 0;
+  border-radius: 999px;
+  font: 700 15px/1 system-ui, -apple-system, sans-serif;
+  color: #fff;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 0.35);
+  cursor: pointer;
+}
+
+/* 註冊過：瀏覽器知道 --from / --to 是顏色，transition 會逐格插值，漸層跟著平滑變色 */
+.is-registered {
+  background: linear-gradient(135deg, var(--from), var(--to));
+  transition: --from 0.6s ease, --to 0.6s ease;
+}
+
+.is-registered:hover,
+.is-registered:focus-visible {
+  --from: #0891b2;
+  --to: #16a34a;
+}
+
+/* 沒註冊：自訂屬性只是一串文字，沒辦法插值，transition 寫了也是瞬間換過去 */
+.is-unregistered {
+  --u-from: #7c3aed;
+  --u-to: #db2777;
+  background: linear-gradient(135deg, var(--u-from), var(--u-to));
+  transition: --u-from 0.6s ease, --u-to 0.6s ease;
+}
+
+.is-unregistered:hover,
+.is-unregistered:focus-visible {
+  --u-from: #0891b2;
+  --u-to: #16a34a;
+}

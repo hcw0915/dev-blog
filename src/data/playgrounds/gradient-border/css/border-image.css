@@ -1,0 +1,6 @@
+/* border-image 畫的是邊框本身，不管 border-radius：圓角寫了也不會生效，邊框永遠是直角 */
+.border-image {
+  border: var(--border) solid;
+  border-image: var(--gradient) 1;
+  border-radius: var(--radius);
+}

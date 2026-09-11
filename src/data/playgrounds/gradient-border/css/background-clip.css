@@ -1,0 +1,11 @@
+/*
+  兩層背景：上層實心色只畫到 padding-box，下層漸層畫滿 border-box。
+  邊框是透明的，底下露出來的就是漸層。代價是內部一定要有實心底色，蓋不住就會整片漸層。
+*/
+.bg-clip {
+  border: var(--border) solid transparent;
+  border-radius: var(--radius);
+  background:
+    linear-gradient(#111827, #111827) padding-box,
+    var(--gradient) border-box;
+}

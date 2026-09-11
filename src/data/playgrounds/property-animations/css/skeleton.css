@@ -1,0 +1,45 @@
+/*
+  傳統做法是把漸層放大好幾倍再移動 background-position；
+  註冊 --shine 之後，直接移動漸層裡高光的位置就好，漸層尺寸不用動。
+*/
+@property --shine {
+  syntax: "<percentage>";
+  initial-value: -40%;
+  inherits: false;
+}
+
+.skeleton {
+  width: min(260px, 100%);
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  align-items: center;
+  gap: 12px 14px;
+}
+
+.sk {
+  display: block;
+  border-radius: 8px;
+  background: linear-gradient(100deg, #1e293b calc(var(--shine) - 25%), #334155 var(--shine), #1e293b calc(var(--shine) + 25%));
+  animation: shine 1.4s linear infinite;
+}
+
+.sk-avatar {
+  grid-row: span 3;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.sk-line {
+  height: 12px;
+}
+
+.sk-line--short {
+  width: 60%;
+}
+
+@keyframes shine {
+  to {
+    --shine: 140%;
+  }
+}
