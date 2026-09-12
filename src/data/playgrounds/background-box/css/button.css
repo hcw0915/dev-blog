@@ -1,0 +1,61 @@
+/*
+  漸層邊框按鈕：
+    第 1 層（上面）＝ 底色，只畫到 padding-box
+    第 2 層（下面）＝ 邊框漸層，畫滿 border-box
+  邊框設成 transparent，露出來的就是第 2 層。層的順序和 box 關鍵字都不能換。
+*/
+.btn {
+  --fill: linear-gradient(180deg, #2b3350, #1b2136);
+  --edge: linear-gradient(180deg, rgb(255 255 255 / 0.1) 0%, rgb(255 255 255 / 0.05) 100%);
+  padding: 12px 22px;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-sm);
+  font: 600 14px/1 system-ui, -apple-system, sans-serif;
+  color: #e8ecf8;
+  cursor: pointer;
+  background:
+    var(--fill) padding-box,
+    var(--edge) border-box;
+}
+
+/* 四個案例要並排比較，擠到第二行就失去對照的意義 */
+.btn-row {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  gap: 20px;
+}
+
+.btn-case {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  align-content: start;
+}
+
+/* 錯誤 1：兩層都畫滿 border-box，上層底色直接蓋掉邊框漸層 */
+.btn--both-border-box {
+  background:
+    var(--fill) border-box,
+    var(--edge) border-box;
+}
+
+/* 錯誤 2：沒有透明邊框，padding-box 和 border-box 一樣大，第 2 層完全被遮住 */
+.btn--no-border {
+  border: 0;
+}
+
+/* 錯誤 3：兩層順序顛倒，邊框漸層跑到上面，把底色整片蓋掉一層白 */
+.btn--swapped {
+  background:
+    var(--edge) border-box,
+    var(--fill) padding-box;
+}
+
+/* 可調版本：邊框寬度與底色那層的 box 都由 JS 換變數 */
+.btn--live {
+  border-width: var(--bw, 1.5px);
+  background:
+    var(--fill) var(--fill-clip, padding-box),
+    var(--edge) border-box;
+}

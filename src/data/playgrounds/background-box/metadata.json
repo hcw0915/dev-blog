@@ -1,0 +1,11 @@
+{
+  "title": "padding-box vs border-box",
+  "description": "background 的每一層都能指定畫到哪裡停：底色只畫到 padding-box、邊框漸層畫滿 border-box，透明邊框就會露出漸層，這是漸層邊框按鈕的標準寫法。頁面把三種 box 的邊界畫出來，並列出寫錯的三種情況；邊框寬度和底色那層的 box 可以直接調。",
+  "tags": [
+    "CSS",
+    "background-clip",
+    "Gradient"
+  ],
+  "author": "Antonio",
+  "createdAt": "2026-09-12"
+}

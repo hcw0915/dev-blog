@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>padding-box vs border-box</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/boxes.css">
+  <link rel="stylesheet" href="css/button.css">
+</head>
+<body>
+<main class="page">
+  <header class="intro">
+    <h1>padding-box vs border-box</h1>
+    <p>Every background layer can say where it stops painting. That one keyword is what makes gradient borders work.</p>
+  </header>
+
+  <h2 class="section-title">Where each box ends</h2>
+  <p class="section-note">Same gradient, same 18px dashed border and 18px padding. Only background-clip changes.</p>
+  <div class="clip-row">
+    <figure class="clip-item">
+      <div class="clip-box clip-box--border"><span>content</span></div>
+      <figcaption>
+        <code>border-box</code>
+        <small>The default. Paints under the border, so the gradient shows between the dashes.</small>
+      </figcaption>
+    </figure>
+    <figure class="clip-item">
+      <div class="clip-box clip-box--padding"><span>content</span></div>
+      <figcaption>
+        <code>padding-box</code>
+        <small>Stops at the inner edge of the border. The dashes have nothing behind them.</small>
+      </figcaption>
+    </figure>
+    <figure class="clip-item">
+      <div class="clip-box clip-box--content"><span>content</span></div>
+      <figcaption>
+        <code>content-box</code>
+        <small>Stops after the padding too. Only the content area is painted.</small>
+      </figcaption>
+    </figure>
+  </div>
+
+  <h2 class="section-title">The gradient border button</h2>
+  <p class="section-note">Two layers: the fill clipped to padding-box, the edge gradient painted across the whole border-box. The border itself is transparent, so the lower layer shows through exactly there — and nowhere else.</p>
+  <div class="btn-row">
+    <div class="btn-case">
+      <button class="btn" type="button">Close</button>
+      <p class="case good">fill <code>padding-box</code> + edge <code>border-box</code></p>
+    </div>
+    <div class="btn-case">
+      <button class="btn btn--both-border-box" type="button">Close</button>
+      <p class="case bad">both layers <code>border-box</code> — the fill covers the edge</p>
+    </div>
+    <div class="btn-case">
+      <button class="btn btn--no-border" type="button">Close</button>
+      <p class="case bad">no transparent border — the edge has nowhere to show</p>
+    </div>
+    <div class="btn-case">
+      <button class="btn btn--swapped" type="button">Close</button>
+      <p class="case bad">layers swapped — the edge paints over the fill</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Try it</h2>
+  <div class="live">
+    <div class="live-preview">
+      <button class="btn btn--live" type="button">Close</button>
+    </div>
+    <div class="controls">
+      <label class="control">
+        <span>border-width <output data-out="bw">1.5px</output></span>
+        <input type="range" min="0" max="6" step="0.5" value="1.5" data-var="--bw">
+      </label>
+      <label class="control control--check">
+        <input type="checkbox" data-clip>
+        <span>fill layer uses <code>border-box</code></span>
+      </label>
+    </div>
+    <pre class="code"><code data-code></code></pre>
+  </div>
+</main>
+<script src="index.js"></script>
+</body>
+</html>
