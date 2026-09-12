@@ -62,8 +62,12 @@ const projects: {
 }[] = [
   {
     key: "knowledge",
-    thumb: thumbOf("knowledge-keyword-rag", []),
-    links: [{ href: "/posts/knowledge-keyword-rag", label: a.links.article }]
+    thumb: thumbOf("knowledge-optimization", []),
+    // 兩篇都留入口：新的寫「三個月後改了什麼」，總覽寫整套架構怎麼來的
+    links: [
+      { href: "/posts/knowledge-optimization", label: a.links.article },
+      { href: "/posts/knowledge-keyword-rag", label: a.links.overview }
+    ]
   },
   {
     key: "embeddedUi",

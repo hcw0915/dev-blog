@@ -101,7 +101,7 @@ export const SERIES: { id: string; title: { zh: string; en: string }; slugs: str
  */
 export const FEATURED_SLUGS: string[] = [
   // 第一個是釘選位，永遠排在最前；其餘依發佈日期新到舊排序。
-  "knowledge-keyword-rag", // AI：系統設計 + 團隊落地，主導者視角
+  "knowledge-optimization", // AI：知識庫跑了三個月後的實際修正，附量測與取捨
   "tailwind-embedded-ui-css", // 真實約束下的方案取捨，含被否決的解法與理由
   "chapter-5", // 工具評比矩陣 + CI 整合，不只是教學
 ]

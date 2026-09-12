@@ -31,7 +31,8 @@ export const translations = {
         qr: '顯示 QR code',
         caseStudy: '看案例',
         source: '原始碼',
-        article: '讀文章'
+        article: '讀文章',
+        overview: '看總覽'
       },
       // Work experience
       work: {
@@ -104,9 +105,9 @@ export const translations = {
           tags: ['ESLint', 'AST', 'Tooling']
         },
         knowledge: {
-          title: '團隊 AI 知識庫：Keyword RAG',
-          description: '為團隊導入 AI 設計的知識系統，解決跨對話、跨成員、跨 agent 反覆說明背景的問題。以 governance、agents、skills、knowledge 四層組織，知識依時效分成模組、運行鏈路、bug、決策、事件五類；靠命名約定與關鍵字檢索讓 agent 先查資料再回答，並用校驗器守住格式與交叉引用。',
-          tags: ['Keyword RAG', 'AI Agents', 'Skills', 'Governance']
+          title: 'AI 知識庫：從關鍵字搜尋到結構化檢索',
+          description: '讓 AI 先查資料再回答的專案知識庫。累積 483 份文件後的修正：檢索從掃全文改成查索引、按欄位權重排序，並用模板撐住索引品質。',
+          tags: ['AI Agents', 'Retrieval', 'Governance', 'Tooling']
         }
       },
       // Languages
@@ -262,7 +263,8 @@ export const translations = {
         qr: 'Show QR code',
         caseStudy: 'Read case study',
         source: 'Source',
-        article: 'Read article'
+        article: 'Read article',
+        overview: 'Read the overview'
       },
       // Work experience
       work: {
@@ -335,9 +337,9 @@ export const translations = {
           tags: ['ESLint', 'AST', 'Tooling']
         },
         knowledge: {
-          title: 'Team AI knowledge base with keyword RAG',
-          description: 'A knowledge system for bringing AI into a team, so context no longer has to be re-explained across conversations, teammates, and agents. It is organized into governance, agents, skills, and knowledge layers, with knowledge split by lifespan into modules, runtime flows, bugs, decisions, and events. Naming conventions and keyword search let agents look things up before answering, and a validator enforces format and cross-references.',
-          tags: ['Keyword RAG', 'AI Agents', 'Skills', 'Governance']
+          title: 'AI knowledge base: from keyword search to structured recall',
+          description: 'A project knowledge base that makes AI look things up before answering. After 483 documents: recall queries a weighted index instead of scanning prose, and templates keep that index usable.',
+          tags: ['AI Agents', 'Retrieval', 'Governance', 'Tooling']
         }
       },
       // Languages
