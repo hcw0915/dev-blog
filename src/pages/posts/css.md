@@ -9,6 +9,7 @@ tags:
   - CSS
 heroImage: /placeholder-hero.png
 slug: css
+playground: gradient-border
 ---
 
 > 本文應用技術真實使用, 撰寫初版後, 轉由 AI 排版潤稿
