@@ -44,6 +44,7 @@ export const GET: APIRoute = async ({ props }) => {
   const accent = paletteForTags(tags)[0]?.base ?? '#22d3ee'
   const dateText = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`
 
+  // satori 的參數型別是 ReactNode，這裡傳的是手寫的 element 物件，型別對不上但執行沒問題
   const svg = await satori(
     {
       type: 'div',
@@ -118,7 +119,7 @@ export const GET: APIRoute = async ({ props }) => {
           }
         ]
       }
-    },
+    } as unknown as Parameters<typeof satori>[0],
     {
       width: 1200,
       height: 630,
