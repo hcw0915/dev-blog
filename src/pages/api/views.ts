@@ -41,15 +41,6 @@ const readEnv = (): { url?: string; token?: string; source?: string } => {
   return {}
 }
 
-/** 只回報名稱，不回報值：用來確認雲端到底注入了哪些變數 */
-const envNames = () =>
-  Object.keys({
-    ...(typeof process !== "undefined" ? process.env : {}),
-    ...(import.meta.env as Record<string, unknown>)
-  })
-    .filter(k => /KV|UPSTASH|REDIS|STORAGE/i.test(k))
-    .sort()
-
 /** slug 只允許小寫英數與 -，避免被拿去組任意 Redis key */
 const isValidSlug = (s: string) => /^[a-z0-9][a-z0-9-]{0,80}$/.test(s)
 
@@ -70,7 +61,6 @@ async function redis(url: string, token: string, command: string[]): Promise<num
 
 export const GET: APIRoute = async ({ url: reqUrl }) => {
   const slug = reqUrl.searchParams.get("slug") ?? ""
-  if (reqUrl.searchParams.has("debug")) return json({ envNames: envNames(), resolved: Boolean(readEnv().url) })
   if (!isValidSlug(slug)) return json({ error: "bad slug" }, 400)
   const { url, token, source } = readEnv()
   if (!url || !token) return json({ slug, count: 0, store: false })
