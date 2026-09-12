@@ -220,7 +220,9 @@ export const translations = {
       seriesNext: '系列下一篇',
       copy: '複製',
       copied: '已複製',
-      related: '相關文章'
+      related: '相關文章',
+      playground: '動手玩',
+      openPlayground: '在 playground 開啟'
     },
     // Site search
     search: {
@@ -448,7 +450,9 @@ export const translations = {
       seriesNext: 'Next in series',
       copy: 'Copy',
       copied: 'Copied',
-      related: 'Related posts'
+      related: 'Related posts',
+      playground: 'Try it',
+      openPlayground: 'Open in playground'
     },
     // Site search
     search: {
