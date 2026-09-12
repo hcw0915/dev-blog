@@ -200,6 +200,10 @@ const jsonLd = JSON.stringify({
             <span>{formatDate(new Date(createdAt), locale)}</span>
             <span>·</span>
             <span>{minutes} {t.post.minRead}</span>
+            <span>·</span>
+            <span id="view-count" data-slug={slug} title={t.post.views}>
+              <span data-count>0</span> {t.post.views}
+            </span>
             {
               displayTags(tags).map(tag => (
                 <span
@@ -671,5 +675,35 @@ const jsonLd = JSON.stringify({
       }
       document.addEventListener('astro:page-load', initToc)
     </script>
+  <script>
+    // 同一個分頁只計一次；其餘情況只讀數字。拿不到就維持 0，不讓版面跳動
+    const bumpViews = async () => {
+      const box = document.getElementById("view-count")
+      if (!box) return
+      const slug = box.dataset.slug
+      const out = box.querySelector("[data-count]")
+      if (!slug || !out) return
+      const key = `viewed:${slug}`
+      let counted = false
+      try {
+        counted = sessionStorage.getItem(key) === "1"
+      } catch {}
+      try {
+        const res = await fetch(`/api/views?slug=${encodeURIComponent(slug)}`, {
+          method: counted ? "GET" : "POST"
+        })
+        if (!res.ok) return
+        const data = await res.json()
+        if (typeof data.count === "number") out.textContent = data.count.toLocaleString()
+        if (!counted) {
+          try {
+            sessionStorage.setItem(key, "1")
+          } catch {}
+        }
+      } catch {}
+    }
+
+    document.addEventListener("astro:page-load", bumpViews)
+  </script>
   </Body>
 </html>

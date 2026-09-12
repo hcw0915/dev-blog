@@ -221,6 +221,7 @@ export const translations = {
       copy: '複製',
       copied: '已複製',
       related: '相關文章',
+      views: '次瀏覽',
       playground: '動手玩',
       openPlayground: '在 playground 開啟'
     },
@@ -451,6 +452,7 @@ export const translations = {
       copy: 'Copy',
       copied: 'Copied',
       related: 'Related posts',
+      views: 'views',
       playground: 'Try it',
       openPlayground: 'Open in playground'
     },

@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config"
 import sitemap from "@astrojs/sitemap"
+import vercel from "@astrojs/vercel"
 import react from "@astrojs/react"
 import tailwind from "@astrojs/tailwind"
 import path from "path"
@@ -13,6 +14,8 @@ const __dirname = path.dirname(__filename)
 export default defineConfig({
   // 換網域時：這裡與 src/config.ts 的 SITE_URL 兩處需同步
   site: "https://antonio-blog-one.vercel.app",
+  // 轉接器只為了 /api/views 這一支動態路由；其餘頁面維持預先渲染（Astro 5 的 static 預設）
+  adapter: vercel(),
   i18n: {
     defaultLocale: "zh",
     locales: ["zh", "en"],
