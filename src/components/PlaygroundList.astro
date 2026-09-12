@@ -3,6 +3,7 @@
  * Playground 列表頁本體。zh/en × vanilla/react 四個頁面共用 —— 先前是四份幾乎一樣的檔。
  */
 import PlaygroundCard from "@/components/PlaygroundCard.astro"
+import { tagStyle } from "@/lib/tags"
 import { playgroundsByTemplate } from "@/data/playgrounds/index"
 import type { PlaygroundTemplate } from "@/data/playgrounds/types"
 import { getTranslations } from "@/i18n/translations"
@@ -20,6 +21,10 @@ const prefix = locale === "en" ? "/en" : ""
 const baseUrl = `${prefix}/playground/${template}`
 const title = template === "react" ? t.reactTitle : t.vanillaTitle
 const intro = template === "react" ? t.reactIntro : t.vanillaIntro
+
+// 篩選列的標籤：這個 template 底下實際出現過的，字母排序
+const filterTags = [...new Set(items.flatMap(p => p.tags))].sort((a, b) => a.localeCompare(b))
+const tBlog = getTranslations(locale).blog
 ---
 
 <main class="pt-[88px] pb-16">
@@ -37,14 +42,147 @@ const intro = template === "react" ? t.reactIntro : t.vanillaIntro
 
     {
       items.length ? (
-        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map(p => (
-            <PlaygroundCard playground={p} baseUrl={baseUrl} locale={locale} />
-          ))}
-        </div>
+        <>
+          <section class="mb-8 space-y-4">
+            <input
+              id="pgSearch"
+              type="search"
+              placeholder={t.searchPlaceholder}
+              aria-label={t.searchPlaceholder}
+              class="w-full sm:max-w-sm rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/[0.04] px-4 py-2 text-sm outline-none focus:border-violet-400/60 placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
+            />
+            <div>
+              <div class="flex flex-wrap gap-2" id="pgTags" role="group" aria-label={tBlog.filterHint}>
+                <button
+                  type="button"
+                  data-filter-all
+                  aria-pressed="true"
+                  class="tag-btn text-sm border border-zinc-300 dark:border-white/15 text-zinc-600 dark:text-zinc-400 rounded-full px-3 py-0.5 transition-colors"
+                >
+                  {tBlog.all}
+                </button>
+                {filterTags.map(tag => (
+                  <button
+                    type="button"
+                    data-filter-tag={tag}
+                    aria-pressed="false"
+                    style={tagStyle(tag)}
+                    class="tag-btn text-sm border border-zinc-300 dark:border-white/15 text-zinc-600 dark:text-zinc-400 rounded-full px-3 py-0.5 transition-colors"
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+              <p id="pgFilterHint" class="mt-2 text-xs text-zinc-400 dark:text-zinc-600" hidden>
+                {tBlog.filterHint}
+              </p>
+            </div>
+          </section>
+
+          <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map(p => (
+              <li data-pg-title={p.title} data-pg-desc={p.description} data-pg-tags={p.tags.join("|")}>
+                <PlaygroundCard playground={p} baseUrl={baseUrl} locale={locale} />
+              </li>
+            ))}
+          </ul>
+          <p id="pgEmpty" class="py-16 text-center text-sm text-zinc-400 dark:text-zinc-600" hidden>
+            {t.noMatch}
+          </p>
+        </>
       ) : (
         <p class="py-20 text-center text-zinc-400 dark:text-zinc-600">{t.empty}</p>
       )
     }
   </div>
 </main>
+
+<style>
+  /* 跟文章列表同一套：選取狀態由 aria-pressed 驅動，文字色用對比度算出來的 --tag-fg */
+  .tag-btn[aria-pressed="true"] {
+    color: var(--tag-fg, #fff);
+    background: var(--tag-color, #7c3aed);
+    border-color: var(--tag-color, #7c3aed);
+  }
+</style>
+
+<script is:inline>
+  ;(() => {
+    // 與 /posts 共用同一個網址參數 c=，行為也一樣：複選為聯集，搜尋比對標題與描述
+    const KEY = 'c'
+
+    const readTags = () =>
+      new Set(
+        (new URLSearchParams(location.search).get(KEY) || '')
+          .split(',')
+          .map(s => s.trim().toLowerCase())
+          .filter(Boolean)
+      )
+
+    function writeTags(active) {
+      const url = new URL(location.href)
+      if (active.size) url.searchParams.set(KEY, [...active].join(','))
+      else url.searchParams.delete(KEY)
+      history.replaceState({ tags: [...active] }, '', url)
+    }
+
+    function apply(active) {
+      const search = document.getElementById('pgSearch')
+      const q = (search && search.value ? search.value : '').trim().toLowerCase()
+      let visible = 0
+
+      document.querySelectorAll('li[data-pg-title]').forEach(li => {
+        const tags = (li.getAttribute('data-pg-tags') || '')
+          .split('|')
+          .filter(Boolean)
+          .map(s => s.toLowerCase())
+        const matchTag = active.size === 0 || tags.some(t => active.has(t))
+        const haystack = (
+          (li.getAttribute('data-pg-title') || '') + ' ' + (li.getAttribute('data-pg-desc') || '')
+        ).toLowerCase()
+        const show = matchTag && (q === '' || haystack.includes(q))
+        li.hidden = !show
+        if (show) visible++
+      })
+
+      const empty = document.getElementById('pgEmpty')
+      if (empty) empty.hidden = visible !== 0
+
+      const hint = document.getElementById('pgFilterHint')
+      if (hint) hint.hidden = active.size === 0
+
+      document.querySelectorAll('#pgTags [data-filter-tag]').forEach(btn => {
+        const tag = (btn.getAttribute('data-filter-tag') || '').toLowerCase()
+        btn.setAttribute('aria-pressed', active.has(tag) ? 'true' : 'false')
+      })
+      const all = document.querySelector('#pgTags [data-filter-all]')
+      if (all) all.setAttribute('aria-pressed', active.size ? 'false' : 'true')
+    }
+
+    function init() {
+      const bar = document.getElementById('pgTags')
+      if (!bar) return
+      const active = readTags()
+
+      bar.addEventListener('click', e => {
+        const btn = e.target.closest('button')
+        if (!btn || !bar.contains(btn)) return
+        if (btn.hasAttribute('data-filter-all')) active.clear()
+        else {
+          const tag = (btn.getAttribute('data-filter-tag') || '').toLowerCase()
+          if (!tag) return
+          active.has(tag) ? active.delete(tag) : active.add(tag)
+        }
+        writeTags(active)
+        apply(active)
+      })
+
+      const search = document.getElementById('pgSearch')
+      if (search) search.addEventListener('input', () => apply(active))
+
+      apply(active)
+    }
+
+    document.addEventListener('astro:page-load', init)
+  })()
+</script>

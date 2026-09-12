@@ -155,6 +155,8 @@ export const translations = {
       vanillaIntro: 'HTML、CSS 與 JavaScript 的多檔案範例。點任一張卡進入編輯，改動即時預覽。',
       reactTitle: 'React Playground',
       reactIntro: '多檔案 React 專案：元件拆檔、相對 import、CSS import，支援從 esm.sh 載入外部套件。',
+      searchPlaceholder: '搜尋範例標題或描述…',
+      noMatch: '沒有符合的範例',
       empty: '暫無範例',
       notFound: '找不到這個 playground'
     },
@@ -381,6 +383,8 @@ export const translations = {
       vanillaIntro: 'Multi-file HTML, CSS and JavaScript examples. Open any card to edit with live preview.',
       reactTitle: 'React Playground',
       reactIntro: 'Multi-file React projects: split components, relative imports, CSS imports, and external packages from esm.sh.',
+      searchPlaceholder: 'Search examples…',
+      noMatch: 'No matching examples',
       empty: 'No examples yet',
       notFound: 'Playground not found'
     },
