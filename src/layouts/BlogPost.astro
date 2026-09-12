@@ -4,6 +4,7 @@ import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
 import Body from "@/components/Body.astro"
 import { colorForTag, displayTags } from "@/lib/tags"
+import { TAG_WEIGHT, TAG_WEIGHT_DEFAULT } from "@/config"
 import { assignKinds, thumbSvg } from "@/lib/thumb"
 import { slugOf } from "@/lib/post"
 import { seriesOf, assertSeries } from "@/lib/series"
@@ -82,6 +83,31 @@ const prevLink = series ? (series.prev ? bySlug.get(series.prev) : null) : older
 const nextLink = series ? (series.next ? bySlug.get(series.next) : null) : newerPost
 const prevLabel = series ? t.post.seriesPrev : t.post.prev
 const nextLabel = series ? t.post.seriesNext : t.post.next
+
+/**
+ * 相關文章：共同標籤越特異分數越高，權重表跟配色、主題色共用同一份。
+ * 系列裡的文章不列 —— 系列導覽已經把整個系列攤開了。
+ */
+const seriesSlugs = new Set(series ? series.slugs : [])
+const myTags = displayTags(tags).map(x => x.toLowerCase())
+const related = myTags.length
+  ? allPosts
+      .filter(p => slugOf(p) !== slug && !seriesSlugs.has(slugOf(p)))
+      .map(p => ({
+        post: p,
+        score: displayTags(p.frontmatter.tags ?? [])
+          .filter(x => myTags.includes(x.toLowerCase()))
+          .reduce((sum, x) => sum + (TAG_WEIGHT[x.toLowerCase()] ?? TAG_WEIGHT_DEFAULT), 0)
+      }))
+      .filter(r => r.score > 0)
+      .sort(
+        (a, b) =>
+          b.score - a.score ||
+          new Date(b.post.frontmatter.createdAt).valueOf() - new Date(a.post.frontmatter.createdAt).valueOf()
+      )
+      .slice(0, 3)
+      .map(r => r.post)
+  : []
 
 const toc = headings.filter(h => h.depth >= 2 && h.depth <= 3)
 
@@ -249,6 +275,38 @@ const jsonLd = JSON.stringify({
               )
             }
           </nav>
+
+          {
+            related.length > 0 && (
+              <section class="mt-12">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+                  {t.post.related}
+                </h2>
+                <div class="mt-4 grid gap-3 sm:grid-cols-3">
+                  {related.map(p => (
+                    <a
+                      href={p.url}
+                      class="!no-underline block overflow-hidden rounded-2xl border border-zinc-200 transition-colors hover:border-violet-400/50 dark:border-white/10"
+                    >
+                      <div class="aspect-[8/3] w-full overflow-hidden" aria-hidden="true">
+                        <Fragment
+                          set:html={thumbSvg(slugOf(p), p.frontmatter.tags ?? [], kinds[slugOf(p)])}
+                        />
+                      </div>
+                      <div class="p-3">
+                        <div class="text-sm font-semibold leading-snug !text-zinc-700 dark:!text-zinc-200">
+                          {p.frontmatter.title}
+                        </div>
+                        <div class="mt-1 text-[11px] text-zinc-400 dark:text-zinc-500">
+                          {formatDate(new Date(p.frontmatter.createdAt), locale)}
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </section>
+            )
+          }
         </article>
 
         {

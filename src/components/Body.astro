@@ -1,5 +1,8 @@
 ---
 import QRModal from "./QRModal"
+// Vercel Web Analytics：每頁都要有，掛在這裡就跟著所有版型走。
+// 還要在 Vercel 專案的 Analytics 分頁按啟用，不然只會送出沒人收的請求。
+import Analytics from "@vercel/analytics/astro"
 ---
 
 <body
@@ -8,4 +11,5 @@ import QRModal from "./QRModal"
   <div id="page-progress" transition:persist aria-hidden="true"></div>
   <slot />
   <QRModal client:load />
+  <Analytics />
 </body>

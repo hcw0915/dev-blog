@@ -217,7 +217,8 @@ export const translations = {
       seriesPrev: '系列上一篇',
       seriesNext: '系列下一篇',
       copy: '複製',
-      copied: '已複製'
+      copied: '已複製',
+      related: '相關文章'
     },
     // Site search
     search: {
@@ -442,7 +443,8 @@ export const translations = {
       seriesPrev: 'Previous in series',
       seriesNext: 'Next in series',
       copy: 'Copy',
-      copied: 'Copied'
+      copied: 'Copied',
+      related: 'Related posts'
     },
     // Site search
     search: {

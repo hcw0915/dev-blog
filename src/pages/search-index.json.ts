@@ -6,10 +6,13 @@
  * 「四元數」零命中還抓錯一篇，亂碼查詢回傳 11 筆。中文讀者期待的是「字出現在文章裡就找得到」，
  * 也就是子字串比對；52 篇文章直接 includes() 是精確的，開發模式也能用。
  *
- * ponytail: 索引一次整包載入。文章到上千篇、或壓縮後超過約 1MB 時，再換回分片索引（Pagefind 之類）。
+ * ponytail: 索引一次整包載入，第一次按 ⌘K 才抓。含 playground 的檔案內容後是 342KB
+ * （brotli 後 87KB）—— 為了能搜到 mask-composite 這類屬性，多付約 21KB 壓縮量。
+ * 文章到上千篇、或壓縮後超過約 300KB 時，再換回分片索引（Pagefind 之類）。
  */
 import type { APIRoute } from "astro"
 import { displayTags } from "@/lib/tags"
+import { playgrounds } from "@/data/playgrounds/index"
 import { toPlainText } from "@/lib/plaintext.mjs"
 
 export interface SearchDoc {
@@ -23,6 +26,8 @@ export interface SearchDoc {
   d: string
   /** 純文字內文：程式碼區塊原樣保留，一般段落拿掉 markdown 語法（見 lib/plaintext.mjs） */
   b: string
+  /** 非文章的來源標記，目前只有 playground；文章不帶這個欄位 */
+  k?: string
 }
 
 const fmtDate = (ms: number) => {
@@ -43,7 +48,18 @@ export const GET: APIRoute = () => {
       b: toPlainText(p.rawContent())
     }))
 
-  return new Response(JSON.stringify(docs), {
+  // playground 也進索引：搜「mask-composite」要找得到用到它的範例。
+  // 內文收的是每個檔案的路徑與內容，所以搜 CSS 屬性、函式名都能命中。
+  const playgroundDocs: SearchDoc[] = playgrounds.map(p => ({
+    u: `/playground/${p.template}/${p.id}`,
+    t: p.title,
+    g: p.tags,
+    d: p.createdAt.replace(/-/g, "."),
+    b: [p.description, ...Object.entries(p.files).map(([path, content]) => `${path}\n${content}`)].join("\n"),
+    k: "playground"
+  }))
+
+  return new Response(JSON.stringify([...docs, ...playgroundDocs]), {
     headers: { "Content-Type": "application/json; charset=utf-8" }
   })
 }

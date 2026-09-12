@@ -229,7 +229,13 @@ const t = getTranslations(locale).search
           const date = document.createElement("span")
           date.className = "shrink-0 font-mono text-[11px] text-zinc-400 dark:text-zinc-500"
           date.textContent = doc.d
-          head.append(title, date)
+          if (doc.k) {
+            const kind = document.createElement("span")
+            kind.className =
+              "shrink-0 rounded-full bg-violet-500/10 px-1.5 py-px text-[10px] font-semibold uppercase tracking-wide text-violet-600 dark:text-violet-300"
+            kind.textContent = doc.k
+            head.append(title, kind, date)
+          } else head.append(title, date)
           const ex = document.createElement("div")
           ex.className = "mt-0.5 line-clamp-2 text-[13px] leading-relaxed text-zinc-500 dark:text-zinc-400"
           ex.append(highlight(snippet(doc, terms), terms))
