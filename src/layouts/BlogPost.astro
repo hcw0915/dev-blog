@@ -160,6 +160,15 @@ const jsonLd = JSON.stringify({
         h3 { @apply text-xl mt-8; }
         h4 { @apply text-lg; }
         img { @apply border border-zinc-200 dark:border-white/10 rounded-xl mb-6 w-full; }
+        /*
+         * 直式截圖（手機面板那種 418×836）撐滿 68ch 後高度會超過一個畫面，
+         * 讀者得滾兩下才看得完一張圖。限制高度、寬度改成自動並置中，
+         * 橫幅圖不受影響（它們先碰到寬度上限）。點圖仍可放大看原尺寸。
+         */
+        img:not([aria-hidden="true"]) {
+          @apply mx-auto w-auto max-w-full;
+          max-height: 50vh;
+        }
         p { @apply mb-6 leading-loose; }
         a { @apply underline underline-offset-2 text-violet-600 dark:text-violet-300 decoration-violet-400/60; }
         table { @apply table-auto border border-zinc-200 dark:border-white/10 rounded-lg; }
