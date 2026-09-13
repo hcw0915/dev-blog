@@ -2,11 +2,12 @@
 public: true
 slug: knowledge-optimization
 layout: ../../layouts/BlogPost.astro
-title: Knowledge 優化：從關鍵字搜尋到結構化檢索
+title: 知識庫檢索優化：從全文掃描到結構化索引
 createdAt: 1789216382981
-updatedAt: 1789216382981
+updatedAt: 1789322066886
 tags:
   - AI
+  - General
 heroImage: /placeholder-hero.png
 ---
 
@@ -17,13 +18,13 @@ heroImage: /placeholder-hero.png
 | 項目 | 原版 | 現在 |
 |---|---|---|
 | 知識類別 | 五類（含 `runtime-flows/`） | 四類，跨 module 鏈路折進 owner module |
-| 檢索方式 | Grep / Glob 掃 prose | `manifest.json` 索引 + 按欄位權重打分 |
+| 檢索方式 | Grep / Glob 掃全文 | `manifest.json` 索引 + 按欄位權重打分 |
 | 落盤 | 命名約定 + frontmatter keywords | 多一層 `templates/`：模板骨架、schema、folder pattern |
-| 約束 | 寫在各文件裡 | 獨立 `constraint.md`，每條 back-link 回出處 |
+| 約束 | 寫在各文件裡 | 獨立 `constraint.md`，每條回連出處 |
 
 ## 取消 runtime-flows：一條鏈路不該有兩個家
 
-原版把「跨 module 的運行時鏈路」單獨列一類。實際跑下來的問題是：**一條鏈路永遠會牽涉到兩個以上的 module，寫在哪裡都不對**。寫在 `runtime-flows/`，讀 module 文件的人看不到；寫在 module 裡，又跟另一個 module 重複。結果是同一條鏈路被寫兩次，然後其中一份先過期。
+原版把「跨 module 的執行期鏈路」單獨列一類。實際跑下來的問題是：**一條鏈路永遠會牽涉到兩個以上的 module，寫在哪裡都不對**。寫在 `runtime-flows/`，讀 module 文件的人看不到；寫在 module 裡，又跟另一個 module 重複。結果是同一條鏈路被寫兩次，然後其中一份先過期。
 
 現在的規則是：
 
@@ -36,7 +37,7 @@ heroImage: /placeholder-hero.png
 
 ## 檢索：從掃全文變成查索引
 
-原版的檢索動作是「agent 用 Grep / Glob 在 `knowledge/` 下匹配關鍵字，命中後讀全文」。文件到幾十份時這樣夠用，到 483 份就不行了 —— 中文 prose 的關鍵字命中率不穩，而且命中之後要讀整份才知道有沒有用。
+原版的檢索動作是「agent 用 Grep / Glob 在 `knowledge/` 下比對關鍵字，命中後讀全文」。文件到幾十份時這樣夠用，到 483 份就不行了 —— 中文長文的關鍵字命中率不穩，而且命中之後要讀整份才知道有沒有用。
 
 現在多了兩個東西：
 
@@ -53,7 +54,7 @@ files, tags, last_updated, last_verified, status, one_line
 
 **2. `recall.mjs`：按欄位權重打分**
 
-檢索的對象從 raw prose 換成結構化欄位，權重是：
+檢索的目標從整篇文字換成結構化欄位，權重是：
 
 ```
 feature_area 5 · tags 4 · module 4 · title 3 · one_line 2 · files 2 · path 1
@@ -61,7 +62,7 @@ feature_area 5 · tags 4 · module 4 · title 3 · one_line 2 · files 2 · path
 
 再加上「命中幾個查詢詞 × 3」，排序時**先比命中詞數、再比分數** —— 命中兩個詞的結果永遠排在只命中一個詞前面，哪怕後者單詞分數更高。這比單純累加分數更符合直覺：查「首屏 hydration ssr」時，同時提到三個詞的文件才是你要的。
 
-為什麼欄位比全文好：`feature_area` 是人工標的、乾淨；`tags` 雙語都收，中英文查詢都能命中。附帶一個實測發現：`tags` 裡有約 45 對只差大小寫或分隔符的同義變體在稀釋命中率，而 `feature_area` 沒有這個問題 —— 所以權重才給它最高。
+為什麼欄位比全文好：`feature_area` 是人工標的、乾淨；`tags` 中英文都收，兩種查詢都能命中。附帶一個實測發現：`tags` 裡有約 45 對只差大小寫或分隔符的同義變體在稀釋命中率，而 `feature_area` 沒有這個問題 —— 所以權重才給它最高。
 
 ## 新增 templates/：讓落盤有統一骨架
 
@@ -69,7 +70,7 @@ feature_area 5 · tags 4 · module 4 · title 3 · one_line 2 · files 2 · path
 
 現在 `templates/` 放四類記錄的模板，外加 frontmatter schema 與 folder pattern。分工是：
 
-- `skill` 定義「這項能力是什麼」
+- `skill` 定義「這項可重複使用的能力是什麼」
 - `agent` 決定「這個任務怎麼跑」
 - `templates` 決定「跑完之後怎麼落盤」
 
@@ -87,7 +88,7 @@ feature_area 5 · tags 4 · module 4 · title 3 · one_line 2 · files 2 · path
 
 兩個設計重點：
 
-**每條都要 back-link 回它的出處 bug 或 decision。** 規則沒有出處就會變成教條，下一個人只能猜「為什麼不能這樣寫」，然後在某個看似合理的場合破例。有出處就能自己判斷這條規則適用到哪。
+**每條都要回連它的出處 bug 或 decision。** 規則沒有出處就會變成教條，下一個人只能猜「為什麼不能這樣寫」，然後在某個看似合理的場合破例。有出處就能自己判斷這條規則適用到哪。
 
 **只作用於新增與修正的內容，不回頭改既有程式碼。** 這條界線很重要 —— 否則每次套用約束都會變成大規模重排，跟「改動只動該動的範圍」互相矛盾。
 
@@ -115,7 +116,7 @@ NEVER 用 ?? 串 boolean 當 fallback 鏈
 
 `stale-symbols` 還多一個判定：用三個月前作為歷史對照點，確認「這個名字曾經存在過」，避免把筆誤也報成失效引用。
 
-另外 `wiki-mirrors.json` 處理對外發布的那一側：登記哪些 Lark wiki 文件是本地 module 的發布快照、上次同步到哪個日期。它明確標成 **best-effort、非實時**，只在本地文件比快照新且超過 14 天容忍值時才報漂移。
+另外 `wiki-mirrors.json` 處理對外發布的那一側：登記哪些 Lark wiki 文件是本地 module 的發布快照、上次同步到哪個日期。它明確標成 **best-effort、非即時**，只在本地文件比快照新且超過 14 天容忍值時才報漂移。
 
 ## 風險地圖：哪些檔案反覆出事
 
@@ -133,13 +134,13 @@ NEVER 用 ?? 串 boolean 當 fallback 鏈
 
 新增的 `x-recall` 就是前面那套索引檢索的執行者；`x-retro` 做回顧；`x-wiki-mirror-sync` 管對外快照。
 
-source → runtime 的同步規則也更明確了：`common/` 永遠是 base layer，其他使用者目錄**按字母序覆蓋**，同名時後者贏並印出警告。原則沒變 —— source 是真理，runtime 是 snapshot，先改 source 再同步。
+source → runtime 的同步規則也更明確了：`common/` 永遠是 base layer，其他使用者目錄**按字母序覆寫**，同名時後者贏並印出警告。原則沒變 —— source 是真理，runtime 是快照，先改 source 再同步。
 
 ## 一個要誠實說明的定位變化
 
 原版把這套東西講成「團隊 AI 知識庫」。現在 `knowledge/` 在這個 repo 裡是**被 `.gitignore` 忽略的**，所以更準確的描述是「跟著專案走的本地長期記憶與 AI 工作區」，不是團隊主倉庫裡的正式文件區。`constraint.md` 開頭也明寫了「個人，不提交」。
 
-這不是退步，而是把實情寫清楚：它同時服務兩個對象 —— 給開發者當專案記憶與導航入口，給 AI 代理當跨 session 的檢索上下文。要進團隊共享，該走的是 Lark wiki 那條發布快照的路，而不是把本地工作區直接當成團隊文件。
+這不是退步，而是把實情寫清楚：它同時服務兩件事 —— 給開發者當專案記憶與導航入口，給 AI 代理當跨 session 的檢索脈絡。要進團隊共享，該走的是 Lark wiki 那條發布快照的路，而不是把本地工作區直接當成團隊文件。
 
 ## 小結
 
