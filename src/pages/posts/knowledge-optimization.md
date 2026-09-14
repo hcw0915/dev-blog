@@ -4,7 +4,7 @@ slug: knowledge-optimization
 layout: ../../layouts/BlogPost.astro
 title: 知識庫檢索優化：從全文掃描到結構化索引
 createdAt: 1789216382981
-updatedAt: 1789369830629
+updatedAt: 1789370535071
 tags:
   - AI
   - General
