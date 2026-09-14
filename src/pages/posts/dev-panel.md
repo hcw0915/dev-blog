@@ -4,10 +4,11 @@ slug: dev-panel
 layout: ../../layouts/BlogPost.astro
 title: dev-panel：把散落的臨時程式碼收斂成一套工具
 createdAt: 1789321080267
-updatedAt: 1789370535985
+updatedAt: 1789370612841
 tags:
   - React
   - Next
+  - General
 heroImage: /placeholder-hero.png
 ---
 
