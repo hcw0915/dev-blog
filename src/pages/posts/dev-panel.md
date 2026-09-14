@@ -2,9 +2,9 @@
 public: true
 slug: dev-panel
 layout: ../../layouts/BlogPost.astro
-title: 站內除錯面板：把散落的臨時程式碼收斂成一套工具
+title: dev-panel：把散落的臨時程式碼收斂成一套工具
 createdAt: 1789321080267
-updatedAt: 1789362740868
+updatedAt: 1789363164532
 tags:
   - React
   - Next
