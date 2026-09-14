@@ -4,14 +4,14 @@ slug: dev-panel
 layout: ../../layouts/BlogPost.astro
 title: dev-panel：把散落的臨時程式碼收斂成一套工具
 createdAt: 1789321080267
-updatedAt: 1789363164532
+updatedAt: 1789363176808
 tags:
   - React
   - Next
 heroImage: /placeholder-hero.png
 ---
 
-> 臨時除錯程式碼有個共通命運：寫的時候很快，用完沒刪，下次要用又得改一次程式碼。這篇記錄把它們收斂成一套站內面板的設計取捨 —— 面板怎麼開、進入點該下在哪、以及怎麼確保正式包裡完全看不到它。
+> 臨時除錯程式碼有個共通命運：寫的時候很快，用完沒刪，下次要用又得改一次程式碼。這篇記錄把它們收斂成一套站內面板（我們叫它 dev-panel）的設計取捨 —— 面板怎麼開、進入點該下在哪、以及怎麼確保正式包裡完全看不到它。
 
 ![面板首頁：11 支模組分三組](/posts/dev-panel_01-modules.png)
 
