@@ -21,7 +21,7 @@ export interface Props {
   clientRouter?: boolean
 }
 
-const { title, description, image = '/cover.png', article, clientRouter = true } = Astro.props
+const { title, description, image = '/og/site.png', article, clientRouter = true } = Astro.props
 const canonical = new URL(Astro.url.pathname, Astro.site)
 ---
 
