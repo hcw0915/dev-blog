@@ -5,7 +5,14 @@
 
 ## 發表流程
 
-新文章一律先寫 `public: false`，把草稿給 Antonio 看過再翻成 `public: true`。
+新文章一律照這個順序，**每一步都要 Antonio 點頭才往下走**：
+
+1. Inkdrop 筆記寫 `public: false`
+2. 放一份預覽到 `src/pages/drafts/<slug>.md`（已 gitignore，watcher 只推 `posts/`，不會上線），
+   請他在 `http://localhost:5000/drafts/<slug>` 看。這份是快照，Inkdrop 改了要重新產生
+3. 他確認沒問題，才把 `public` 翻成 `true`
+
+指令不確定指本機還是正式站時（例如「上到 dev」「放上去」），**先問，不要自己解讀成上線**。
 
 `public: true` 是實際的發佈開關：watcher 會在兩分鐘內把它匯出成 md、commit、push，
 Vercel 接著部署，文章隨即進入 sitemap、RSS 與搜尋索引。這是掛他名字的公開發表，不是程式碼改動，
