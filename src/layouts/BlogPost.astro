@@ -161,7 +161,7 @@ const jsonLd = JSON.stringify({
         h4 { @apply text-lg; }
         img { @apply border border-zinc-200 dark:border-white/10 rounded-xl mb-6 w-full; }
         /*
-         * 直式截圖（手機面板那種 418×836）撐滿 68ch 後高度會超過一個畫面，
+         * 直式截圖（手機面板那種 418×836）撐滿內文寬度後高度會超過一個畫面，
          * 讀者得滾兩下才看得完一張圖。限制高度、寬度改成自動並置中，
          * 橫幅圖不受影響（它們先碰到寬度上限）。點圖仍可放大看原尺寸。
          */
@@ -186,8 +186,10 @@ const jsonLd = JSON.stringify({
 
     <main class="pt-[88px] pb-8">
       <div class="mx-auto max-w-6xl px-4 xl:grid xl:grid-cols-[1fr_220px] xl:gap-10">
+        <!-- 內文寬度用 rem 不用 ch：ch 是數字 0 的字寬，68ch 對英文是一行 68 字，
+             對中文只剩約 37 字。48rem = 768px，中文一行約 48 字 -->
         <article
-          class="markdown-content w-full max-w-[68ch] mx-auto min-w-0"
+          class="markdown-content w-full max-w-[48rem] mx-auto min-w-0"
           data-copy={t.post.copy}
           data-copied={t.post.copied}
         >
