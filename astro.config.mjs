@@ -5,6 +5,7 @@ import react from "@astrojs/react"
 import tailwind from "@astrojs/tailwind"
 import path from "path"
 import { fileURLToPath } from "url"
+import remarkAlerts from "./src/lib/remark-alerts.mjs"
 
 // 获取当前文件的目录路径（ES module 中 __dirname 的替代方案）
 const __filename = fileURLToPath(import.meta.url)
@@ -50,6 +51,8 @@ export default defineConfig({
     },
     // mermaid 圍欄不交給 Shiki 上色，原文留給文章頁在瀏覽器渲染成圖（見 BlogPost.astro）
     syntaxHighlight: { type: "shiki", excludeLangs: ["mermaid"] },
+    // > [!NOTE] / [!TIP] / [!IMPORTANT] / [!WARNING] / [!CAUTION] 提示框
+    remarkPlugins: [remarkAlerts],
     extendDefaultPlugins: true
   }
 })

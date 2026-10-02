@@ -187,8 +187,20 @@ const jsonLd = JSON.stringify({
         /* 流程圖、類別圖的標籤是 foreignObject 裡的 HTML，會吃到上面 p 的 leading-loose 與 mb-6；
            mermaid 用正常行高量框，行高被撐大後字就溢出被裁掉 —— 圖內一律還原 */
         .mermaid-figure p { margin: 0; line-height: 1.5; }
+        /* 提示框（> [!NOTE] 等，見 src/lib/remark-alerts.mjs）：色條 + 淡底 + 同色標題 */
+        .callout { @apply my-6 rounded-r-xl border-l-4 px-4 py-3; border-color: var(--callout); background: color-mix(in srgb, var(--callout) 9%, transparent); }
+        .callout > :last-child { @apply mb-0; }
+        .callout > p { @apply mb-3; }
+        .callout-title { @apply mb-1 text-sm font-bold tracking-wide; color: var(--callout); }
+        .callout-note { --callout: #3b82f6; }
+        .callout-tip { --callout: #10b981; }
+        .callout-important { --callout: #a78bfa; }
+        .callout-warning { --callout: #f59e0b; }
+        .callout-caution { --callout: #ef4444; }
       }
       .toc-link.active { color: #a78bfa; }
+      /* 淺色底上，琥珀、綠這類亮色標題對比不夠，壓暗一些；深色主題直接用原色 */
+      html:not(.dark) main article.markdown-content .callout-title { color: color-mix(in srgb, var(--callout) 62%, #000); }
     </style>
 
     <main class="pt-[88px] pb-8">
