@@ -206,7 +206,7 @@ const jsonLd = JSON.stringify({
     <main class="pt-[88px] pb-8">
       <!-- 寬螢幕三欄：左 TOC、中內文、右側留給留言區。左右兩欄等寬（1fr）內文才會落在正中間；
            DOM 仍是內文在前，窄螢幕照原本順序往下排 -->
-      <div class="mx-auto max-w-[100rem] px-4 xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,48rem)_minmax(0,1fr)] xl:gap-10">
+      <div class="mx-auto max-w-[100rem] px-4 xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,48rem)_minmax(0,1fr)] xl:gap-6">
         <!-- 內文寬度用 rem 不用 ch：ch 是數字 0 的字寬，68ch 對英文是一行 68 字，
              對中文只剩約 37 字。48rem = 768px，中文一行約 48 字 -->
         <article
@@ -398,7 +398,7 @@ const jsonLd = JSON.stringify({
 
         {
           toc.length > 0 && (
-            <aside class="hidden xl:block xl:col-start-1 xl:row-start-1 xl:justify-self-end xl:w-full xl:max-w-[260px]">
+            <aside class="hidden xl:block xl:col-start-1 xl:row-start-1 xl:justify-self-end xl:w-full xl:max-w-[300px]">
               <nav class="sticky top-24 text-sm" id="toc-nav">
                 <div class="font-bold text-xs tracking-widest text-zinc-400 dark:text-zinc-500 mb-3">
                   TOC
@@ -424,7 +424,7 @@ const jsonLd = JSON.stringify({
         {
           /*
            * 留言（Giscus，存在 repo 的 GitHub Discussions）。只放一個容器，靠 grid 定位換位置，不載兩次：
-           * - 1400px 以上：右欄（此時至少 280px 寬），捲動時固定在畫面上
+           * - 1400px 以上：右欄（此時至少 292px 寬），捲動時固定在畫面上
            * - 1280 ~ 1400px：右欄只剩 200px 放不下，改排在內文下方
            * - 更窄：沒有 grid，自然接在文章後面
            * 草稿預覽頁不掛，避免有人在草稿上留言時替草稿開出討論串
