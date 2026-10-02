@@ -180,6 +180,9 @@ const jsonLd = JSON.stringify({
         ol { @apply list-decimal list-outside pl-4 mb-4; }
         pre { @apply rounded-xl p-4 mb-6 overflow-x-auto text-sm; }
         :not(pre) > code { @apply bg-zinc-100 dark:bg-white/10 rounded px-1.5 py-0.5 text-[0.9em] font-mono; }
+        /* mermaid 圖：寬圖可以左右捲，不撐破版面 */
+        .mermaid-figure { @apply mb-6 overflow-x-auto; }
+        .mermaid-figure svg { @apply mx-auto; }
       }
       .toc-link.active { color: #a78bfa; }
     </style>
@@ -716,5 +719,52 @@ const jsonLd = JSON.stringify({
 
     document.addEventListener("astro:page-load", bumpViews)
   </script>
-  </Body>
+    <script>
+    // 文章裡的 ```mermaid 區塊：build 時保留原文（astro.config 的 excludeLangs），在瀏覽器畫成 SVG。
+    // mermaid 很大，只有頁面上真的有圖才載入，其他文章不受影響。
+    // 原文存在 data-source；深淺色切換時用新主題重畫。語法錯誤就留著原本的程式碼區塊，至少讀得到原文。
+    let mermaidModule: Promise<typeof import("mermaid")> | undefined
+    let renderSeq = 0
+    let renderedDark: boolean | undefined
+    const isDark = () => document.documentElement.classList.contains("dark")
+
+    async function renderMermaid() {
+      const article = document.querySelector("article.markdown-content")
+      if (!article) return
+      const jobs = [
+        ...[...article.querySelectorAll("code.language-mermaid")].map(code => ({
+          host: code.closest("pre") ?? code,
+          source: code.textContent ?? "",
+        })),
+        ...[...article.querySelectorAll<HTMLElement>(".mermaid-figure")].map(figure => ({
+          host: figure,
+          source: figure.dataset.source ?? "",
+        })),
+      ]
+      if (jobs.length === 0) return
+
+      renderedDark = isDark()
+      const { default: mermaid } = await (mermaidModule ??= import("mermaid"))
+      mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: renderedDark ? "dark" : "default" })
+
+      for (const { host, source } of jobs) {
+        const figure = document.createElement("div")
+        figure.className = "mermaid-figure"
+        figure.dataset.source = source
+        try {
+          figure.innerHTML = (await mermaid.render(`mermaid-${++renderSeq}`, source)).svg
+        } catch {
+          continue
+        }
+        host.replaceWith(figure)
+      }
+    }
+
+    document.addEventListener("astro:page-load", renderMermaid)
+    // <html> 的 class 每次換頁都會重設一次，只在深淺色真的變了才重畫
+    new MutationObserver(() => {
+      if (renderedDark !== undefined && isDark() !== renderedDark) renderMermaid()
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
+  </script>
+</Body>
 </html>

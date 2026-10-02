@@ -48,6 +48,8 @@ export default defineConfig({
     shikiConfig: {
       theme: "aurora-x"
     },
+    // mermaid 圍欄不交給 Shiki 上色，原文留給文章頁在瀏覽器渲染成圖（見 BlogPost.astro）
+    syntaxHighlight: { type: "shiki", excludeLangs: ["mermaid"] },
     extendDefaultPlugins: true
   }
 })
