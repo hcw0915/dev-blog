@@ -398,7 +398,7 @@ const jsonLd = JSON.stringify({
 
         {
           toc.length > 0 && (
-            <aside class="hidden xl:block xl:col-start-1 xl:row-start-1 xl:justify-self-end xl:w-[200px]">
+            <aside class="hidden xl:block xl:col-start-1 xl:row-start-1 xl:justify-self-end xl:w-full xl:max-w-[260px]">
               <nav class="sticky top-24 text-sm" id="toc-nav">
                 <div class="font-bold text-xs tracking-widest text-zinc-400 dark:text-zinc-500 mb-3">
                   TOC
@@ -424,15 +424,15 @@ const jsonLd = JSON.stringify({
         {
           /*
            * 留言（Giscus，存在 repo 的 GitHub Discussions）。只放一個容器，靠 grid 定位換位置，不載兩次：
-           * - 2xl 以上：右欄，捲動時固定在畫面上
-           * - xl ~ 2xl：右欄太窄放不下，改排在內文下方
+           * - 1400px 以上：右欄（此時至少 280px 寬），捲動時固定在畫面上
+           * - 1280 ~ 1400px：右欄只剩 200px 放不下，改排在內文下方
            * - 更窄：沒有 grid，自然接在文章後面
            * 草稿預覽頁不掛，避免有人在草稿上留言時替草稿開出討論串
            */
           !isDraft && (
             <aside
               id="comments"
-              class="giscus-slot mt-16 w-full max-w-[48rem] mx-auto xl:col-start-2 xl:row-start-2 2xl:col-start-3 2xl:row-start-1 2xl:mt-0 2xl:mx-0 2xl:max-w-[360px] 2xl:sticky 2xl:top-24 2xl:self-start 2xl:max-h-[calc(100vh-7rem)] 2xl:overflow-y-auto"
+              class="giscus-slot mt-16 w-full max-w-[48rem] mx-auto xl:col-start-2 xl:row-start-2 min-[1400px]:col-start-3 min-[1400px]:row-start-1 min-[1400px]:mt-0 min-[1400px]:mx-0 min-[1400px]:max-w-[360px] min-[1400px]:sticky min-[1400px]:top-24 min-[1400px]:self-start min-[1400px]:max-h-[calc(100vh-7rem)] min-[1400px]:overflow-y-auto"
               data-term={slug}
               data-lang={locale === 'en' ? 'en' : 'zh-TW'}
               aria-label={locale === 'en' ? 'Comments' : '留言'}
