@@ -4,11 +4,10 @@ slug: preload-scheduling-tradeoffs
 layout: ../../layouts/BlogPost.astro
 title: 提早預載又不搶首屏：三種任務排程方案的取捨
 createdAt: 1790753339349
-updatedAt: 1790832242786
+updatedAt: 1790945935635
 tags:
   - Performance
-  - React
-  - Browser
+  - General
 heroImage: /placeholder-hero.png
 ---
 
