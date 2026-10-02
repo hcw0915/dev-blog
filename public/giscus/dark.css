@@ -30,8 +30,8 @@ main {
   --color-btn-selected-bg: rgb(255 255 255 / 0.08);
 
   --color-btn-primary-text: #ffffff;
-  --color-btn-primary-bg: #7c3aed;
-  --color-btn-primary-border: #7c3aed;
+  --color-btn-primary-bg: #4f46e5;
+  --color-btn-primary-border: transparent;
   --color-btn-primary-hover-bg: #6d28d9;
   --color-btn-primary-hover-border: #6d28d9;
   --color-btn-primary-selected-bg: #5b21b6;
@@ -44,4 +44,18 @@ main {
   --color-segmented-control-bg: rgb(255 255 255 / 0.04);
   --color-segmented-control-button-bg: #18181b;
   --color-segmented-control-button-selected-border: rgb(255 255 255 / 0.12);
+}
+
+/* 主按鈕用網站的品牌漸層，不用單一純色。
+   平常是深一階的同色漸層（白字對比 5.4～6.3:1），滑過去亮回品牌原色 #6366f1 → #a855f7 */
+.btn-primary {
+  background-image: linear-gradient(90deg, #4f46e5, #9333ea);
+  border-color: transparent;
+}
+.btn-primary:hover:not(:disabled) {
+  background-image: linear-gradient(90deg, #6366f1, #a855f7);
+  border-color: transparent;
+}
+.btn-primary:disabled {
+  opacity: 0.55;
 }
