@@ -17,6 +17,7 @@ export const COLOR_MAP: Record<string, readonly [string, string]> = {
   three: ["#4D55CC", "#8B93FF"],
   testing: ["#8BC34A", "#D9F27E"],
   "micro-frontend": ["#00C2A8", "#5EEAD4"],
+  performance: ["#FF8A3D", "#FFC38A"],
   ai: ["#D97757", "#F2A98A"],
   react: ["#61DAFB", "#2E8FB0"],
   next: ["#A9AFC7", "#E8EBF5"],
@@ -40,6 +41,8 @@ export const TAG_WEIGHT: Record<string, number> = {
   three: 85,
   testing: 82,
   "micro-frontend": 80,
+  // 高於 react：講效能、排程的文章即使用 React 實作，讀者要找的是效能方向
+  performance: 76,
   ai: 78,
   react: 75,
   next: 72,
