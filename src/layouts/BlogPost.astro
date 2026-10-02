@@ -33,6 +33,7 @@ const { title, description = '', heroImage, createdAt, updatedAt, tags = [], slu
 
 const locale = getLocaleFromPath(Astro.url.pathname)
 const t = getTranslations(locale)
+const isDraft = Astro.url.pathname.startsWith('/drafts/')
 
 // 封面優先序：frontmatter 自訂 → public/hero/<slug>.png →（頁內不顯示，og 用自動生成圖）
 const heroFile = path.resolve(`public/hero/${slug}.png`)
@@ -183,16 +184,21 @@ const jsonLd = JSON.stringify({
         /* mermaid 圖：寬圖可以左右捲，不撐破版面 */
         .mermaid-figure { @apply mb-6 overflow-x-auto; }
         .mermaid-figure svg { @apply mx-auto; }
+        /* 流程圖、類別圖的標籤是 foreignObject 裡的 HTML，會吃到上面 p 的 leading-loose 與 mb-6；
+           mermaid 用正常行高量框，行高被撐大後字就溢出被裁掉 —— 圖內一律還原 */
+        .mermaid-figure p { margin: 0; line-height: 1.5; }
       }
       .toc-link.active { color: #a78bfa; }
     </style>
 
     <main class="pt-[88px] pb-8">
-      <div class="mx-auto max-w-6xl px-4 xl:grid xl:grid-cols-[1fr_220px] xl:gap-10">
+      <!-- 寬螢幕三欄：左 TOC、中內文、右側留給留言區。左右兩欄等寬（1fr）內文才會落在正中間；
+           DOM 仍是內文在前，窄螢幕照原本順序往下排 -->
+      <div class="mx-auto max-w-[100rem] px-4 xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,48rem)_minmax(0,1fr)] xl:gap-10">
         <!-- 內文寬度用 rem 不用 ch：ch 是數字 0 的字寬，68ch 對英文是一行 68 字，
              對中文只剩約 37 字。48rem = 768px，中文一行約 48 字 -->
         <article
-          class="markdown-content w-full max-w-[48rem] mx-auto min-w-0"
+          class="markdown-content w-full max-w-[48rem] mx-auto min-w-0 xl:col-start-2 xl:row-start-1"
           data-copy={t.post.copy}
           data-copied={t.post.copied}
         >
@@ -380,7 +386,7 @@ const jsonLd = JSON.stringify({
 
         {
           toc.length > 0 && (
-            <aside class="hidden xl:block">
+            <aside class="hidden xl:block xl:col-start-1 xl:row-start-1 xl:justify-self-end xl:w-[200px]">
               <nav class="sticky top-24 text-sm" id="toc-nav">
                 <div class="font-bold text-xs tracking-widest text-zinc-400 dark:text-zinc-500 mb-3">
                   TOC
@@ -400,6 +406,25 @@ const jsonLd = JSON.stringify({
                 </ul>
               </nav>
             </aside>
+          )
+        }
+
+        {
+          /*
+           * 留言（Giscus，存在 repo 的 GitHub Discussions）。只放一個容器，靠 grid 定位換位置，不載兩次：
+           * - 2xl 以上：右欄，捲動時固定在畫面上
+           * - xl ~ 2xl：右欄太窄放不下，改排在內文下方
+           * - 更窄：沒有 grid，自然接在文章後面
+           * 草稿預覽頁不掛，避免有人在草稿上留言時替草稿開出討論串
+           */
+          !isDraft && (
+            <aside
+              id="comments"
+              class="giscus-slot mt-16 w-full max-w-[48rem] mx-auto xl:col-start-2 xl:row-start-2 2xl:col-start-3 2xl:row-start-1 2xl:mt-0 2xl:mx-0 2xl:max-w-[360px] 2xl:sticky 2xl:top-24 2xl:self-start 2xl:max-h-[calc(100vh-7rem)] 2xl:overflow-y-auto"
+              data-term={slug}
+              data-lang={locale === 'en' ? 'en' : 'zh-TW'}
+              aria-label={locale === 'en' ? 'Comments' : '留言'}
+            />
           )
         }
       </div>
@@ -764,6 +789,54 @@ const jsonLd = JSON.stringify({
     // <html> 的 class 每次換頁都會重設一次，只在深淺色真的變了才重畫
     new MutationObserver(() => {
       if (renderedDark !== undefined && isDark() !== renderedDark) renderMermaid()
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
+  </script>
+  <script>
+    // Giscus 留言。每頁的容器都是新的（ClientRouter 換頁會換掉），所以每次 page-load 都檢查一次、空的才掛。
+    // repo 與分類 ID 是公開資訊（giscus.app 的設定頁也是這樣產生），不是密鑰。
+    const GISCUS = {
+      repo: "hcw0915/dev-blog",
+      repoId: "R_kgDOOKFO9Q",
+      category: "Announcements",
+      categoryId: "DIC_kwDOOKFO9c4DG5B5",
+    }
+    const giscusTheme = () => (document.documentElement.classList.contains("dark") ? "dark" : "light")
+
+    function mountGiscus() {
+      const slot = document.querySelector<HTMLElement>(".giscus-slot")
+      if (!slot || slot.childElementCount > 0) return
+      const s = document.createElement("script")
+      s.src = "https://giscus.app/client.js"
+      s.async = true
+      s.crossOrigin = "anonymous"
+      Object.entries({
+        repo: GISCUS.repo,
+        "repo-id": GISCUS.repoId,
+        category: GISCUS.category,
+        "category-id": GISCUS.categoryId,
+        mapping: "specific", // 用 slug 對應討論串，網址改了留言也不會斷
+        term: slot.dataset.term ?? location.pathname,
+        strict: "1",
+        "reactions-enabled": "1",
+        "emit-metadata": "0",
+        "input-position": "top",
+        theme: giscusTheme(),
+        lang: slot.dataset.lang ?? "zh-TW",
+        loading: "lazy",
+      }).forEach(([k, v]) => s.setAttribute(`data-${k}`, v))
+      slot.appendChild(s)
+    }
+
+    document.addEventListener("astro:page-load", mountGiscus)
+    // 站內深淺色切換時通知 iframe 換主題；<html> 的 class 每次換頁都會重設，只在真的變了才送
+    let lastTheme = giscusTheme()
+    new MutationObserver(() => {
+      const theme = giscusTheme()
+      if (theme === lastTheme) return
+      lastTheme = theme
+      document
+        .querySelector<HTMLIFrameElement>("iframe.giscus-frame")
+        ?.contentWindow?.postMessage({ giscus: { setConfig: { theme } } }, "https://giscus.app")
     }).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
   </script>
 </Body>
