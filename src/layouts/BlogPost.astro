@@ -812,7 +812,15 @@ const jsonLd = JSON.stringify({
       category: "Announcements",
       categoryId: "DIC_kwDOOKFO9c4DG5B5",
     }
-    const giscusTheme = () => (document.documentElement.classList.contains("dark") ? "dark" : "light")
+    // 自訂主題放在 public/giscus/，要給絕對網址（giscus 在自己的 iframe 裡以 crossorigin 載入，正式站的 CORS 標頭在 vercel.json）。
+    // 本機用不了：iframe 在公開網域 giscus.app，Chrome 的私有網路存取限制會擋它抓 127.0.0.1 的檔案，
+    // 所以本機退回官方的同系主題，至少看得清楚
+    const isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)
+    const giscusTheme = () => {
+      const dark = document.documentElement.classList.contains("dark")
+      if (isLocal) return dark ? "transparent_dark" : "light"
+      return `${location.origin}/giscus/${dark ? "dark" : "light"}.css`
+    }
 
     function mountGiscus() {
       const slot = document.querySelector<HTMLElement>(".giscus-slot")

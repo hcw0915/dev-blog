@@ -1,0 +1,47 @@
+/* Giscus 深色主題：以官方 transparent_dark 為底，改成網站的配色（底透明、邊框 white/10、紫色主按鈕）。
+   由 BlogPost.astro 以絕對網址傳給 giscus；改這裡就會反映到留言區。 */
+@import url("https://giscus.app/themes/transparent_dark.css");
+
+main {
+  --color-canvas-default: transparent;
+  --color-canvas-overlay: #131317;
+  --color-canvas-inset: rgb(255 255 255 / 0.02);
+  --color-canvas-subtle: rgb(255 255 255 / 0.03);
+  --color-border-default: rgb(255 255 255 / 0.1);
+  --color-border-muted: rgb(255 255 255 / 0.06);
+  --color-neutral-muted: rgb(255 255 255 / 0.1);
+  --color-neutral-subtle: rgb(255 255 255 / 0.04);
+
+  --color-fg-default: #e4e4e7;
+  --color-fg-muted: #a1a1aa;
+  --color-fg-subtle: #71717a;
+
+  --color-accent-fg: #a78bfa;
+  --color-accent-emphasis: #7c3aed;
+  --color-accent-muted: rgb(167 139 250 / 0.4);
+  --color-accent-subtle: rgb(167 139 250 / 0.12);
+
+  --color-btn-text: #e4e4e7;
+  --color-btn-bg: rgb(255 255 255 / 0.04);
+  --color-btn-border: rgb(255 255 255 / 0.1);
+  --color-btn-hover-bg: rgb(255 255 255 / 0.08);
+  --color-btn-hover-border: rgb(255 255 255 / 0.16);
+  --color-btn-active-bg: rgb(255 255 255 / 0.1);
+  --color-btn-selected-bg: rgb(255 255 255 / 0.08);
+
+  --color-btn-primary-text: #ffffff;
+  --color-btn-primary-bg: #7c3aed;
+  --color-btn-primary-border: #7c3aed;
+  --color-btn-primary-hover-bg: #6d28d9;
+  --color-btn-primary-hover-border: #6d28d9;
+  --color-btn-primary-selected-bg: #5b21b6;
+  --color-btn-primary-disabled-text: rgb(255 255 255 / 0.6);
+  --color-btn-primary-disabled-bg: rgb(124 58 237 / 0.5);
+  --color-btn-primary-disabled-border: transparent;
+  --color-btn-primary-shadow: none;
+  --color-btn-primary-inset-shadow: none;
+
+  --color-segmented-control-bg: rgb(255 255 255 / 0.04);
+  --color-segmented-control-button-bg: #18181b;
+  --color-segmented-control-button-selected-border: rgb(255 255 255 / 0.12);
+}
