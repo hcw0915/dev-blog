@@ -13,6 +13,7 @@ import { seriesOf, assertSeries } from "@/lib/series"
 import { getLocaleFromPath, formatDate } from "@/i18n/utils"
 import { getTranslations } from "@/i18n/translations"
 import { summarize } from "@/lib/plaintext.mjs"
+import { POST_TOPICS, TOPICS, twinGroup } from "@/data/topics"
 import fs from "node:fs"
 import path from "node:path"
 
@@ -92,29 +93,49 @@ const prevLabel = series ? t.post.seriesPrev : t.post.prev
 const nextLabel = series ? t.post.seriesNext : t.post.next
 
 /**
- * 相關文章：共同標籤越特異分數越高，權重表跟配色、主題色共用同一份。
- * 系列裡的文章不列 —— 系列導覽已經把整個系列攤開了。
+ * 相關文章：依 data/topics.ts 的人工主題分類配對 —— 同主要主題 > 同次要主題，標籤權重只決定同分時的先後。
+ * 系列裡的文章不列（系列導覽已經攤開了），內容幾乎相同的分身也不列、同一組只取一篇。
+ * 還沒分類的文章退回只看標籤。
  */
 const seriesSlugs = new Set(series ? series.slugs : [])
 const myTags = displayTags(tags).map(x => x.toLowerCase())
-const related = myTags.length
-  ? allPosts
-      .filter(p => slugOf(p) !== slug && !seriesSlugs.has(slugOf(p)))
-      .map(p => ({
-        post: p,
-        score: displayTags(p.frontmatter.tags ?? [])
-          .filter(x => myTags.includes(x.toLowerCase()))
-          .reduce((sum, x) => sum + (TAG_WEIGHT[x.toLowerCase()] ?? TAG_WEIGHT_DEFAULT), 0)
-      }))
-      .filter(r => r.score > 0)
-      .sort(
-        (a, b) =>
-          b.score - a.score ||
-          new Date(b.post.frontmatter.createdAt).valueOf() - new Date(a.post.frontmatter.createdAt).valueOf()
-      )
-      .slice(0, 3)
-      .map(r => r.post)
-  : []
+const myTopics = POST_TOPICS[slug] ?? []
+const myTwin = twinGroup(slug)
+if (!POST_TOPICS[slug] && !isDraft) console.warn(`[topics] ${slug} 還沒分類，相關文章只用標籤配對（src/data/topics.ts）`)
+const tagScore = (p: any) =>
+  displayTags(p.frontmatter.tags ?? [])
+    .filter(x => myTags.includes(x.toLowerCase()))
+    .reduce((sum, x) => sum + (TAG_WEIGHT[x.toLowerCase()] ?? TAG_WEIGHT_DEFAULT), 0)
+const topicScore = (p: any) => {
+  const theirs = POST_TOPICS[slugOf(p)] ?? []
+  if (!myTopics.length || !theirs.length) return 0
+  return (theirs[0] === myTopics[0] ? 10 : 0) + theirs.filter(t => myTopics.includes(t)).length * 5
+}
+const seenTwins = new Set<number>()
+const related = allPosts
+  .filter(p => {
+    const s = slugOf(p)
+    return s !== slug && !seriesSlugs.has(s) && (myTwin === undefined || twinGroup(s) !== myTwin)
+  })
+  .map(p => ({ post: p, topic: topicScore(p), tag: tagScore(p) }))
+  // 有分類就只看主題；兩邊有一方沒分類才退回標籤
+  .filter(r => (myTopics.length && POST_TOPICS[slugOf(r.post)] ? r.topic > 0 : r.tag > 0))
+  .sort(
+    (a, b) =>
+      b.topic - a.topic ||
+      b.tag - a.tag ||
+      new Date(b.post.frontmatter.createdAt).valueOf() - new Date(a.post.frontmatter.createdAt).valueOf()
+  )
+  .filter(r => {
+    const g = twinGroup(slugOf(r.post))
+    if (g === undefined) return true
+    if (seenTwins.has(g)) return false
+    seenTwins.add(g)
+    return true
+  })
+  .slice(0, 3)
+  .map(r => r.post)
+const relatedTopic = myTopics[0] ? TOPICS[myTopics[0]][locale === 'en' ? 'en' : 'zh'] : ''
 
 /**
  * 內嵌 playground：文章 frontmatter 寫 `playground: <id>` 就在文末放一個可直接編輯的範例。
@@ -388,6 +409,7 @@ const breadcrumbJsonLd = JSON.stringify({
               <section class="mt-12">
                 <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
                   {t.post.related}
+                  {relatedTopic && <span class="ml-2 font-medium normal-case tracking-normal text-zinc-400/80 dark:text-zinc-500/80">· {relatedTopic}</span>}
                 </h2>
                 <div class="mt-4 grid gap-3 sm:grid-cols-3">
                   {related.map(p => (
