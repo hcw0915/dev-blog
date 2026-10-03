@@ -31,7 +31,7 @@ const isEn = /^\/en(\/|$)/.test(Astro.url.pathname)
 // hreflang 只給真的有中英兩版的頁面。文章只有中文（/en/posts/<slug> 只是跳轉頁），不能互指
 const basePath = isEn ? Astro.url.pathname.replace(/^\/en/, '') || '/' : Astro.url.pathname
 const isBilingual =
-  !isNotFound && /^\/(?:about(?:\/this-site)?|posts|playground(?:\/(?:vanilla|react)(?:\/[^/]+)?)?)?\/?$/.test(basePath)
+  !isNotFound && /^\/(?:about(?:\/this-site)?|posts|scene|playground(?:\/(?:vanilla|react)(?:\/[^/]+)?)?)?\/?$/.test(basePath)
 const alternates = isBilingual
   ? { zh: new URL(basePath, Astro.site), en: new URL(`/en${basePath === '/' ? '/' : basePath}`, Astro.site) }
   : null

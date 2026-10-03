@@ -1,0 +1,22 @@
+---
+import BaseHead from "@/components/BaseHead.astro"
+import Header from "@/components/Header.astro"
+import Body from "@/components/Body.astro"
+import SceneContent from "@/components/SceneContent.astro"
+import { SITE_TITLE } from "@/config"
+import { getTranslations } from "@/i18n/translations"
+
+const locale = "en"
+const t = getTranslations(locale)
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`${t.nav.scene} - ${SITE_TITLE}`} description="The Yerevan Cascade rebuilt in Spline — climb it level by level with the keyboard, buttons or your phone's tilt." />
+  </head>
+  <Body>
+    <Header />
+    <SceneContent locale={locale} />
+  </Body>
+</html>

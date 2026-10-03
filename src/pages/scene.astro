@@ -1,0 +1,22 @@
+---
+import BaseHead from "@/components/BaseHead.astro"
+import Header from "@/components/Header.astro"
+import Body from "@/components/Body.astro"
+import SceneContent from "@/components/SceneContent.astro"
+import { SITE_TITLE } from "@/config"
+import { getTranslations } from "@/i18n/translations"
+
+const locale = "zh"
+const t = getTranslations(locale)
+---
+
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <BaseHead title={`${t.nav.scene} - ${SITE_TITLE}`} description="用 Spline 重建的葉里溫 Cascade 大階梯，可以用鍵盤、按鈕或手機體感一層層上下樓。" />
+  </head>
+  <Body>
+    <Header />
+    <SceneContent locale={locale} />
+  </Body>
+</html>

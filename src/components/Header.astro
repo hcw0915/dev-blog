@@ -15,6 +15,7 @@ const prefix = locale === defaultLocale ? "" : `/${locale}`
 const homePath = `${prefix}/`
 const aboutPath = `${prefix}/about`
 const postsPath = `${prefix}/posts`
+const scenePath = `${prefix}/scene`
 const vanillaPath = `${prefix}/playground/vanilla`
 const reactPath = `${prefix}/playground/react`
 
@@ -22,7 +23,8 @@ const path = currentPath.replace(/\/$/, "")
 const isUnder = (href: string) => path === href || path.startsWith(href + "/")
 const mobileLinks = [
   { href: aboutPath, label: t.nav.about, active: isUnder(aboutPath) },
-  { href: postsPath, label: t.nav.blog, active: isUnder(postsPath) }
+  { href: postsPath, label: t.nav.blog, active: isUnder(postsPath) },
+  { href: scenePath, label: t.nav.scene, active: isUnder(scenePath) }
 ]
 const mobilePlayground = [
   { href: vanillaPath, label: t.playground.vanilla, active: isUnder(vanillaPath) },
@@ -45,6 +47,7 @@ const mobilePlayground = [
       <div class="hidden md:flex flex-1 items-center justify-center gap-6">
         <HeaderLink href={aboutPath}>{t.nav.about}</HeaderLink>
         <HeaderLink href={postsPath}>{t.nav.blog}</HeaderLink>
+        <HeaderLink href={scenePath}>{t.nav.scene}</HeaderLink>
         <PlaygroundDropdown client:visible locale={locale} />
       </div>
 

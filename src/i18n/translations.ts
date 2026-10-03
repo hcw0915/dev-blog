@@ -194,7 +194,8 @@ export const translations = {
     // Navigation
     nav: {
       about: '關於',
-      blog: '部落格'
+      blog: '部落格',
+      scene: '3D 場景'
     },
     // Accessibility labels
     aria: {
@@ -426,7 +427,8 @@ export const translations = {
     // Navigation
     nav: {
       about: 'About',
-      blog: 'Blog'
+      blog: 'Blog',
+      scene: '3D Scene'
     },
     // Accessibility labels
     aria: {

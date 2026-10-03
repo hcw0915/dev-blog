@@ -1,0 +1,248 @@
+---
+/**
+ * 「3D 場景」分頁：Spline 匯出的葉里溫 Cascade，可以一層層上下樓。zh 與 en 共用。
+ *
+ * 場景檔與 runtime 只在這一頁載入（動態 import），不影響其他頁。
+ * 場景在 Spline 編輯器裡維護，改完在 Spline 按 Export → Code Export 更新，網址不變。
+ * 鏡頭導覽寫在這裡（停靠點與數學在 lib/scene-tour.mjs）：鍵盤、按鈕、滑動、手機體感共用同一組狀態。
+ */
+import { STOPS } from "@/lib/scene-tour.mjs"
+
+export interface Props {
+  locale: "zh" | "en"
+}
+
+const { locale } = Astro.props
+const SCENE_URL = "https://prod.spline.design/wSVA7loP827FxVnB/scene.splinecode"
+
+const copy = {
+  zh: {
+    title: "葉里溫 Cascade 大階梯",
+    hints: ["↑ / W 上樓，↓ / S 下樓", "← → / A D 環顧", "手機：上下滑動換層，開「體感」傾斜環顧"],
+    up: "上樓",
+    down: "下樓",
+    tilt: "體感",
+    loading: "載入 3D 場景中…",
+    failed: "場景載入失敗，可能是瀏覽器不支援 WebGL。",
+  },
+  en: {
+    title: "Yerevan Cascade",
+    hints: ["↑ / W to go up, ↓ / S to go down", "← → / A D to look around", "Phone: swipe to change level, turn on Tilt to look around"],
+    up: "Up",
+    down: "Down",
+    tilt: "Tilt",
+    loading: "Loading 3D scene…",
+    failed: "The scene failed to load — your browser may not support WebGL.",
+  },
+}[locale]
+const labels = STOPS.map(s => s[locale])
+---
+
+<!-- 整頁就是場景：canvas 鋪滿視窗，固定的 header 浮在上面（半透明 + blur 會透出場景） -->
+<main class="fixed inset-0 bg-zinc-100 dark:bg-zinc-900">
+  <h1 class="sr-only">{copy.title}</h1>
+  <p id="scene-status" class="absolute inset-0 grid place-items-center text-sm text-zinc-400" data-failed={copy.failed}>
+    {copy.loading}
+  </p>
+  <canvas
+    id="spline-scene"
+    data-scene={SCENE_URL}
+    data-labels={JSON.stringify(labels)}
+    class="relative block h-full w-full touch-none opacity-0 transition-opacity duration-700"></canvas>
+
+  <!-- 目前樓層：上方置中，下面一排點代表全部停靠點 -->
+  <div id="tour-hud" class="pointer-events-none absolute left-1/2 top-[76px] -translate-x-1/2 text-center opacity-0 transition-opacity">
+    <div id="tour-label" aria-live="polite" class="rounded-full bg-black/45 px-4 py-1.5 text-sm font-semibold text-white backdrop-blur"></div>
+    <div class="mt-2 flex justify-center gap-1.5">
+      {labels.map(() => <span class="tour-dot h-1.5 w-1.5 rounded-full bg-white/40"></span>)}
+    </div>
+  </div>
+
+  <!-- 右下角是 Spline 浮水印（免費方案），按鈕放在它上方 -->
+  <div id="tour-controls" class="absolute bottom-20 right-4 flex flex-col items-end gap-2 opacity-0 transition-opacity">
+    <button type="button" data-step="1" class="tour-btn" aria-label={copy.up}>▲</button>
+    <button type="button" data-step="-1" class="tour-btn" aria-label={copy.down}>▼</button>
+    <button type="button" id="tour-tilt" class="tour-btn text-xs" aria-pressed="false">{copy.tilt}</button>
+  </div>
+
+  <ul
+    class="pointer-events-none absolute bottom-24 left-4 max-w-[calc(100%-6rem)] space-y-1 rounded-xl md:bottom-4 bg-black/40 px-4 py-3 text-xs text-white/85 backdrop-blur"
+  >
+    {/* 鍵盤提示只在桌面顯示，手機只留觸控那一行 */}
+    {copy.hints.map((h, i) => <li class={i < 2 ? "hidden md:list-item" : "md:hidden"}>{h}</li>)}
+  </ul>
+</main>
+
+<style>
+  .tour-btn {
+    display: grid;
+    place-items: center;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 9999px;
+    background: rgb(0 0 0 / 0.45);
+    color: #fff;
+    backdrop-filter: blur(8px);
+  }
+  .tour-btn:hover {
+    background: rgb(0 0 0 / 0.6);
+  }
+  .tour-btn[aria-pressed="true"] {
+    background: linear-gradient(135deg, #4f46e5, #9333ea);
+  }
+</style>
+
+<script>
+  import { STOPS, lerp, easeInOut, offsetLook, lookAtEuler } from "@/lib/scene-tour.mjs"
+
+  // 換頁時 canvas 會被換掉，要把 runtime（含 GL context）、監聽與動畫迴圈收乾淨
+  let cleanup = () => {}
+
+  const init = async () => {
+    cleanup()
+    const canvas = document.getElementById("spline-scene") as HTMLCanvasElement | null
+    const status = document.getElementById("scene-status")
+    if (!canvas || !status) return
+
+    let disposed = false
+    let raf = 0
+    let app: import("@splinetool/runtime").Application | undefined
+    const ac = new AbortController()
+    cleanup = () => {
+      disposed = true
+      ac.abort()
+      cancelAnimationFrame(raf)
+      app?.dispose()
+      cleanup = () => {}
+    }
+
+    try {
+      const { Application } = await import("@splinetool/runtime")
+      if (disposed) return
+      app = new Application(canvas, { htmlContentMode: "none" })
+      await app.load(canvas.dataset.scene!)
+      if (disposed) return
+      canvas.classList.replace("opacity-0", "opacity-100")
+      status.remove()
+    } catch (e) {
+      console.warn("[spline-scene]", e)
+      status.textContent = status.dataset.failed!
+      return
+    }
+
+    // 場景裡沒有導覽用的鏡頭（例如匯出還是舊版）就只顯示場景，不掛導覽
+    const cam = app.findObjectByName("Cascade Camera")
+    if (!cam) return
+
+    const labels: string[] = JSON.parse(canvas.dataset.labels!)
+    const label = document.getElementById("tour-label")!
+    const dots = [...document.querySelectorAll<HTMLElement>(".tour-dot")]
+    for (const el of ["tour-hud", "tour-controls"]) document.getElementById(el)!.classList.replace("opacity-0", "opacity-100")
+
+    const DURATION = 1400
+    let index = 0
+    let from = { pos: STOPS[0].pos, look: STOPS[0].look }
+    let startedAt = -Infinity
+    let yaw = 0, pitch = 0 // 環顧偏移（弧度）
+    let tiltYaw = 0, tiltPitch = 0
+
+    const go = (step: number) => {
+      const next = Math.max(0, Math.min(STOPS.length - 1, index + step))
+      if (next === index) return
+      // 從「現在畫面上的位置」出發，連按時不會跳回上一站
+      from = current()
+      index = next
+      startedAt = performance.now()
+      yaw = 0
+      pitch = 0
+      label.textContent = labels[index]
+      dots.forEach((d, i) => d.classList.toggle("!bg-white", i === index))
+      document.documentElement.dataset.tourStop = String(index) // 給自動測試讀
+    }
+    const current = () => {
+      const t = easeInOut(Math.min(1, (performance.now() - startedAt) / DURATION))
+      return { pos: lerp(from.pos, STOPS[index].pos, t), look: lerp(from.look, STOPS[index].look, t) }
+    }
+
+    const frame = () => {
+      raf = requestAnimationFrame(frame)
+      let { pos, look } = current()
+      // 直式螢幕水平視野窄：沿視線往後退，畫面才裝得下同一個構圖
+      if (innerWidth < innerHeight) pos = lerp(look, pos, 1.6)
+      const target = offsetLook(pos, look, yaw + tiltYaw, pitch + tiltPitch)
+      const r = lookAtEuler(pos, target)
+      cam.position.x = pos[0]; cam.position.y = pos[1]; cam.position.z = pos[2]
+      cam.rotation.x = r.x; cam.rotation.y = r.y; cam.rotation.z = r.z
+      app!.requestRender()
+    }
+
+    label.textContent = labels[0]
+    dots[0]?.classList.add("!bg-white")
+    document.documentElement.dataset.tourStop = "0"
+    raf = requestAnimationFrame(frame)
+
+    const { signal } = ac
+    addEventListener(
+      "keydown",
+      e => {
+        const k = e.key.toLowerCase()
+        if (k === "arrowup" || k === "w") go(1)
+        else if (k === "arrowdown" || k === "s") go(-1)
+        else if (k === "arrowleft" || k === "a") yaw += 0.15
+        else if (k === "arrowright" || k === "d") yaw -= 0.15
+        else return
+        e.preventDefault()
+      },
+      { signal }
+    )
+    document.querySelectorAll<HTMLButtonElement>("[data-step]").forEach(b =>
+      b.addEventListener("click", () => go(Number(b.dataset.step)), { signal })
+    )
+
+    // 滑動：手指往上滑 = 往上走（跟捲動網頁的直覺一致）
+    let touchY: number | null = null
+    canvas.addEventListener("touchstart", e => (touchY = e.touches[0].clientY), { passive: true, signal })
+    canvas.addEventListener(
+      "touchend",
+      e => {
+        if (touchY === null) return
+        const dy = touchY - e.changedTouches[0].clientY
+        if (Math.abs(dy) > 40) go(dy > 0 ? 1 : -1)
+        touchY = null
+      },
+      { passive: true, signal }
+    )
+
+    // 體感：以開啟當下的手機姿勢為基準，左右傾斜轉頭、前後傾斜抬頭低頭
+    const tiltBtn = document.getElementById("tour-tilt")!
+    let base: { g: number; b: number } | null = null
+    const onTilt = (e: DeviceOrientationEvent) => {
+      if (e.gamma == null || e.beta == null) return
+      base ??= { g: e.gamma, b: e.beta }
+      tiltYaw = (-(e.gamma - base.g) * Math.PI) / 180
+      tiltPitch = (-(e.beta - base.b) * Math.PI) / 360
+    }
+    tiltBtn.addEventListener(
+      "click",
+      async () => {
+        if (tiltBtn.getAttribute("aria-pressed") === "true") {
+          removeEventListener("deviceorientation", onTilt)
+          tiltBtn.setAttribute("aria-pressed", "false")
+          tiltYaw = tiltPitch = 0
+          return
+        }
+        // iOS 13+ 要在使用者點擊時要權限；其他平台沒有這個方法
+        const D = DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> }
+        if (D.requestPermission && (await D.requestPermission().catch(() => "denied")) !== "granted") return
+        base = null
+        addEventListener("deviceorientation", onTilt, { signal })
+        tiltBtn.setAttribute("aria-pressed", "true")
+      },
+      { signal }
+    )
+  }
+
+  document.addEventListener("astro:page-load", init)
+  document.addEventListener("astro:before-swap", () => cleanup())
+</script>
