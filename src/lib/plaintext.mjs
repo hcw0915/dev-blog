@@ -20,6 +20,8 @@ const stripProse = text =>
     // 只認真正的標籤格式且不跨行：`<` 後面緊接字母；「a < b」這種比較不會被當成標籤
     .replace(/<\/?[a-zA-Z][\w-]*(?:\s[^<>\n]*)?\/?>/g, " ")
     .replace(/^[ \t]*(#{1,6}|>|[-*+]|\d+\.)[ \t]+/gm, "")
+    // 提示框標記（> [!NOTE] 等，見 remark-alerts）不是內文
+    .replace(/\[!(?:NOTE|TIP|IMPORTANT|WARNING|CAUTION)\][ \t]*/gi, "")
     // 底線保留：識別字（use_state）在段落裡也會出現
     .replace(/[*~`]/g, "")
 

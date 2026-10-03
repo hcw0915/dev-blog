@@ -43,6 +43,9 @@ has("呼叫 use_state 之後", "use_state")
 // 標題、清單、引言記號拿掉
 lacks("## 核心原則\n- 第一點\n> 引言", "##")
 has("## 核心原則\n- 第一點\n> 引言", "第一點")
+// 提示框標記拿掉，內容保留
+lacks("> [!NOTE]\n> 作者說明：團隊設計", "[!NOTE]")
+has("> [!NOTE]\n> 作者說明：團隊設計", "作者說明")
 
 console.log("✓ toPlainText 檢查全部通過")
 
