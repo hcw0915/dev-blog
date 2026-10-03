@@ -5,7 +5,7 @@ import Footer from "@/components/Footer.astro"
 import Body from "@/components/Body.astro"
 import Content from "@/components/Content.astro"
 import PostGrid from "@/components/PostGrid.astro"
-import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
+import { SITE_TITLE, SITE_DESCRIPTION_EN } from "@/config"
 
 const locale = "en"
 
@@ -21,13 +21,14 @@ const posts = (await Astro.glob("../../posts/*.md"))
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={`Posts - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+    <BaseHead title={`Posts - ${SITE_TITLE}`} description={SITE_DESCRIPTION_EN} />
   </head>
 
   <Body>
     <Header />
     <main class="pt-[72px]">
       <Content>
+        <h1 class="sr-only">Posts</h1>
         <PostGrid posts={posts} locale={locale} />
       </Content>
     </main>

@@ -45,3 +45,19 @@ lacks("## 核心原則\n- 第一點\n> 引言", "##")
 has("## 核心原則\n- 第一點\n> 引言", "第一點")
 
 console.log("✓ toPlainText 檢查全部通過")
+
+// summarize：meta description 用的摘要
+{
+  const { summarize } = await import("../src/lib/plaintext.mjs")
+  const ok = (cond, msg) => { if (!cond) { console.error("✗ summarize:", msg); process.exitCode = 1 } }
+  const s1 = summarize("> 需求聽起來很簡單：**預載**什麼時候開始。這是第二句，會被保留下來，因為還不到長度上限。\n\n## 背景\n\n內文")
+  ok(s1.startsWith("需求聽起來很簡單：預載什麼時候開始。"), `引言當摘要、去掉粗體：${s1}`)
+  ok(!s1.includes("背景"), "不吃到標題")
+  const s2 = summarize("# 標題\n\n```js\nconst a = 1\n```\n\n真正的第一段文字在程式碼後面，應該被選中當摘要。")
+  ok(s2.startsWith("真正的第一段"), `跳過標題與程式碼：${s2}`)
+  const s3 = summarize("> - [連結一](https://a)\n> - [連結二](https://b)\n\n這段才是內容，前面的純連結清單要跳過才對。")
+  ok(s3.startsWith("這段才是內容"), `跳過純連結清單：${s3}`)
+  const s4 = summarize("很長".repeat(200))
+  ok(s4.length <= 151 && s4.endsWith("…"), `超長硬切：${s4.length}`)
+  console.log("summarize ok")
+}

@@ -12,6 +12,7 @@ import { slugOf } from "@/lib/post"
 import { seriesOf, assertSeries } from "@/lib/series"
 import { getLocaleFromPath, formatDate } from "@/i18n/utils"
 import { getTranslations } from "@/i18n/translations"
+import { summarize } from "@/lib/plaintext.mjs"
 import fs from "node:fs"
 import path from "node:path"
 
@@ -29,7 +30,10 @@ const { frontmatter, headings, rawContent } = Astro.props as {
   rawContent: () => string
 }
 
-const { title, description = '', heroImage, createdAt, updatedAt, tags = [], slug } = frontmatter
+const { title, heroImage, createdAt, updatedAt, tags = [], slug } = frontmatter
+// Inkdrop 匯出的 frontmatter 沒有 description（先前全站 60 篇的 meta description 都是空的）；
+// 有手寫就用手寫的，沒有就從內文算摘要，給搜尋結果、分享卡片、JSON-LD 共用
+const description: string = frontmatter.description || summarize(rawContent())
 
 const locale = getLocaleFromPath(Astro.url.pathname)
 const t = getTranslations(locale)
@@ -132,12 +136,16 @@ const toc = headings.filter(h => h.depth >= 2 && h.depth <= 3)
 
 const jsonLd = JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'Article',
+  '@type': 'BlogPosting',
   headline: title,
   description,
   datePublished: articleMeta.publishedTime,
   dateModified: articleMeta.modifiedTime ?? articleMeta.publishedTime,
-  author: { '@type': 'Person', name: 'Antonio Hou' },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': new URL(Astro.url.pathname, Astro.site).href },
+  inLanguage: locale === 'en' ? 'en' : 'zh-TW',
+  keywords: displayTags(tags).join(', '),
+  author: { '@type': 'Person', name: 'Antonio Hou', url: new URL('/about/', Astro.site).href },
+  publisher: { '@type': 'Person', name: 'Antonio Hou', url: new URL('/', Astro.site).href },
   image: new URL(ogImage, Astro.site).href
 })
 ---

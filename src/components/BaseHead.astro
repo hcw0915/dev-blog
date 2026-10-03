@@ -3,6 +3,8 @@
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css'
 import { ClientRouter } from 'astro:transitions'
+import { SITE_TITLE, SITE_URL } from '@/config'
+import { GITHUB_URL } from '@/config/about'
 
 export interface Props {
   title: string
@@ -23,6 +25,30 @@ export interface Props {
 
 const { title, description, image = '/og/site.png', article, clientRouter = true } = Astro.props
 const canonical = new URL(Astro.url.pathname, Astro.site)
+const isNotFound = /^\/(en\/)?404\/?$/.test(Astro.url.pathname)
+const isEn = /^\/en(\/|$)/.test(Astro.url.pathname)
+
+// hreflang 只給真的有中英兩版的頁面。文章只有中文（/en/posts/<slug> 只是跳轉頁），不能互指
+const basePath = isEn ? Astro.url.pathname.replace(/^\/en/, '') || '/' : Astro.url.pathname
+const isBilingual =
+  !isNotFound && /^\/(?:about(?:\/this-site)?|posts|playground(?:\/(?:vanilla|react)(?:\/[^/]+)?)?)?\/?$/.test(basePath)
+const alternates = isBilingual
+  ? { zh: new URL(basePath, Astro.site), en: new URL(`/en${basePath === '/' ? '/' : basePath}`, Astro.site) }
+  : null
+
+// 首頁的 WebSite 結構化資料：讓搜尋引擎與 AI 搜尋知道這個站是誰的、講什麼
+const isHome = basePath === '/'
+const websiteJsonLd = isHome
+  ? JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: SITE_TITLE,
+      url: new URL(isEn ? '/en/' : '/', SITE_URL).href,
+      description,
+      inLanguage: isEn ? 'en' : 'zh-TW',
+      author: { '@type': 'Person', name: 'Antonio Hou', url: new URL('/about/', SITE_URL).href, sameAs: [GITHUB_URL] }
+    })
+  : null
 ---
 
 <!-- Global Metadata -->
@@ -35,12 +61,22 @@ const canonical = new URL(Astro.url.pathname, Astro.site)
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
-<link rel="canonical" href={canonical} />
+{!isNotFound && <link rel="canonical" href={canonical} />}
+{alternates && (
+  <>
+    <link rel="alternate" hreflang="zh-TW" href={alternates.zh} />
+    <link rel="alternate" hreflang="en" href={alternates.en} />
+    <link rel="alternate" hreflang="x-default" href={alternates.zh} />
+  </>
+)}
 <link rel="alternate" type="application/rss+xml" title={title} href={new URL('rss.xml', Astro.site)} />
 
 <!-- Open Graph -->
 <meta property="og:type" content={article ? 'article' : 'website'} />
-<meta property="og:url" content={canonical} />
+{!isNotFound && <meta property="og:url" content={canonical} />}
+<meta property="og:site_name" content={SITE_TITLE} />
+<meta property="og:locale" content={isEn ? 'en_US' : 'zh_TW'} />
+{alternates && <meta property="og:locale:alternate" content={isEn ? 'zh_TW' : 'en_US'} />}
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(image, Astro.site)} />
@@ -59,11 +95,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site)
 }
 
 <!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={canonical} />
-<meta property="twitter:title" content={title} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image, Astro.site)} />
+<meta name="twitter:card" content="summary_large_image" />
+{!isNotFound && <meta name="twitter:url" content={canonical} />}
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={new URL(image, Astro.site)} />
+
+{websiteJsonLd && <script type="application/ld+json" set:html={websiteJsonLd} />}
 
 {clientRouter && <ClientRouter />}
 

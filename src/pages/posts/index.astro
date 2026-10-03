@@ -28,6 +28,7 @@ const posts = (await Astro.glob("../posts/*.md"))
     <Header />
     <main class="pt-[72px]">
       <Content>
+        <h1 class="sr-only">文章</h1>
         <PostGrid posts={posts} locale={locale} />
       </Content>
     </main>

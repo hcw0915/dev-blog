@@ -4,7 +4,7 @@ import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
 import Body from "@/components/Body.astro"
 import PlaygroundList from "@/components/PlaygroundList.astro"
-import { SITE_TITLE, SITE_DESCRIPTION } from "@/config"
+import { SITE_TITLE, SITE_DESCRIPTION_EN } from "@/config"
 
 const locale = "en"
 const template = "vanilla"
@@ -13,7 +13,7 @@ const template = "vanilla"
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={`Playground · vanilla - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+    <BaseHead title={`Playground · vanilla - ${SITE_TITLE}`} description={SITE_DESCRIPTION_EN} />
   </head>
   <Body>
     <Header />

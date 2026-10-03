@@ -57,3 +57,31 @@ export const toPlainText = md => {
 
   return parts.join(" ").replace(/\s+/g, " ").trim()
 }
+
+/**
+ * 文章摘要：給 meta description、JSON-LD 與 llms.txt 用。Inkdrop 匯出的 frontmatter 沒有 description，
+ * 從內文算，作者不必每篇手填（frontmatter 有寫 description 時以它為準，由呼叫端決定）。
+ *
+ * 以空行切段，跳過標題、程式碼、表格、圖片、分隔線、純連結清單，取前面像樣的文字段，
+ * 湊到 80 字以上就停；超過 max 時盡量截在句尾，截不到才硬切加「…」。
+ * @param {string} md @param {number} [max] @returns {string}
+ */
+export const summarize = (md, max = 150) => {
+  const blocks = md.replace(/^[ \t]*(`{3,}|~{3,})[\s\S]*?^[ \t]*\1[ \t]*$/gm, "\n\n").split(/\n[ \t]*\n/)
+  const isLinkList = b => b.split("\n").every(l => /^[ \t]*(?:>[ \t]*)?[-*+][ \t]*\[.*\]\(.*\)[ \t]*$/.test(l) || !l.trim())
+  const skip = b =>
+    /^[ \t]*#{1,6}[ \t]/.test(b) || /^[ \t]*\|/.test(b) || /^[ \t]*(?:-{3,}|\*{3,})[ \t]*$/.test(b) || isLinkList(b)
+
+  let out = ""
+  for (const block of blocks) {
+    if (!block.trim() || skip(block)) continue
+    const text = stripProse(block).replace(/\s+/g, " ").trim()
+    if (text.length < 12) continue
+    out = out ? `${out} ${text}` : text
+    if (out.length >= 80) break
+  }
+  if (out.length <= max) return out
+  const cut = out.slice(0, max)
+  const end = Math.max(...["。", "！", "？", ". ", "! ", "? "].map(p => cut.lastIndexOf(p)))
+  return end >= max * 0.5 ? cut.slice(0, end + 1).trim() : `${cut.trimEnd()}…`
+}

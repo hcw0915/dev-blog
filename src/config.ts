@@ -4,6 +4,8 @@
 export const SITE_TITLE = "Antonio Hou · Frontend Engineer"
 export const SITE_DESCRIPTION =
   "Antonio 的前端工程筆記：React、TypeScript、Three.js / Shader，以及帶領團隊導入 AI 開發工作流的實戰紀錄。"
+export const SITE_DESCRIPTION_EN =
+  "Antonio's frontend engineering notes: React, TypeScript, Three.js / shaders, and hands-on records of bringing AI-assisted workflows to a team."
 // 換網域時：這裡與 astro.config.mjs 的 site 兩處需同步
 export const SITE_URL = "https://antonio-blog-one.vercel.app"
 
