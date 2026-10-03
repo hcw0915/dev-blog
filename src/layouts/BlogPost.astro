@@ -146,7 +146,18 @@ const jsonLd = JSON.stringify({
   keywords: displayTags(tags).join(', '),
   author: { '@type': 'Person', name: 'Antonio Hou', url: new URL('/about/', Astro.site).href },
   publisher: { '@type': 'Person', name: 'Antonio Hou', url: new URL('/', Astro.site).href },
-  image: new URL(ogImage, Astro.site).href
+  image: new URL(ogImage, Astro.site).href,
+  ...(series ? { isPartOf: { '@type': 'CreativeWorkSeries', name: seriesTitle } } : {})
+})
+// 麵包屑：搜尋結果顯示「首頁 › 文章 › 標題」而不是一長串網址
+const breadcrumbJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: locale === 'en' ? 'Home' : '首頁', item: new URL('/', Astro.site).href },
+    { '@type': 'ListItem', position: 2, name: locale === 'en' ? 'Posts' : '文章', item: new URL('/posts/', Astro.site).href },
+    { '@type': 'ListItem', position: 3, name: title, item: new URL(Astro.url.pathname, Astro.site).href }
+  ]
 })
 ---
 
@@ -155,6 +166,7 @@ const jsonLd = JSON.stringify({
   <head>
     <BaseHead title={title} description={description} image={ogImage} article={articleMeta} />
     <script type="application/ld+json" set:html={jsonLd} />
+    <script type="application/ld+json" set:html={breadcrumbJsonLd} />
   </head>
 
   <Body>

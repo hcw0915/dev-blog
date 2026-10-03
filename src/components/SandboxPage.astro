@@ -15,7 +15,25 @@ export interface Props {
 
 const { playground, locale, listUrl } = Astro.props
 const t = getTranslations(locale).playground
+
+// 結構化資料：標明這是一份可執行的程式碼範例，搜尋引擎與 AI 搜尋才知道它不是一般文章
+const jsonLd = playground
+  ? JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareSourceCode",
+      name: playground.title,
+      description: playground.description,
+      url: new URL(Astro.url.pathname, Astro.site).href,
+      programmingLanguage: playground.template === "react" ? ["TypeScript", "React"] : ["HTML", "CSS", "JavaScript"],
+      keywords: playground.tags.join(", "),
+      dateCreated: playground.createdAt,
+      inLanguage: locale === "en" ? "en" : "zh-TW",
+      author: { "@type": "Person", name: "Antonio Hou", url: new URL("/about/", Astro.site).href },
+    })
+  : null
 ---
+
+{jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
 
 <main class="flex flex-col pt-[61px]" style="height: 100vh; min-height: 640px;">
   {

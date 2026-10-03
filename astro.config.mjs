@@ -1,11 +1,25 @@
 import { defineConfig } from "astro/config"
 import sitemap from "@astrojs/sitemap"
+import fs from "node:fs"
 import vercel from "@astrojs/vercel"
 import react from "@astrojs/react"
 import tailwind from "@astrojs/tailwind"
 import path from "path"
 import { fileURLToPath } from "url"
 import remarkAlerts from "./src/lib/remark-alerts.mjs"
+
+// sitemap 的 lastmod 來源：直接讀文章 md 的 frontmatter（config 階段還沒有 Astro 的內容 API）
+const postUpdatedAt = Object.fromEntries(
+  fs.readdirSync("./src/pages/posts")
+    .filter(f => f.endsWith(".md"))
+    .map(f => {
+      const fm = fs.readFileSync(`./src/pages/posts/${f}`, "utf8").split("\n---")[0]
+      const slug = fm.match(/^slug:\s*(\S+)/m)?.[1] ?? f.replace(/\.md$/, "")
+      const t = Number(fm.match(/^updatedAt:\s*(\d+)/m)?.[1] ?? fm.match(/^createdAt:\s*(\d+)/m)?.[1])
+      return [slug, t]
+    })
+    .filter(([, t]) => t)
+)
 
 // 获取当前文件的目录路径（ES module 中 __dirname 的替代方案）
 const __filename = fileURLToPath(import.meta.url)
@@ -40,7 +54,13 @@ export default defineConfig({
   integrations: [
     sitemap({
       // /en/posts/<slug>/ 是 noindex 的 redirect stub，不進 sitemap（/en/posts/ 列表頁保留）
-      filter: page => !/\/en\/posts\/.+/.test(new URL(page).pathname)
+      filter: page => !/\/en\/posts\/.+/.test(new URL(page).pathname),
+      // 文章加上 lastmod（frontmatter 的 updatedAt），搜尋引擎據此決定多久回來重抓
+      serialize: item => {
+        const slug = new URL(item.url).pathname.match(/^\/posts\/([^/]+)\/?$/)?.[1]
+        const updatedAt = slug && postUpdatedAt[slug]
+        return updatedAt ? { ...item, lastmod: new Date(updatedAt).toISOString() } : item
+      }
     }),
     react(),
     tailwind()

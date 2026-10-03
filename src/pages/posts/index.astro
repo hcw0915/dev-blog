@@ -16,12 +16,30 @@ const posts = (await Astro.glob("../posts/*.md"))
       new Date(b.frontmatter.createdAt).valueOf() -
       new Date(a.frontmatter.createdAt).valueOf()
   )
+
+// 列表頁的結構化資料：這是一個文章集合，列出每篇的網址與標題
+const listJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "文章",
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  mainEntity: {
+    "@type": "ItemList",
+    itemListElement: posts.map((p: any, i: number) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: new URL(`/posts/${p.frontmatter.slug ?? p.url.split("/").filter(Boolean).pop()}/`, Astro.site).href,
+      name: p.frontmatter.title,
+    })),
+  },
+})
 ---
 
 <!doctype html>
 <html lang="zh-TW">
   <head>
     <BaseHead title={`Posts - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+    <script type="application/ld+json" set:html={listJsonLd} />
   </head>
 
   <Body>
