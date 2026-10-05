@@ -1,0 +1,53 @@
+---
+/** 首頁的單行文章列（主標籤 + 標題 + 日期）。「專案經驗」與「最新文章」兩個清單共用。 */
+import { formatDate } from "@/i18n/utils"
+import { tagStyle, primaryTag } from "@/lib/tags"
+
+export interface Props {
+  post: any
+  locale: "zh" | "en"
+}
+
+const { post, locale } = Astro.props
+const tag = primaryTag(post.frontmatter.tags ?? [])
+---
+
+<li>
+  <a href={post.url} class="group flex items-center justify-between gap-4 py-2.5">
+    <span class="flex items-center gap-2.5 min-w-0">
+      {
+        tag && (
+          <span class="chip shrink-0" style={tagStyle(tag)}>
+            {tag}
+          </span>
+        )
+      }
+      <span
+        class="truncate text-zinc-700 dark:text-zinc-200 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-brand-gradient transition-colors"
+      >
+        {post.frontmatter.title}
+      </span>
+    </span>
+    <span class="shrink-0 text-xs tabular-nums text-zinc-400 dark:text-zinc-500">
+      {formatDate(new Date(post.frontmatter.createdAt), locale)}
+    </span>
+  </a>
+</li>
+
+<style>
+  .chip {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--tag-ink);
+    border: 1px solid color-mix(in srgb, var(--tag-color) 45%, transparent);
+    background: color-mix(in srgb, var(--tag-color) 12%, transparent);
+    border-radius: 9999px;
+    padding: 1px 7px;
+    line-height: 1.5;
+  }
+  :global(.dark) .chip {
+    color: var(--tag-ink-dark);
+  }
+</style>

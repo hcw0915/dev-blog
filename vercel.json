@@ -28,6 +28,56 @@
       "source": "/en/scene",
       "destination": "/en/playground/scene",
       "permanent": true
+    },
+    {
+      "source": "/posts/shader",
+      "destination": "/posts/shader-uniform-attribute-varying",
+      "permanent": true
+    },
+    {
+      "source": "/en/posts/shader",
+      "destination": "/en/posts/shader-uniform-attribute-varying",
+      "permanent": true
+    },
+    {
+      "source": "/posts/euler-vs-quaternion",
+      "destination": "/posts/three-euler-vs-quaternion",
+      "permanent": true
+    },
+    {
+      "source": "/en/posts/euler-vs-quaternion",
+      "destination": "/en/posts/three-euler-vs-quaternion",
+      "permanent": true
+    },
+    {
+      "source": "/posts/rotation-euler-quaterion",
+      "destination": "/posts/three-euler-vs-quaternion",
+      "permanent": true
+    },
+    {
+      "source": "/en/posts/rotation-euler-quaterion",
+      "destination": "/en/posts/three-euler-vs-quaternion",
+      "permanent": true
+    },
+    {
+      "source": "/posts/euler-quaternion",
+      "destination": "/posts/three-euler-quaternion",
+      "permanent": true
+    },
+    {
+      "source": "/en/posts/euler-quaternion",
+      "destination": "/en/posts/three-euler-quaternion",
+      "permanent": true
+    },
+    {
+      "source": "/posts/three-texture",
+      "destination": "/posts/texture",
+      "permanent": true
+    },
+    {
+      "source": "/en/posts/three-texture",
+      "destination": "/en/posts/texture",
+      "permanent": true
     }
   ]
 }

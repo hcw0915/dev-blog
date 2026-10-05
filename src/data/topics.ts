@@ -106,18 +106,13 @@ export const POST_TOPICS: Record<string, TopicId[]> = {
   "js-proxy": ["javascript-core"],
 
   // Three.js 基礎：旋轉、紋理、幾何、控制
-  "euler-vs-quaternion": ["threejs-basics"],
-  "rotation-euler-quaterion": ["threejs-basics"],
   "three-euler-vs-quaternion": ["threejs-basics"],
-  "euler-quaternion": ["threejs-basics"],
   "three-euler-quaternion": ["threejs-basics"],
   texture: ["threejs-basics"],
-  "three-texture": ["threejs-basics"],
   "galaxy-generator": ["threejs-basics", "shader-glsl"],
   "three-demo": ["threejs-basics", "r3f-showcase"],
 
   // Shader
-  shader: ["shader-glsl"],
   "shader-uniform-attribute-varying": ["shader-glsl"],
   "shader-built-in-variables": ["shader-glsl"],
   "shader-color-offset": ["shader-glsl"],
@@ -137,11 +132,64 @@ export const POST_TOPICS: Record<string, TopicId[]> = {
  * 同一組也只會出現一篇，避免三個推薦裡有兩個是同一篇。
  */
 export const TWINS: string[][] = [
-  ["euler-vs-quaternion", "rotation-euler-quaterion", "three-euler-vs-quaternion"],
-  ["euler-quaternion", "three-euler-quaternion"],
-  ["texture", "three-texture"],
-  ["shader", "shader-uniform-attribute-varying"],
+  // 舊匯出殘留已刪除並轉址（vercel.json）。這組是兩份不同筆記、內容互補，待合併成一篇
+  ["three-euler-vs-quaternion", "three-euler-quaternion"],
 ]
 
 const twinGroupOf = new Map(TWINS.flatMap((group, i) => group.map(slug => [slug, i] as const)))
 export const twinGroup = (slug: string) => twinGroupOf.get(slug)
+
+/**
+ * 文章性質：跟主題（講什麼技術）正交，描述「寫法與深度」。讀過內容後人工判斷，給首頁專區與列表篩選用。
+ * - deep：在真實系統裡做過的事 —— 問題、取捨、量測、沒解掉的部分
+ * - note：讀書、課程、官方文件的整理
+ * - tip：單一問題的小技巧或踩坑
+ * 系列是另一個維度（config.ts 的 SERIES），同一篇可以是系列文又是 deep。
+ * 放在 repo 而不是 Inkdrop frontmatter：這是編輯判斷，改 55 份筆記會觸發 55 次部署。
+ * 沒列到的文章視為 note，build 時印提醒（不擋部署，理由同 POST_TOPICS）。
+ */
+export type PostKind = "deep" | "note" | "tip"
+
+export const KINDS: Record<PostKind, { zh: string; en: string }> = {
+  deep: { zh: "專案經驗", en: "Project work" },
+  note: { zh: "學習筆記", en: "Notes" },
+  tip: { zh: "小技巧", en: "Tips" },
+}
+
+const DEEP = [
+  "page-startup-scheduling", "preload-scheduling-tradeoffs", "startup-scheduling-wait-outside-slot",
+  "startup-measurement-pitfalls", "spline-mcp-yerevan-cascade", "knowledge-keyword-rag", "knowledge-optimization",
+  "popup-queue-soft-navigation", "error-code-event-bus", "dev-panel", "webview-shell-detection",
+  "ssr-login-token-layers", "tailwind-embedded-ui-css", "css", "language-source-priority-strategy",
+]
+const TIP = [
+  "browser", "eslint-plugin-simple-import-sort", "customize-eslint-rules", "js-new-url-url-search-params",
+  "react-children", "react-general-component", "ts", "ts-infer", "ts-react-hook-form", "vite-config-env",
+  "vite-twin-marco-styled-components", "refactor-steps", "shader-template",
+]
+const NOTE = [
+  "anti-three-1-furniture", "anti-three-2-banana", "anti-three-3-lusion", "anti-three-4-bruno-simon-20-k",
+  "anti-three-5-monitor-bunny", "chapter-1", "chapter-2-1-2-3", "chapter-2-4-2-6", "chapter-5",
+  "enzyme-vs-react-testing-library-rtl", "texture", "galaxy-generator", "three-euler-vs-quaternion",
+  "three-euler-quaternion", "three-demo",
+  "react-three-fiber-apple-watch", "shader-uniform-attribute-varying", "shader-color-offset",
+  "shader-built-in-variables", "next-images", "ssr-ssg-csr-isr", "js-var-let-const", "js-shallow-copy-deep-copy",
+  "js-proxy", "blob-file", "cookie-local-storage", "shadow-dom-web-component", "pnpm-monorepo",
+  "react-unstyled-component", "react-recursive-folders-components",
+]
+
+export const POST_KIND: Record<string, PostKind> = Object.fromEntries([
+  ...DEEP.map(s => [s, "deep"] as const),
+  ...TIP.map(s => [s, "tip"] as const),
+  ...NOTE.map(s => [s, "note"] as const),
+])
+
+const warned = new Set<string>()
+export const kindOf = (slug: string): PostKind => {
+  const k = POST_KIND[slug]
+  if (!k && !warned.has(slug)) {
+    warned.add(slug)
+    console.warn(`[topics] ${slug} 還沒標性質，暫時視為 note（src/data/topics.ts 的 POST_KIND）`)
+  }
+  return k ?? "note"
+}

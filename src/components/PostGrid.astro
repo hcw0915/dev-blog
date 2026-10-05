@@ -5,10 +5,11 @@
  * 只差 Astro.glob 的相對路徑，任何改動都得記得改兩處。
  */
 import { getTranslations } from "@/i18n/translations"
-import { displayTags, tagStyle, paletteForTags } from "@/lib/tags"
+import { displayTags, tagStyle } from "@/lib/tags"
 import { assignKinds } from "@/lib/thumb"
 import { slugOf } from "@/lib/post"
 import PostCard from "@/components/PostCard.astro"
+import { KINDS, kindOf, type PostKind } from "@/data/topics"
 
 export interface Props {
   posts: any[]
@@ -32,61 +33,66 @@ const rows = posts.map((post: any) => {
   return { post, year: isNewYear ? year : null }
 })
 
-// 篩選列只列出實際會顯示的 tag（noise tag 已被 displayTags 濾掉）
+// 性質（專案經驗／學習筆記／小技巧）：單選，跟標籤篩選取交集
+const kindCounts = posts.reduce<Record<string, number>>((acc, p: any) => {
+  const k = kindOf(slugOf(p))
+  acc[k] = (acc[k] ?? 0) + 1
+  return acc
+}, {})
+const kindOrder: PostKind[] = ["deep", "note", "tip"]
+
+// 篩選列只列出實際會顯示的 tag（noise tag 已被 displayTags 濾掉），A→Z 不分大小寫
 const filterTags = [
   ...new Set(posts.flatMap((p: any) => displayTags(p.frontmatter.tags ?? [])))
-].sort(
-  (a, b) =>
-    (paletteForTags([b])[0] ? 1 : 0) - (paletteForTags([a])[0] ? 1 : 0) ||
-    a.localeCompare(b)
-)
+].sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }))
 ---
 
 <section class="mb-8 space-y-4">
-  <input
-    id="blogSearch"
-    type="search"
-    placeholder={t.blog.searchPlaceholder}
-    aria-label={t.blog.searchPlaceholder}
-    class="w-full sm:max-w-sm rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/[0.04] px-4 py-2 text-sm outline-none focus:border-violet-400/60 placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
-  />
+  <!-- 主：性質做成分頁籤（文字 + 滑動底線）；次：標籤是小膠囊。兩者視覺權重刻意不同，
+       畫面上不會同時出現兩個實心的「選中」色塊。手機上兩者都單行橫向滑動，不斷行 -->
+  <div
+    id="kinds"
+    role="radiogroup"
+    aria-label={locale === "zh" ? "文章性質" : "Post type"}
+    class="no-scrollbar relative flex gap-6 overflow-x-auto border-b border-zinc-200 dark:border-white/10"
+  >
+    <button type="button" role="radio" data-kind="" aria-checked="true" class="kind-btn">{t.blog.all}</button>
+    {
+      kindOrder.map(k => (
+        <button type="button" role="radio" data-kind={k} aria-checked="false" class="kind-btn">
+          {KINDS[k][locale]}
+          <span class="kind-count">{kindCounts[k] ?? 0}</span>
+        </button>
+      ))
+    }
+    <span id="kindIndicator" aria-hidden="true" class="kind-indicator"></span>
+  </div>
 
-  <div>
-    <div
-      class="flex flex-wrap gap-2"
-      id="tags"
-      role="group"
-      aria-label={t.blog.filterHint}
-    >
-      <button
-        type="button"
-        data-filter-all
-        aria-pressed="true"
-        class="tag-btn text-sm border border-zinc-300 dark:border-white/15 text-zinc-600 dark:text-zinc-400 rounded-full px-3 py-0.5 transition-colors"
-      >
-        {t.blog.all}
-      </button>
-      {
-        filterTags.map(tag => (
-          <button
-            type="button"
-            data-filter-tag={tag}
-            aria-pressed="false"
-            style={tagStyle(tag)}
-            class="tag-btn text-sm border border-zinc-300 dark:border-white/15 text-zinc-600 dark:text-zinc-400 rounded-full px-3 py-0.5 transition-colors"
-          >
-            {tag}
-          </button>
-        ))
-      }
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <div class="min-w-0 sm:flex-1">
+      <div class="no-scrollbar flex items-center gap-2 overflow-x-auto sm:flex-wrap" id="tags" role="group" aria-label={t.blog.filterHint}>
+        {
+          filterTags.map(tag => (
+            <button type="button" data-filter-tag={tag} aria-pressed="false" style={tagStyle(tag)} class="tag-btn">
+              {tag}
+            </button>
+          ))
+        }
+        <button type="button" data-filter-all aria-pressed="true" class="tag-clear" hidden>
+          {t.blog.clearFilter}
+        </button>
+      </div>
+      <p id="filterHint" class="mt-2 text-xs text-zinc-400 dark:text-zinc-600" hidden>
+        {t.blog.filterHint}
+      </p>
     </div>
-    <p
-      id="filterHint"
-      class="mt-2 text-xs text-zinc-400 dark:text-zinc-600"
-      hidden
-    >
-      {t.blog.filterHint}
-    </p>
+    <input
+      id="blogSearch"
+      type="search"
+      placeholder={t.blog.searchPlaceholder}
+      aria-label={t.blog.searchPlaceholder}
+      class="order-first h-9 w-full shrink-0 rounded-lg border border-zinc-200 bg-white px-3 text-sm outline-none placeholder:text-zinc-400 focus:border-violet-400/60 dark:border-white/10 dark:bg-white/[0.04] dark:placeholder:text-zinc-600 sm:order-none sm:w-60"
+    />
   </div>
 </section>
 
@@ -113,6 +119,7 @@ const filterTags = [
               data-post-title={post.frontmatter.title}
               data-year={new Date(post.frontmatter.createdAt).getFullYear()}
               data-post-tags={chips.join("|")}
+              data-kind={kindOf(slug)}
             >
               <PostCard post={post} locale={locale} kind={kinds[slug]} />
             </li>
@@ -131,12 +138,102 @@ const filterTags = [
 </section>
 
 <style>
-  /* 選取狀態用 aria-pressed 驅動，不靠 JS 塞 inline style。
-     --tag-fg 由對比度算出來，所以 Javascript 的黃底會自動配黑字。 */
+  /* 分隔線帶著 flex class，會蓋過 hidden 屬性的 display:none —— 那一年沒有可見文章時要真的藏起來 */
+  li[data-year-divider][hidden] {
+    display: none;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 性質分頁籤：選中只換字色，底線由一個元素滑過去 */
+  .kind-btn {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    flex-shrink: 0;
+    padding: 0.6rem 0.1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: rgb(113 113 122);
+    white-space: nowrap;
+    transition: color 0.2s ease;
+  }
+  .kind-btn:hover {
+    color: rgb(39 39 42);
+  }
+  .kind-btn[aria-checked="true"] {
+    color: rgb(24 24 27);
+    font-weight: 700;
+  }
+  .kind-count {
+    font-size: 0.75rem;
+    font-weight: 500;
+    opacity: 0.55;
+  }
+  :global(.dark) .kind-btn {
+    color: rgb(161 161 170);
+  }
+  :global(.dark) .kind-btn:hover,
+  :global(.dark) .kind-btn[aria-checked="true"] {
+    color: rgb(250 250 250);
+  }
+  .kind-indicator {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #4f46e5, #9333ea);
+  }
+  /* 第一次定位不要動畫，免得載入時從左邊滑進來 */
+  .kind-indicator.is-ready {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kind-indicator.is-ready {
+      transition: none;
+    }
+  }
+
+  /* 標籤：次要篩選，小膠囊；選中才上主題色。--tag-fg 由對比度算出，黃底自動配黑字 */
+  .tag-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+    border: 1px solid rgb(228 228 231);
+    border-radius: 9999px;
+    padding: 0.15rem 0.65rem;
+    font-size: 0.8rem;
+    color: rgb(82 82 91);
+    transition: color 0.15s, background-color 0.15s, border-color 0.15s;
+  }
+  .tag-btn:hover {
+    border-color: var(--tag-color, #7c3aed);
+  }
+  :global(.dark) .tag-btn {
+    border-color: rgb(255 255 255 / 0.12);
+    color: rgb(161 161 170);
+  }
   .tag-btn[aria-pressed="true"] {
     color: var(--tag-fg, #fff);
     background: var(--tag-color, #7c3aed);
     border-color: var(--tag-color, #7c3aed);
+  }
+  .tag-clear {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: 0.8rem;
+    color: rgb(124 58 237);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  :global(.dark) .tag-clear {
+    color: rgb(196 181 253);
   }
 </style>
 
@@ -161,6 +258,17 @@ const filterTags = [
       history.replaceState({ tags: [...active] }, '', url)
     }
 
+    // 性質：單選，網址 ?k=deep；與標籤取交集
+    let kind = new URLSearchParams(location.search).get('k') || ''
+
+    function moveIndicator() {
+      const ind = document.getElementById('kindIndicator')
+      const btn = document.querySelector(`button[data-kind="${kind}"]`)
+      if (!ind || !btn) return
+      ind.style.transform = `translateX(${btn.offsetLeft}px)`
+      ind.style.width = `${btn.offsetWidth}px`
+    }
+
     function apply(active) {
       const search = document.getElementById('blogSearch')
       const q = (search && search.value ? search.value : '').trim().toLowerCase()
@@ -175,7 +283,8 @@ const filterTags = [
         const matchTag = active.size === 0 || tags.some(t => active.has(t))
         const title = (li.getAttribute('data-post-title') || '').toLowerCase()
         const matchSearch = q === '' || title.includes(q)
-        const show = matchTag && matchSearch
+        const matchKind = kind === '' || li.getAttribute('data-kind') === kind
+        const show = matchTag && matchSearch && matchKind
         li.hidden = !show
         if (show) visible++
       })
@@ -198,14 +307,20 @@ const filterTags = [
         const tag = (btn.getAttribute('data-filter-tag') || '').toLowerCase()
         btn.setAttribute('aria-pressed', active.has(tag) ? 'true' : 'false')
       })
+      document.querySelectorAll('[data-kind]').forEach(btn => {
+        if (btn.tagName === 'BUTTON') btn.setAttribute('aria-checked', btn.getAttribute('data-kind') === kind ? 'true' : 'false')
+      })
+      moveIndicator()
+      // 「清除」只在有選標籤時出現；沒選標籤本來就是不限
       const all = document.querySelector('[data-filter-all]')
-      if (all) all.setAttribute('aria-pressed', active.size ? 'false' : 'true')
+      if (all) all.hidden = active.size === 0
     }
 
     function init() {
       const bar = document.getElementById('tags')
       if (!bar) return
       const active = readTagsFromUrl()
+      kind = new URLSearchParams(location.search).get('k') || ''
 
       bar.addEventListener('click', e => {
         const btn = e.target.closest('button')
@@ -220,12 +335,28 @@ const filterTags = [
         apply(active)
       })
 
+      const kinds = document.getElementById('kinds')
+      if (kinds) kinds.addEventListener('click', e => {
+        const btn = e.target.closest('button[data-kind]')
+        if (!btn) return
+        kind = btn.getAttribute('data-kind') || ''
+        const url = new URL(location.href)
+        if (kind) url.searchParams.set('k', kind)
+        else url.searchParams.delete('k')
+        history.replaceState(history.state, '', url)
+        apply(active)
+      })
+
       const search = document.getElementById('blogSearch')
       if (search) search.addEventListener('input', () => apply(active))
 
       apply(active)
+      // 定位完成後的下一幀才打開過場；視窗改寬（按鈕可能換行）由下方的 resize 重算
+      requestAnimationFrame(() => document.getElementById('kindIndicator')?.classList.add('is-ready'))
     }
 
+    // 掛在 init 外面：換頁會重跑 init，掛在裡面會一頁疊一個監聽
+    addEventListener('resize', moveIndicator, { passive: true })
     document.addEventListener('astro:page-load', init)
   })()
 </script>

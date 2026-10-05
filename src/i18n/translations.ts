@@ -176,6 +176,8 @@ export const translations = {
       playgroundLabel: 'PLAYGROUND',
       playgroundCta: '互動程式實驗場',
       latestPosts: '最新文章',
+      deepPosts: '專案經驗',
+      deepIntro: '在真實系統裡做過的事：問題、取捨、量測，和沒解掉的部分。',
       viewAll: '全部文章',
       ctaAbout: '關於我',
       ctaResume: '履歷'
@@ -409,6 +411,8 @@ export const translations = {
       playgroundLabel: 'PLAYGROUND',
       playgroundCta: 'Interactive code playground',
       latestPosts: 'Latest posts',
+      deepPosts: 'Project work',
+      deepIntro: 'Work done on real systems: the problem, the trade-offs, the measurements, and what is still unsolved.',
       viewAll: 'All posts',
       ctaAbout: 'About me',
       ctaResume: 'Resume'
