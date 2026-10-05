@@ -154,7 +154,7 @@ export const KINDS: Record<PostKind, { zh: string; en: string }> = {
 
 const DEEP = [
   "page-startup-scheduling", "preload-scheduling-tradeoffs", "startup-scheduling-wait-outside-slot",
-  "startup-measurement-pitfalls", "spline-mcp-yerevan-cascade", "knowledge-keyword-rag", "knowledge-optimization",
+  "startup-measurement-pitfalls", "knowledge-keyword-rag", "knowledge-optimization",
   "popup-queue-soft-navigation", "error-code-event-bus", "dev-panel", "webview-shell-detection",
   "ssr-login-token-layers", "tailwind-embedded-ui-css", "css", "language-source-priority-strategy",
 ]
