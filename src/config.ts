@@ -95,6 +95,17 @@ export const SERIES: { id: string; title: { zh: string; en: string }; slugs: str
       "shader-built-in-variables",
     ],
   },
+  {
+    // 草稿 startup-scheduling-wait-outside-slot / startup-measurement-pitfalls 發佈時接在後面
+    id: "startup-scheduling",
+    title: { zh: "頁面啟動排程", en: "Page Startup Scheduling" },
+    slugs: ["page-startup-scheduling", "preload-scheduling-tradeoffs"],
+  },
+  {
+    id: "ai-knowledge-base",
+    title: { zh: "AI 知識庫", en: "AI Knowledge Base" },
+    slugs: ["knowledge-keyword-rag", "knowledge-optimization"],
+  },
 ]
 
 /**
