@@ -21,8 +21,8 @@ slug: react-unstyled-component
 
 對於有 UI 庫(例如 `mui`, `bootstrap`), 都會有數項 `variant`, `type`, `size` 這類已經規範定好基礎規格 (顏色, 尺寸), 大多數限於不同規格的共用與強烈的設計規範.
 
-但是實際情況卻是, 特定人士或是特定場景, 對按鈕或是組件有特殊需求.
-同時 atomic css 在 React 的流行, 讓 unStyledComponent 是一種可以自由傳入 css 進入組件的內容
+但是實際情況卻是, 特定人士或是特定場景, 對按鈕或是元件有特殊需求.
+同時 atomic css 在 React 的流行, 讓 unStyledComponent 是一種可以自由傳入 css 進入元件的內容
 
 ---
 
@@ -67,7 +67,7 @@ export default function Button({
 </Button>
 ```
 
-在這段 components 裡面可以看到 對於狀態與顏色可以 handle, 但是對於按鈕的其他內容卻保持著封閉狀態，目前只有 yellow, blue 兩種顏色, 意味著今天有多一個紅色按鈕, 我就必須在這裡修改組件內的物件.
+在這段 components 裡面可以看到 對於狀態與顏色可以 handle, 但是對於按鈕的其他內容卻保持著封閉狀態，目前只有 yellow, blue 兩種顏色, 意味著今天有多一個紅色按鈕, 我就必須在這裡修改元件內的物件.
 使用上沒什麼太大問題, 但是卻使用似乎不是那麼便利也不夠開放, 唯一優點就是畫面簡潔.
 
 ---
@@ -116,8 +116,8 @@ export default function LoadingButton({
 
 - 對於按鈕作用目的性更明確 (LoadingButton)
 - 開放式的 className 讓使用者不受規範限制開發 (但是如果專案有強規範與導引, 前者是比較好的做法)
-- 對於顏色或是其他 css 相關屬性基本上可以全部由使用組件的位置去傳入, 不需要再修改 Button 組件.
-- 比起前者, 維護者可以更好觀察的 css 樣式, 不需要再點入組件閱讀.
+- 對於顏色或是其他 css 相關屬性基本上可以全部由使用元件的位置去傳入, 不需要再修改 Button 元件.
+- 比起前者, 維護者可以更好觀察的 css 樣式, 不需要再點入元件閱讀.
 
 但是缺點就是敘述較冗長一點
 

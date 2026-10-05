@@ -51,7 +51,7 @@ slug: react-children
 ```
 ---
 
-### 🌋 抽出的組件樣式
+### 🌋 抽出的元件樣式
 ```typescript
 <Swiper
   spaceBetween={spaceBetween}
@@ -91,5 +91,5 @@ slug: react-children
 
 ---
 
-重新組裝之後 可以更快速地使用 `swiper` 組件, 說實際連 `key={item}` 也不需要再填寫
+重新組裝之後 可以更快速地使用 `swiper` 元件, 說實際連 `key={item}` 也不需要再填寫
 算是較少見用法的其中之一

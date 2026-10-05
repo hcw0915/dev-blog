@@ -39,7 +39,7 @@ void main() {
 }
 ```
 
-![clipboard.png](/posts/shader-color-offset_32.png)
+![clipboard.png](/posts/shader-color-offset_90.png)
 
 # GLSL 顏色混合與 `mixStrength` 計算解析
 
@@ -107,7 +107,7 @@ float mixStrength = (vElevation + uColorOffset) * uColorMultiplier;
 
 - `uColorMultiplier` **改變顏色過渡的強度**（快/慢變化）。
 
-- `mixStrength` 會控制 `mix` 函數，影響最終顏色。
+- `mixStrength` 會控制 `mix` 函式，影響最終顏色。
 
 ## **5. 為什麼要這樣設計？**
 

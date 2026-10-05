@@ -48,7 +48,7 @@ let proxy = new Proxy(star, {
 console.log(proxy.number); // 123456789
 ```
 
-> 🚩 範例二: 實現 陣列負索引查找，在取值時，針對 index 做條件式控制回傳的 index。
+> 🚩 範例二: 實作 陣列負索引查找，在取值時，針對 index 做條件式控制回傳的 index。
 
 ```javascript
 let arr = [1, 2, 3, 4, 5];
@@ -72,7 +72,7 @@ arr = newArray(arr);
 console.log(arr[-1]); // 5
 ```
 
-> 🚩 範例三: 限制年齡設置(偏驗證)，所以在下面 `luka.age = -1` 出現 `error`
+> 🚩 範例三: 限制年齡設定(偏驗證)，所以在下面 `luka.age = -1` 出現 `error`
 
 ```javascript
 let data = {
@@ -95,7 +95,7 @@ console.log(luka.age); // 15
 luka.age = -1; // error
 ```
 
-> 🚩 範例四: 依使用者輸入 `book.XXX / book['XXX']` 依參數不同導出不同轉換結果
+> 🚩 範例四: 依使用者輸入 `book.XXX / book['XXX']` 依參數不同匯出不同轉換結果
 
 ```javascript
 const book = new Proxy(

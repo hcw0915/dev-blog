@@ -25,7 +25,7 @@ slug: vite-twin-marco-styled-components
 - 再來是 建立 `twin.d.ts` 確保型別 
 
 - `babel-plugin-macros`, `babel-plugin-styled-components` 配置於 `vite.config.ts` 
-  此項可以透過 devTool 看到 className 對應組件名稱, 也可以取消選擇 `{ displayName: false }`
+  此項可以透過 devTool 看到 className 對應元件名稱, 也可以取消選擇 `{ displayName: false }`
 
 - `"preset": "styled-components"` 配置於 `package.json`
 

@@ -38,18 +38,18 @@ export default function Page() {
 
 ## 必要屬性
 
-- **src**: 圖片來源，可以是靜態導入的圖片檔案或路徑字串
+- **src**: 圖片來源，可以是靜態匯入的圖片檔案或路徑字串
 - **width**: 圖片固有寬度（像素）
 - **height**: 圖片固有高度（像素）
 - **alt**: 圖片替代文字，用於螢幕閱讀器和搜尋引擎
 
-> 注意: 當使用 `fill` 屬性或靜態導入圖片時，`width` 和 `height` 可以省略
+> 注意: 當使用 `fill` 屬性或靜態匯入圖片時，`width` 和 `height` 可以省略
 
 ## 可選屬性
 
 ### 📕 loader
 
-自定義解析圖片 URL 的函數：
+自定義解析圖片 URL 的函式：
 
 ```jsx
 const imageLoader = ({ src, width, quality }) => {
@@ -69,7 +69,7 @@ export default function Page() {
 }
 ```
 
-也可以在 `next.config.js` 中使用 `loaderFile` 全局配置。
+也可以在 `next.config.js` 中使用 `loaderFile` 全域配置。
 
 ### 📕 fill
 
@@ -112,7 +112,7 @@ export default function Page() {
 
 ### 📕 priority
 
-當為 `true` 時，將預先加載圖片，適用於 LCP (Largest Contentful Paint) 元素：
+當為 `true` 時，將預先載入圖片，適用於 LCP (Largest Contentful Paint) 元素：
 
 ```jsx
 <Image priority ... />
@@ -120,7 +120,7 @@ export default function Page() {
 
 ### 📕 placeholder
 
-圖片加載時使用的佔位符，可能值為 `blur`、`empty` 或 `data:image/...`：
+圖片載入時使用的佔位符，可能值為 `blur`、`empty` 或 `data:image/...`：
 
 ```jsx
 <Image
@@ -131,7 +131,7 @@ export default function Page() {
 />
 ```
 
-當 `placeholder="blur"` 且圖片是靜態導入的 .jpg、.png、.webp 或 .avif 文件時，`blurDataURL` 會自動填充。
+當 `placeholder="blur"` 且圖片是靜態匯入的 .jpg、.png、.webp 或 .avif 文件時，`blurDataURL` 會自動填充。
 
 ## 進階屬性
 
@@ -152,7 +152,7 @@ export default function ProfileImage() {
 
 ### 📕 onLoad
 
-圖片完全加載後調用的回調函數：
+圖片完全載入後呼叫的回呼函式：
 
 ```jsx
 <Image onLoad={(e) => console.log(e.target.naturalWidth)} />
@@ -160,7 +160,7 @@ export default function ProfileImage() {
 
 ### 📕 onError
 
-圖片加載失敗時調用的回調函數：
+圖片載入失敗時呼叫的回呼函式：
 
 ```jsx
 <Image onError={(e) => console.error(e.target.id)} />
@@ -168,7 +168,7 @@ export default function ProfileImage() {
 
 ### 📕 loading
 
-圖片的加載行為，可為 `lazy` 或 `eager`，預設為 `lazy`：
+圖片的載入行為，可為 `lazy` 或 `eager`，預設為 `lazy`：
 
 ```jsx
 <Image loading="eager" ... />
@@ -195,7 +195,7 @@ export default function ProfileImage() {
 <Image unoptimized ... />
 ```
 
-也可以在 `next.config.js` 中全局設定：
+也可以在 `next.config.js` 中全域設定：
 
 ```js
 module.exports = {
@@ -235,7 +235,7 @@ module.exports = {
 }
 ```
 
-支持通配符：
+支援萬用字元：
 
 - `*` 匹配單一路徑段或子域名
 - `**` 匹配結尾的任意數量路徑段或開頭的子域名
@@ -290,7 +290,7 @@ module.exports = {
 
 ### 📕 minimumCacheTTL
 
-配置優化圖片的緩存生存時間（秒）：
+配置優化圖片的快取生存時間（秒）：
 
 ```js
 module.exports = {
@@ -316,7 +316,7 @@ module.exports = {
 
 ## 響應式圖片技巧
 
-### 📕 使用靜態導入的響應式圖片
+### 📕 使用靜態匯入的響應式圖片
 
 ```jsx
 import Image from 'next/image'
@@ -385,7 +385,7 @@ export default function Page({ photoUrl }) {
 
 ### 主題檢測 (明/暗模式)
 
-可以創建一個包裝兩個 `<Image>` 組件的新組件，並根據 CSS 媒體查詢顯示正確的圖片：
+可以建立一個包裝兩個 `<Image>` 元件的新元件，並根據 CSS 媒體查詢顯示正確的圖片：
 
 ```css
 /* theme-image.module.css */
@@ -417,9 +417,9 @@ export default function ThemeImage({ srcLight, srcDark, ...rest }) {
 }
 ```
 
-### 使用 getImageProps 獲取圖片屬性
+### 使用 getImageProps 取得圖片屬性
 
-可以使用 `getImageProps()` 獲取將傳遞給底層 `<img>` 元素的屬性：
+可以使用 `getImageProps()` 取得將傳遞給底層 `<img>` 元素的屬性：
 
 ```jsx
 import { getImageProps } from 'next/image'
@@ -481,14 +481,14 @@ export default function Home() {
 
 ## 已知的瀏覽器問題
 
-- Safari 15.4 之前的版本可能會回退到即時加載
+- Safari 15.4 之前的版本可能會回退到即時載入
 
 - Safari 12 之前的版本在使用模糊佔位符時會回退為空佔位符
 
-- Safari 15-16.3 加載時顯示灰色邊框（Safari 16.4 已修復）
+- Safari 15-16.3 載入時顯示灰色邊框（Safari 16.4 已修復）
 
   - 解決方案: 使用 CSS `@supports (font: -apple-system-body) and (-webkit-appearance: none) { img[loading="lazy"] { clip-path: inset(0.6px) } }`
   - 或者對首屏圖片使用 `priority`
 
-- Firefox 67+ 加載時顯示白色背景
+- Firefox 67+ 載入時顯示白色背景
   - 解決方案: 啟用 `AVIF` 格式

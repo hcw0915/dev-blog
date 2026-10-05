@@ -97,7 +97,7 @@ slug: language-source-priority-strategy
 
 ### navigator
 
-在不確定使用者語言狀況下使用客戶端 navigator 獲取對方可能語言
+在不確定使用者語言狀況下使用客戶端 navigator 取得對方可能語言
 
 navigator.language;
 
@@ -153,7 +153,7 @@ function switchLanguage(lang) {
 
 ---
 
-### 🏗 不同專案架構建議
+### 🏗 不同專案架建置議
 
 #### SPA
 

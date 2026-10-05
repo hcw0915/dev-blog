@@ -15,7 +15,7 @@ slug: shadow-dom-web-component
 
 [前置知识-webComponents_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1tg4y1x75Q?spm_id_from=333.788.videopod.episodes&vd_source=1f341f0ab335f404bf6079fee5d5b907&p=2)
 
-實現類似 Wujie 的 shadow dom
+實作類似 Wujie 的 shadow dom
 
 ## Web Component vs Shadow DOM
 
@@ -28,7 +28,7 @@ Web Component 是一個標準規範，用來定義可重用的 HTML 元件，主
 - **Custom Elements（自訂元素）**：用 `customElements.define()` 註冊自訂標籤，如 `<my-button>`。
 - **Shadow DOM（影子 DOM）**：用來封裝樣式和結構，避免與外部 CSS 或 JS 互相影響。
 - **HTML Templates（模板）**：透過 `<template>` 和 `<slot>` 定義可重複使用的 HTML 結構。
-- **ES Modules**：用來組織和載入 Web Component 相關的 JavaScript 代碼。
+- **ES Modules**：用來組織和載入 Web Component 相關的 JavaScript 程式碼。
 
 ### Shadow DOM
 

@@ -10,7 +10,7 @@ tags:
 heroImage: /placeholder-hero.png
 slug: js-shallow-copy-deep-copy
 ---
-# [筆記]淺拷貝 (Shallow Copy) & 深拷貝(Deep Copy)
+# [筆記]淺複製 (Shallow Copy) & 深複製(Deep Copy)
 
 - 參考 youtube "Dave Gray" 範例節錄與筆記
   https://www.youtube.com/watch?v=4Ej0LwjCDZQ
@@ -78,12 +78,12 @@ console.log(xArray); // [9, 2, 3, 4]
 
 ---
 
-## 🌋 深/淺拷貝
+## 🌋 深/淺複製
 
-會使用到深拷貝的場合基本上都是不想要改變原變數的資料數值，進而影響資料的原始內容。
-相對應用到函數式程式設計 (functional programming) 上面， 純函數(Pure Function)對於資料可變性的要求自然相對較高，但並不太代表可變性是不好的，有時候開發過程還是需要改變資料內容。
+會使用到深複製的場合基本上都是不想要改變原變數的資料數值，進而影響資料的原始內容。
+相對應用到函數式程式設計 (functional programming) 上面， 純函式(Pure Function)對於資料可變性的要求自然相對較高，但並不太代表可變性是不好的，有時候開發過程還是需要改變資料內容。
 
-### 🌋 淺拷貝 Shallow Copy
+### 🌋 淺複製 Shallow Copy
 
 - 展開運算符(Spread operator)
 
@@ -139,11 +139,11 @@ newAry[0] = [0, 0];
 ```
 
 :::danger
-淺拷貝的物件內巢狀結構(nested)，沒有辦法拷貝，還是會更改到原對象。
+淺複製的物件內巢狀結構(nested)，沒有辦法複製，還是會更改到原物件。
 :::
 
-> Object.freeze() 也與淺拷貝一樣，在巢狀結構失效。
-> (這個不是淺拷貝，只是說明有巢狀失效的特性)
+> Object.freeze() 也與淺複製一樣，在巢狀結構失效。
+> (這個不是淺複製，只是說明有巢狀失效的特性)
 
 ```jsx
 const scoreObj = {
@@ -163,10 +163,10 @@ console.log("scoreObj", scoreObj); // a:1 -> a:8
 Note: `Array.from()`, 這兩個也是深拷創造者
 :::
 
-### 🌋 深拷貝 Deep Copy
+### 🌋 深複製 Deep Copy
 
-為了避免淺拷出現的這個問題，所以深拷貝更為實用。
-也有許多第三方庫內建有深拷貝的功能，像是`lodash`, `Ramda`。
+為了避免淺拷出現的這個問題，所以深複製更為實用。
+也有許多第三方庫內建有深複製的功能，像是`lodash`, `Ramda`。
 
 - Lodash
 

@@ -18,7 +18,7 @@ slug: anti-three-4-bruno-simon-20-k
 
 - 
 
-![clipboard.png](/posts/anti-three-4-bruno-simon-20-k_26.png)
+![clipboard.png](/posts/anti-three-4-bruno-simon-20-k_120.png)
 
 - `<Canvas flat />`
   - 關閉色彩管理: Three.js 預設 sRGB 色彩空間, 自動將顏色做校正, 對於模擬真實光影有效, 且畫面較為自然
@@ -61,11 +61,11 @@ slug: anti-three-4-bruno-simon-20-k
 
     (有 `Accumlative`)
 
-    ![clipboard.png](/posts/anti-three-4-bruno-simon-20-k_25.png)
+    ![clipboard.png](/posts/anti-three-4-bruno-simon-20-k_118.png)
 
     (沒有 `Accumlative`)
 
-    ![clipboard.png](/posts/anti-three-4-bruno-simon-20-k_24.png)
+    ![clipboard.png](/posts/anti-three-4-bruno-simon-20-k_116.png)
 
 ```js
 const instances = Array.from({ length: count }, (_, i) => ({
@@ -94,7 +94,7 @@ const instances = Array.from({ length: count }, (_, i) => ({
 ```
 
 - `<InstancedRigidBodies>`: 用 **Instancing** 來渲染大量物件，同時讓每個物件都有自己的**物理剛體行為**（可以掉落、碰撞、反彈等，如果用傳統 `RigidBody` 去建立超多物體，效能會死掉，透過 instances 建立 instanced mesh 會是高效能的。
-- 個別 instance 應該需要包含的數據:
+- 個別 instance 應該需要包含的資料:
 
 ```js
 {
@@ -110,16 +110,16 @@ const instances = Array.from({ length: count }, (_, i) => ({
 
 | 功能/特性        | `<Geometry>`               | `<group>`                  |
 | ---------------- | -------------------------- | -------------------------- |
-| **基本用途**     | 合併多個幾何體為單一幾何體 | 組織對象的層級結構         |
-| **幾何數據處理** | 合併頂點、面和索引緩衝區   | 不合併幾何數據，僅組織引用 |
-| **渲染方式**     | 作為單一對象渲染           | 每個子元素單獨渲染         |
-| **Draw Calls**   | 減少 (單一調用)            | 較多 (每個子元素一次)      |
-| **實例化支持**   | ✅ 可直接實例化            | ❌ 整組無法直接實例化      |
-| **內存使用**     | 較高 (存儲合併數據)        | 較低 (僅存儲引用)          |
+| **基本用途**     | 合併多個幾何體為單一幾何體 | 組織物件的層級結構         |
+| **幾何資料處理** | 合併頂點、面和索引緩衝區   | 不合併幾何資料，僅組織引用 |
+| **渲染方式**     | 作為單一物件渲染           | 每個子元素單獨渲染         |
+| **Draw Calls**   | 減少 (單一呼叫)            | 較多 (每個子元素一次)      |
+| **實例化支援**   | ✅ 可直接實例化            | ❌ 整組無法直接實例化      |
+| **記憶體使用**     | 較高 (存儲合併資料)        | 較低 (僅存儲引用)          |
 | **靈活性**       | 子物體位置固定於合併時     | 子物體可動態調整位置       |
-| **材質應用**     | 可對不同部分應用不同材質   | 每個子對象可有獨立材質     |
-| **適用場景**     | 需要實例化的靜態對象       | 需要動態調整的組合對象     |
-| **性能優化**     | 適合大量重複對象           | 適合需要單獨控制的對象     |
+| **材質應用**     | 可對不同部分應用不同材質   | 每個子物件可有獨立材質     |
+| **適用場景**     | 需要實例化的靜態物件       | 需要動態調整的組合物件     |
+| **效能優化**     | 適合大量重複物件           | 適合需要單獨控制的物件     |
 | **編輯難度**     | 合併後難以編輯單個部分     | 可輕鬆編輯各個子部分       |
 
 ```js

@@ -71,7 +71,7 @@ const routes: Record<string, string> = {
 
 ---
 
-4. 獲取 `routes` 的型別定義, `keyof typeof routes` 獲取每一個 `key` 值
+4. 取得 `routes` 的型別定義, `keyof typeof routes` 取得每一個 `key` 值
 
    最後得到 `Route = '/' | '/admin' | '.users'`
 

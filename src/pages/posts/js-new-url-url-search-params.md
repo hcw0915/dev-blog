@@ -38,7 +38,7 @@ const url2 = new URL("/profile/1", "http://localhost:5173");
 }
 ```
 
-`searchParams` 可以直接運用 get 對應 token 獲取資料
+`searchParams` 可以直接運用 get 對應 token 取得資料
 
 ```javascript
 url.searchParams.get("token"); // 1
@@ -48,7 +48,7 @@ url.searchParams.get("token"); // 1
 
 ### URL parameters
 
-比較常用 `set` `get` k-v 方式去做獲取
+比較常用 `set` `get` k-v 方式去做取得
 或是可以直接使用 `query-string` 第三方 pkg 做使用
 
 > https://www.npmjs.com/package/query-string

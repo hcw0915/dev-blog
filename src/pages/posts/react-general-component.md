@@ -32,7 +32,7 @@ const Page = () => {
 可以把特定 `React.ComponentPropsWithoutRef<"button">` 擴展給 `NameButtonProps`
 拿到對應 element 的屬性
 
-避免用一個綁一個, 造成複用組件的低可靠性
+避免用一個綁一個, 造成複用元件的低可靠性
 
 ```typescript
 // Typing Props
@@ -54,7 +54,7 @@ const Page = () => {
 };
 ```
 
-利用 `React.ComponentProps<"button">["onClick"];` 將刻意寫出來的 `onClick` 納入組件型別管制
+利用 `React.ComponentProps<"button">["onClick"];` 將刻意寫出來的 `onClick` 納入元件型別管制
 
 ```typescript
 // Typing Props

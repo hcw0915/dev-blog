@@ -22,7 +22,7 @@ slug: anti-three-3-lusion
 
 > - https://codesandbox.io/p/sandbox/xy8c8z
 
-![clipboard.png](/posts/anti-three-3-lusion_27.png)
+![clipboard.png](/posts/anti-three-3-lusion_114.png)
 
 - `MeshTransmissionMaterial`: 透明感材質
 - `CuboidCollider`: 方塊狀碰撞體（高效能）
@@ -31,7 +31,7 @@ slug: anti-three-3-lusion
 
 | 特性                  | `<Lightformer />`                           | `<ToneMapping/>`         |
 |-----------------------|--------------------------------------------|---------------------------------------------------|
-| **目的**               | 提供全局性柔和的環境光照，增強反射和光澤效果     | 調整亮度範圍，將 HDR 轉換為可顯示的範圍              |
+| **目的**               | 提供全域性柔和的環境光照，增強反射和光澤效果     | 調整亮度範圍，將 HDR 轉換為可顯示的範圍              |
 | **用途**               | 用於模擬攝影棚照明，強化反射、鏡面效果            | 用於避免過曝或過暗，壓縮亮度範圍                    |
 | **控制方式**           | 控制光源的形狀、強度、顏色、位置               | 控制圖像的亮度範圍，改變整體的亮度與對比度            |
 | **應用場景**           | 高反射材質、HDRI 環境貼圖、產品展示              | 瀏覽或渲染高動態範圍影像（HDR），避免過曝或過暗            |

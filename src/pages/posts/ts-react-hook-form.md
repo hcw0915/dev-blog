@@ -19,7 +19,7 @@ slug: ts-react-hook-form
 
 - `FormValues`: 是表單的項次代號
 - `FormBaseTypes`: 是表單的基礎型別
-  基礎型別包含了 `input` 的 `type` 內置型別 (主要透過 `JSX.IntrinsicElements["input"]["type"]` 來推斷, `HTMLInputElement["type"]` 給出的型別是 `string`)
+  基礎型別包含了 `input` 的 `type` 內建型別 (主要透過 `JSX.IntrinsicElements["input"]["type"]` 來推斷, `HTMLInputElement["type"]` 給出的型別是 `string`)
 - `validationConfig` 是表單驗證規則配置
 
 ```typescript

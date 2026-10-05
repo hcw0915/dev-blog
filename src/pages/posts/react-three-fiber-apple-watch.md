@@ -12,7 +12,7 @@ heroImage: /placeholder-hero.png
 slug: react-three-fiber-apple-watch
 ---
 https://www.youtube.com/watch?v=lrsB-4SN4us&ab_channel=TechyWebDev
-![apple-watch](/posts/react-three-fiber-apple-watch_52.png)
+![apple-watch](/posts/react-three-fiber-apple-watch_125.png)
 
 ```js
 import { useRef, useEffect } from "react";
@@ -132,7 +132,7 @@ import { Vector3 } from "three";
  * @param {Object} options - 配置選項
  * @param {Array<Array<number>>} options.positions - 相機位置路徑點陣列 [x,y,z]
  * @param {number} options.progress - 當前進度值 (0-1)
- * @param {Vector3} [options.lookAt] - 相機看向的點 (默認: 原點)
+ * @param {Vector3} [options.lookAt] - 相機看向的點 (預設: 原點)
  * @param {boolean} [options.smoothing] - 是否應用平滑移動
  * @param {number} [options.smoothingFactor] - 平滑因子 (0-1)，越小越平滑
  * @returns {Object} 相機引用
@@ -167,7 +167,7 @@ export const useCameraTransition = ({
       // 應用平滑處理，使當前位置向目標位置移動
       cameraRef.current.position.lerp(targetPosition.current, smoothingFactor);
     } else {
-      // 直接設置位置，無平滑處理
+      // 直接設定位置，無平滑處理
       cameraRef.current.position.copy(targetPosition.current);
     }
 
@@ -251,7 +251,7 @@ export default function App() {
 import create from 'zustand';
 import { Vector3 } from 'three';
 
-// 創建相機狀態存儲
+// 建立相機狀態存儲
 export const useCameraStore = create((set) => ({
   // 相機狀態
   position: new Vector3(0, 0, 0),
@@ -278,7 +278,7 @@ export const useCameraStore = create((set) => ({
   }
 }));
 
-// 創建相機控制 Hook
+// 建立相機控制 Hook
 export const useCameraControl = ({ positions, progress }) => {
   const { updateCameraByProgress } = useCameraStore();
   
@@ -390,7 +390,7 @@ import gsap from "gsap";
  * @param {number} options.progress - 當前進度值 (0-1)
  * @param {number} [options.duration] - 動畫持續時間（秒）
  * @param {string} [options.ease] - GSAP 緩動類型
- * @returns {Object} 相機引用和動畫控制函數
+ * @returns {Object} 相機引用和動畫控制函式
  */
 export const useCameraAnimation = ({
   positions,
@@ -413,7 +413,7 @@ export const useCameraAnimation = ({
     const nextIndex = Math.min(index + 1, positions.length - 1);
     const t = (progress * (positions.length - 1)) % 1;
     
-    // 只有當我們移動到新的位置區間時才創建新的時間線
+    // 只有當我們移動到新的位置區間時才建立新的時間線
     if (index !== prevIndex.current) {
       prevIndex.current = index;
     }
@@ -423,7 +423,7 @@ export const useCameraAnimation = ({
       (v, i) => v * (1 - t) + positions[nextIndex][i] * t
     );
     
-    // 創建新的時間線動畫
+    // 建立新的時間線動畫
     timeline.current = gsap.timeline();
     timeline.current.to(camera.position, {
       x,
@@ -544,7 +544,7 @@ import { CatmullRomCurve3, Vector3, MathUtils } from "three";
  * @param {boolean} [options.closed] - 是否閉合曲線
  * @param {boolean} [options.smoothing] - 是否平滑移動
  * @param {number} [options.smoothingFactor] - 平滑因子 (0-1)
- * @param {boolean} [options.debug] - 是否顯示調試模式
+ * @param {boolean} [options.debug] - 是否顯示除錯模式
  * @returns {Object} - 相機引用和曲線路徑
  */
 export const useCameraPath = ({
@@ -558,7 +558,7 @@ export const useCameraPath = ({
   const { camera } = useThree();
   const targetPosition = useRef(new Vector3());
   
-  // 創建 Catmull-Rom 曲線
+  // 建立 Catmull-Rom 曲線
   const curve = useMemo(() => {
     const points = positions.map(pos => new Vector3(pos[0], pos[1], pos[2]));
     return new CatmullRomCurve3(points, closed);
@@ -566,14 +566,14 @@ export const useCameraPath = ({
   
   // 在每一幀更新相機位置
   useFrame(() => {
-    // 從曲線上獲取點
+    // 從曲線上取得點
     targetPosition.current = curve.getPointAt(progress);
     
     if (smoothing) {
       // 平滑移動到目標點
       camera.position.lerp(targetPosition.current, smoothingFactor);
     } else {
-      // 直接設置位置
+      // 直接設定位置
       camera.position.copy(targetPosition.current);
     }
     
@@ -585,7 +585,7 @@ export const useCameraPath = ({
     camera.lookAt(lookAtPoint);  // 或者 camera.lookAt(0, 0, 0);
   });
   
-  // 返回相機引用和曲線，方便調試
+  // 回傳相機參照和曲線，方便除錯
   return {
     cameraRef: { current: camera },
     curve,
@@ -614,7 +614,7 @@ const cameraPositions = [
   [4.0, 1.0, 0.0],
 ];
 
-// 可選的路徑可視化組件
+// 可選的路徑可視化元件
 const PathVisualization = ({ curve, segments = 50 }) => {
   // 生成曲線上的點
   const points = Array.from({ length: segments }, (_, i) => {
@@ -622,7 +622,7 @@ const PathVisualization = ({ curve, segments = 50 }) => {
     return curve.getPointAt(t);
   });
   
-  // 創建線段幾何體
+  // 建立線段幾何體
   const lineGeometry = new BufferGeometry().setFromPoints(points);
   
   return (
@@ -656,7 +656,7 @@ const Scene = ({ progress, showPath = false }) => {
       <Environment preset="city" />
       <Model />
       
-      {/* 顯示相機路徑（調試用） */}
+      {/* 顯示相機路徑（除錯用） */}
       {showPath && <PathVisualization curve={curve} segments={100} />}
     </>
   );
@@ -719,14 +719,14 @@ CameraControls.install({ THREE });
 export const useCameraControlsTransition = ({
   positions,
   progress,
-  targetPositions = [[0, 0, 0]], // 默認目標是原點
+  targetPositions = [[0, 0, 0]], // 預設目標是原點
   transitionDuration = 0.5,
 }) => {
   const controlsRef = useRef();
   const { camera, gl } = useThree();
   const prevPositionIndex = useRef(-1);
   
-  // 在第一次渲染時創建 CameraControls
+  // 在第一次渲染時建立 CameraControls
   useEffect(() => {
     if (!controlsRef.current) {
       controlsRef.current = new CameraControls(camera, gl.domElement);
@@ -750,10 +750,10 @@ export const useCameraControlsTransition = ({
     if (index !== prevPositionIndex.current) {
       prevPositionIndex.current = index;
       
-      // 獲取目標位置，如果沒有特定的目標位置，使用默認的原點
+      // 取得目標位置，如果沒有特定的目標位置，使用預設的原點
       const targetPosition = targetPositions[Math.min(index, targetPositions.length - 1)] || [0, 0, 0];
       
-      // 設置相機位置和目標
+      // 設定相機位置和目標
       controlsRef.current.setLookAt(
         positions[index][0],
         positions[index][1],
@@ -764,7 +764,7 @@ export const useCameraControlsTransition = ({
         true // 啟用過渡動畫
       );
       
-      // 設置過渡持續時間
+      // 設定過渡持續時間
       controlsRef.current.dampingFactor = transitionDuration;
     }
     
@@ -778,7 +778,7 @@ export const useCameraControlsTransition = ({
         (v, i) => v * (1 - t) + positions[nextIndex][i] * t
       );
       
-      // 獲取當前和下一個目標位置
+      // 取得當前和下一個目標位置
       const currentTarget = targetPositions[Math.min(index, targetPositions.length - 1)] || [0, 0, 0];
       const nextTarget = targetPositions[Math.min(nextIndex, targetPositions.length - 1)] || [0, 0, 0];
       
@@ -787,7 +787,7 @@ export const useCameraControlsTransition = ({
         (v, i) => v * (1 - t) + nextTarget[i] * t
       );
       
-      // 設置相機位置和目標，無需過渡動畫
+      // 設定相機位置和目標，無需過渡動畫
       controlsRef.current.setLookAt(
         x, y, z,
         targetX, targetY, targetZ,

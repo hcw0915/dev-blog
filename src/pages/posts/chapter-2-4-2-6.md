@@ -14,7 +14,7 @@ slug: chapter-2-4-2-6
 
 ### 測試實作 / 測試行為
 
-以 `<Counter />` 組件去顯示時
+以 `<Counter />` 元件去顯示時
 
 實作部分, 通常代表 `increment` `decrement` 的行為差異
 確保 `+1` `-1` 的實作正確無誤.
@@ -73,7 +73,7 @@ export default Counter;
 
 ---
 
-商業邏輯與資料的分離是 `function components` 的好處, 將特定業務邏輯分離成 custom hooks, 並將畫面顯示的部份留給 UI 組件, 這同時也是現在流行的測試方式
+商業邏輯與資料的分離是 `function components` 的好處, 將特定業務邏輯分離成 custom hooks, 並將畫面顯示的部份留給 UI 元件, 這同時也是現在流行的測試方式
 
 React Testing Library 測試行為的做法會比 Enzyme 著重於測試實作的方式來得更主流
 
@@ -84,16 +84,16 @@ React Testing Library 測試行為的做法會比 Enzyme 著重於測試實作�
 ✅ **React Testing Library（行為導向測試）**
 
 - 測試「使用者行為」，例如點擊按鈕後 UI 變化，而非測試內部實作。
-- 不依賴內部狀態（如 `setState` 或 `props`），所以測試更接近真實使用情境。
+- 不相依內部狀態（如 `setState` 或 `props`），所以測試更接近真實使用情境。
 
 ✅ **Enzyme（實作導向測試）**
 
-- 允許測試組件內部的 `state`、`props`，但這容易讓測試依賴內部實作，導致組件變更時測試容易失效。
+- 允許測試元件內部的 `state`、`props`，但這容易讓測試相依內部實作，導致元件變更時測試容易失效。
 - 目前官方已停止 Enzyme 的支援，且它不完全支援 React 18。
 
 🔹 **結論**
 
-- **現在主流測試方式是 React Testing Library**，因為它更關注「行為測試」，符合「測試應該像用戶使用應用程式一樣」的理念。
+- **現在主流測試方式是 React Testing Library**，因為它更關注「行為測試」，符合「測試應該像使用者使用應用程式一樣」的理念。
 - **Enzyme 雖然靈活，但過於關注內部實作，且支援逐漸減少，未來可能會被淘汰。**
 
 ---
@@ -102,20 +102,20 @@ React Testing Library 測試行為的做法會比 Enzyme 著重於測試實作�
 
 元件渲染方式, 只對元件本身渲染
 
-- **加快測試速度**: 由於只渲染單一組件，而不渲染子組件，所以測試執行得更快。
-- **避免子組件影響測試**: 只關心當前組件的行為，避免子組件的變更影響測試結果。
-- **測試組件的輸入/輸出**: 適合測試 **組件的 props 是否正確傳遞**，而不關心其內部實作。
+- **加快測試速度**: 由於只渲染單一元件，而不渲染子元件，所以測試執行得更快。
+- **避免子元件影響測試**: 只關心當前元件的行為，避免子元件的變更影響測試結果。
+- **測試元件的輸入/輸出**: 適合測試 **元件的 props 是否正確傳遞**，而不關心其內部實作。
 
 #### **為什麼不推薦使用淺渲染？**
 
-- **無法測試真實行為**: 只測試組件結構，而**不測試實際使用情境**，可能導致無法發現真實問題。
-- **依賴內部實作**: `shallow` 測試組件內部的 JSX 結構，如果組件結構改變，測試可能就會失敗，這讓測試更脆弱。
-- **React Testing Library 不支援**: React 官方推崇 **行為測試**，而不是測試組件內部結構。**React Testing Library 不支援 `shallow`，因為它強調測試應該模擬真實使用者行為**。
+- **無法測試真實行為**: 只測試元件結構，而**不測試實際使用情境**，可能導致無法發現真實問題。
+- **相依內部實作**: `shallow` 測試元件內部的 JSX 結構，如果元件結構改變，測試可能就會失敗，這讓測試更脆弱。
+- **React Testing Library 不支援**: React 官方推崇 **行為測試**，而不是測試元件內部結構。**React Testing Library 不支援 `shallow`，因為它強調測試應該模擬真實使用者行為**。
 
 > [!WARNING]
 > react-test-renderer 已經暫停維護了
 > [`@testing-library/react`](https://testing-library.com/docs/react-testing-library/intro) 目前主要使用這個
-> ![clipboard.png](/posts/chapter-2-4-2-6_31.png)
+> ![clipboard.png](/posts/chapter-2-4-2-6_92.png)
 > [Migrate from Enzyme | Testing Library](https://testing-library.com/docs/react-testing-library/migrate-from-enzyme/#how-to-shallow-render-a-component)
 > RTL 說明盡可能避免如果真的需要則使用 `jest.mock` 做模擬。
 
@@ -123,7 +123,7 @@ React Testing Library 測試行為的做法會比 Enzyme 著重於測試實作�
 
 ### 完全渲染 (full rendering)
 
-顧名思義, 目的是可以測試組件的完整行為, 但會增加測試的複雜度, 適合 integration tests.
+顧名思義, 目的是可以測試元件的完整行為, 但會增加測試的複雜度, 適合 integration tests.
 
 ```js: full rendering
 import { render, screen } from '@testing-library/react';
@@ -150,9 +150,9 @@ test('renders MyComponent with all state and effects', () => {
 
 | 特點             | **Full Rendering**                                         | **Shallow Rendering**                        |
 | ---------------- | ---------------------------------------------------------- | -------------------------------------------- |
-| **渲染的深度**   | 渲染組件及所有子組件                                       | 只渲染組件本身，子組件不會被渲染             |
-| **副作用執行**   | 執行所有副作用（例如 `useEffect`、`componentDidMount` 等） | 不會執行子組件的副作用                       |
-| **渲染真實 DOM** | 渲染到真實的 DOM 中，可以進行交互                          | 不會將子組件渲染到 DOM 中，僅是虛擬 DOM 渲染 |
-| **測試範圍**     | 測試組件的所有行為及其與子組件的交互                       | 測試組件本身的行為，不測試子組件的行為       |
-| **測試速度**     | 較慢，因為需要渲染整個組件樹                               | 較快，因為只渲染組件本身                     |
-| **測試場景**     | 測試組件與其子組件的協作及交互，適合集成測試               | 測試組件的邏輯、方法和狀態，適合單元測試     |
+| **渲染的深度**   | 渲染元件及所有子元件                                       | 只渲染元件本身，子元件不會被渲染             |
+| **副作用執行**   | 執行所有副作用（例如 `useEffect`、`componentDidMount` 等） | 不會執行子元件的副作用                       |
+| **渲染真實 DOM** | 渲染到真實的 DOM 中，可以進行交互                          | 不會將子元件渲染到 DOM 中，僅是虛擬 DOM 渲染 |
+| **測試範圍**     | 測試元件的所有行為及其與子元件的交互                       | 測試元件本身的行為，不測試子元件的行為       |
+| **測試速度**     | 較慢，因為需要渲染整個元件樹                               | 較快，因為只渲染元件本身                     |
+| **測試場景**     | 測試元件與其子元件的協作及交互，適合整合測試               | 測試元件的邏輯、方法和狀態，適合單元測試     |

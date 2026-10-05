@@ -162,7 +162,7 @@ export function middleware(request: NextRequest) {
   - 營銷頁面
   - 部落格文章
   - 產品列表
-  - 幫助和文檔
+  - 幫助和文件
 
 ```js
 // 基本 SSG
@@ -182,7 +182,7 @@ export async function generateStaticParams() {
 ### 增量式靜態重生成 (ISR)
 
 - SSG 的延伸，允許在特定時間間隔更新靜態頁面
-- 結合了 SSG 的性能和動態內容的新鮮度
+- 結合了 SSG 的效能和動態內容的新鮮度
 
 ```js
 // 頁面層級的 ISR
@@ -195,7 +195,7 @@ fetch(URL, { next: { revalidate: 60 } });
 ### 客戶端渲染 (CSR)
 
 - 在瀏覽器中執行的渲染
-- 適用於高度互動的 UI 組件
+- 適用於高度互動的 UI 元件
 
 ```js
 "use client";
@@ -208,7 +208,7 @@ export default function InteractiveComponent() {
 ### 伺服器端渲染 (SSR)
 
 - 每個請求都在伺服器端動態生成頁面
-- 適用於需要實時數據的頁面
+- 適用於需要實時資料的頁面
 
 ```js
 // 強制 SSR
@@ -222,12 +222,12 @@ fetch(URL, { cache: "no-store" });
 
 ### 基本概念
 
-- App Router 中的預設組件類型
+- App Router 中的預設元件類型
 - 在伺服器端執行，減少客戶端 JavaScript
 
 ### 使用場景
 
-1. **數據獲取**
+1. **資料取得**
 
 ```js
 async function DataComponent() {
@@ -267,12 +267,12 @@ export default function ServerComponent() {
 
 ### async 使用規則
 
-- 只在需要非同步操作的組件中使用 async
-- 可以混合使用 async 和非 async 組件
+- 只在需要非同步操作的元件中使用 async
+- 可以混合使用 async 和非 async 元件
 
 ## 配置優先順序與衝突處理
 
-### 靜態/動態渲染設置
+### 靜態/動態渲染設定
 
 ```js
 // 1. 路由層級設置（最高優先）
@@ -288,8 +288,8 @@ export const revalidate = 60; // 秒
 ### 優先順序規則
 
 1. 路由層級配置覆蓋所有其他配置
-2. fetch 配置覆蓋組件層級配置
-3. 動態設置覆蓋靜態設置
+2. fetch 配置覆蓋元件層級配置
+3. 動態設定覆蓋靜態設定
 
 ### 衝突解決策略
 
@@ -385,13 +385,13 @@ export default async function Page() {
 
 - Next.js 的新一代渲染模式
 - 允許在同一頁面中混合靜態和動態內容
-- 提供更好的首次載入性能
+- 提供更好的首次載入效能
 
 ### 工作原理
 
-1. 靜態外殼即時加載
+1. 靜態外殼即時載入
 2. 動態內容通過流式傳輸填充
-3. 保持互動性而不犧牲性能
+3. 保持互動性而不犧牲效能
 
 ### 實作方式
 
@@ -411,44 +411,44 @@ export default function Page() {
 ### PPR 優勢
 
 1. 更快的首次載入時間
-2. 更好的 SEO 支持
-3. 改善的用戶體驗
+2. 更好的 SEO 支援
+3. 改善的使用者體驗
 4. 降低伺服器負載
 
 ### 最佳實踐
 
 - 識別並分離靜態/動態內容
-- 使用適當的加載狀態
+- 使用適當的載入狀態
 - 優化重要內容的優先級
-- 監控性能指標
+- 監控效能指標
 
 ## 總結建議
 
 1. **渲染策略選擇**
 
    - 優先考慮 Static Generation
-   - 需要即時數據時使用 SSR
-   - 互動組件使用 Client Components
-   - 考慮使用 PPR 優化用戶體驗
+   - 需要即時資料時使用 SSR
+   - 互動元件使用 Client Components
+   - 考慮使用 PPR 優化使用者體驗
 
-2. **性能優化**
+2. **效能優化**
 
    - 適當使用 revalidate
    - 實施漸進式載入
-   - 優化組件邊界
-   - 監控關鍵性能指標
+   - 優化元件邊界
+   - 監控關鍵效能指標
 
 3. **開發最佳實踐**
 
-   - 明確的組件職責
+   - 明確的元件職責
    - 適當的錯誤處理
-   - 有效的緩存策略
-   - 持續的性能監控
+   - 有效的快取策略
+   - 持續的效能監控
 
 4. **未來展望**
    - 關注 PPR 發展
    - 適應新的渲染模式
-   - 持續優化用戶體驗
+   - 持續優化使用者體驗
 
 ---
 
@@ -462,7 +462,7 @@ export default function Page() {
 
 ### 🤯 metadata
 
-在主要 layout 設置 metadata 模板, 使之應用到其他頁面
+在主要 layout 設定 metadata 模板, 使之應用到其他頁面
 `%s`: 主要對應各頁面 metadata title
 ![image](https://hackmd.io/_uploads/HyKZGjWFyx.png)
 
@@ -490,13 +490,13 @@ https://www.opengraph.xyz/
 https://juejin.cn/post/7433796131858497546?searchId=20250206105037E0E160A3C9A702D0B0F4
 ![image](https://hackmd.io/_uploads/BJs14iWYkx.png)
 
-官網 demo 也可以透過 jsx 編寫組件式的 og image
+官網 demo 也可以透過 jsx 編寫元件式的 og image
 https://nextjs.org/docs/app/api-reference/file-conventions/metadata/opengraph-image#generate-images-using-code-js-ts-tsx
 ![image](https://hackmd.io/_uploads/rklcSi-YJx.png)
 
 ### generateStaticParams
 
-優先獲取靜態參數
+優先取得靜態參數
 
 https://nextjs.org/docs/app/api-reference/functions/generate-static-params
 
@@ -510,13 +510,13 @@ export async function generateStaticParams() {
 }
 ```
 
-也可以控制返回的 `map array, slice(0, 5)` 去控制前五個為 pre-render, 更活動
+也可以控制回傳的 `map array, slice(0, 5)` 去控制前五個為 pre-render, 更活動
 特別可以依照貼文不同種類形式選擇是否需要做 pre-render.
 
 ![image](https://hackmd.io/_uploads/S1lcusbYkg.png)
 ![image](https://hackmd.io/_uploads/ByPiOs-KJx.png)
 
-把動態加載的頁面調整為靜態 SSG, 提升 SEO 作法,
+把動態載入的頁面調整為靜態 SSG, 提升 SEO 作法,
 
 ### NotFound
 

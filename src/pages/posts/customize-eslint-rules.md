@@ -162,7 +162,7 @@ describe("webp-for-images rule", () => {
 
 ### 🌋 實際安裝與使用
 
-手動新增 `eslint-plugins` 在 `devDeps` 裡面, 名稱可自取, 但是連接需要指向你要導出的那個資料夾, 然後在 eslint 裡面 plugin 跟 rules 去指定.
+手動新增 `eslint-plugins` 在 `devDeps` 裡面, 名稱可自取, 但是連接需要指向你要匯出的那個資料夾, 然後在 eslint 裡面 plugin 跟 rules 去指定.
 
 ```json
 "devDependencies": {
@@ -171,7 +171,7 @@ describe("webp-for-images rule", () => {
 }
 ```
 
-依照安裝裝依賴的名稱去做更新, rules 的地方則是 我要引入這個插件裡面的哪一項規則, 因為安裝 `eslint-plugins/@assets` 所以是他之下的規則, 現在只有一個所以預設匯出只有他, 後續如果有更多的規則就要去調整結構. 不能預設匯出.
+依照安裝裝相依的名稱去做更新, rules 的地方則是 我要引入這個外掛裡面的哪一項規則, 因為安裝 `eslint-plugins/@assets` 所以是他之下的規則, 現在只有一個所以預設匯出只有他, 後續如果有更多的規則就要去調整結構. 不能預設匯出.
 
 ```javascript
 import webpForImages from './eslint-plugins/@assets/webp-for-images.js'

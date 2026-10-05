@@ -19,11 +19,11 @@ slug: galaxy-generator
 
 > [!WARNING]
 > bufferAttribute 是需要搭配 TypedArray 做使用的, 否則會報錯 
-> ![clipboard.png](/posts/galaxy-generator_46.png)
+> ![clipboard.png](/posts/galaxy-generator_110.png)
 
-- **性能**：`TypedArray` 提供比普通 JavaScript 陣列更高效的內存管理和數據訪問方式，這對於渲染大量的幾何體（如頂點）是非常重要的。
+- **效能**：`TypedArray` 提供比普通 JavaScript 陣列更高效的記憶體管理和資料訪問方式，這對於渲染大量的幾何體（如頂點）是非常重要的。
 
-- **WebGL 支援**：WebGL 需要數據以 **`TypedArray`** 格式進行處理，這樣它可以在 GPU 上快速處理這些數據。普通的 JavaScript 陣列並不適合這種高效的數據交換方式。
+- **WebGL 支援**：WebGL 需要資料以 **`TypedArray`** 格式進行處理，這樣它可以在 GPU 上快速處理這些資料。普通的 JavaScript 陣列並不適合這種高效的資料交換方式。
 
 
 
@@ -73,7 +73,7 @@ generatorGalaxy();
 
 > 可以看到全部粒子分佈長寬高被限定在 -1.5 ~ +1.5 的立方體中
 
-![clipboard.png](/posts/galaxy-generator_45.png)
+![clipboard.png](/posts/galaxy-generator_108.png)
 
 ### dispose / remove 
 
@@ -107,7 +107,7 @@ if (points !== null) {
 
 `θ` 在 `0 - 2π` 的區間都會產生 `r = 1` 的圓
 
-![clipboard.png](/posts/galaxy-generator_44.png)
+![clipboard.png](/posts/galaxy-generator_106.png)
 
 ```js
 
@@ -132,7 +132,7 @@ positions[i3 + 2] = Math.sin(branchAngle) * pointInGalaxyRadius;
 for (let i = 0; i < parameters.count; i++) {
 ```
 
-開始一個循環，為每個粒子生成數據。
+開始一個循環，為每個粒子生成資料。
 
 ### 計算陣列索引
 
@@ -155,7 +155,7 @@ const radius = Math.random() * parameters.radius;
 const branchAngle =
   ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
 ```
-![clipboard.png](/posts/galaxy-generator_43.png)
+![clipboard.png](/posts/galaxy-generator_104.png)
 
 
 計算粒子所在的分支角度。這裡：
@@ -175,9 +175,9 @@ const branchAngle =
 const spinAngle = radius * parameters.spin;
 ```
 
-![clipboard.png](/posts/galaxy-generator_42.png)
+![clipboard.png](/posts/galaxy-generator_102.png)
 
-計算旋轉角度，隨著半徑增加而增加。這創建了星系的旋轉效果，`parameters.spin` 控制旋轉的程度。
+計算旋轉角度，隨著半徑增加而增加。這建立了星系的旋轉效果，`parameters.spin` 控制旋轉的程度。
 
 **例子**：如果 `parameters.spin = 1`，則半徑為 5 的粒子將比半徑為 2.5 的粒子多旋轉 2 倍。
 
@@ -204,15 +204,15 @@ const randomZ =
 
 為每個軸添加隨機偏移，使星系看起來更自然：
 
-1. `Math.pow(Math.random(), parameters.randomnessPower)` 創建非線性分佈
+1. `Math.pow(Math.random(), parameters.randomnessPower)` 建立非線性分佈
 2. `parameters.randomness` 控制總體隨機性的強度
 3. `radius` 使隨機性隨著距離中心的增加而增加
 
-![clipboard.png](/posts/galaxy-generator_41.png)
+![clipboard.png](/posts/galaxy-generator_100.png)
 
 **例子**：如果 `parameters.randomnessPower = 3`，大多數值會更靠近 0（而非均勻分佈），創造出更集中的星系分支。
 
-## 設置粒子位置
+## 設定粒子位置
 
 ```js
 positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
@@ -222,13 +222,13 @@ positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
 計算並存儲粒子的最終位置：
 
-1. X 座標：使用餘弦函數，基於角度和半徑，加上隨機偏移
+1. X 座標：使用餘弦函式，基於角度和半徑，加上隨機偏移
 2. Y 座標：只有隨機偏移（這使星系在 y 軸上變薄）
-3. Z 座標：使用正弦函數，基於角度和半徑，加上隨機偏移
+3. Z 座標：使用正弦函式，基於角度和半徑，加上隨機偏移
 
-這創建了螺旋狀的星系分支，`branchAngle + spinAngle` 組合使較遠的粒子沿著螺旋更多地旋轉。
+這建立了螺旋狀的星系分支，`branchAngle + spinAngle` 組合使較遠的粒子沿著螺旋更多地旋轉。
 
-![clipboard.png](/posts/galaxy-generator_40.png)
+![clipboard.png](/posts/galaxy-generator_98.png)
 
 
 ### Color
@@ -238,12 +238,12 @@ const colorInside = new THREE.Color(parameters.insideColor);
 const colorOutside = new THREE.Color(parameters.outsideColor);
 ```
 
-創建兩個顏色對象：
+建立兩個顏色物件：
 
 - `colorInside`：星系內部的顏色
 - `colorOutside`：星系外部的顏色
 
-這些顏色將被用於創建從星系中心到邊緣的漸變效果。
+這些顏色將被用於建立從星系中心到邊緣的漸變效果。
 
 `lerp` 是 `linear interpolation` 的縮寫，意思是「線性插值」，它是一種在兩個數值或向量之間進行平滑過渡的數學運算方法。
 
@@ -257,10 +257,10 @@ colors[i3 + 1] = mixedColor.g;
 colors[i3 + 2] = mixedColor.b;
 ```
 
-![clipboard.png](/posts/galaxy-generator_39.png)
+![clipboard.png](/posts/galaxy-generator_96.png)
 
 ---
 
 #### 調整參數後樣式
 
-![clipboard.png](/posts/galaxy-generator_38.png)
+![clipboard.png](/posts/galaxy-generator_94.png)

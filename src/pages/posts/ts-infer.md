@@ -13,7 +13,7 @@ slug: ts-infer
 
 # [筆記] TS infer 推斷型別
 
-### 🌋 練習 1 : 完整 `Return<T>` 完整取的泛型內的函數返回值 (類似 ReturnType)
+### 🌋 練習 1 : 完整 `Return<T>` 完整取的泛型內的函式回傳值 (類似 ReturnType)
 
 ```typescript
 type sum = (a: number, b: number) => number;
@@ -52,7 +52,7 @@ type pt = PromiseType<<PromiseType<string>>>; // string
 
 ---
 
-### 🌋 練習 3 : 獲取函數第一個參數推斷型別
+### 🌋 練習 3 : 取得函式第一個參數推斷型別
 
 狀況類似練習 1, 只是利用 剩餘參數的特性 去做參數分離
 
@@ -67,7 +67,7 @@ type fa = FirstArg<(name: string, age: number) => void>;
 ### 🌋 練習 4 : 或許陣列泛型內的型別
 
 T 必須是個陣列, 什麼陣列？ 請 infer 幫我推斷
-然後拿取推斷出來的型別當作 T, 否則不是 陣列就返回 T 類型
+然後拿取推斷出來的型別當作 T, 否則不是 陣列就回傳 T 類型
 
 ```typescript
 type ArrayType<T> = T extends (infer K)[] ? K : T;
@@ -79,7 +79,7 @@ type ItemType1 = ArrayType<string[]>; // string
 
 ---
 
-#### 其他： 函數表達式可表達形式
+#### 其他： 函式表達式可表達形式
 
 - `T extends (...args: any[]) => XXX `
 - `T extends Function`

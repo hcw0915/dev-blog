@@ -15,7 +15,7 @@ slug: react-recursive-folders-components
 
 > https://www.youtube.com/watch?v=6UU2Ey4KZr8
 
-- 遞歸式的進行組件建立, 型別與組件相同都是可以被遞歸的使用
+- 遞歸式的進行元件建立, 型別與元件相同都是可以被遞歸的使用
 - 針對單檔案, 或是不同檔案可以另外做正則解析 給予對應不同的 icons
 - 使用較為普遍的 `max-h-[1000px]` 與 `max-h-0` 的變化給予展開時的過渡效果(但還是可以嘗試 `grid` 方法)
 

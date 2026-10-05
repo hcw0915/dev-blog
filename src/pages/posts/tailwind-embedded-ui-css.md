@@ -15,7 +15,7 @@ slug: tailwind-embedded-ui-css
 
 ## 背景
 
-因為主站需要引用 **IIFE bundle 的組件**，主要原因是 `iframe` 的
+因為主站需要引用 **IIFE bundle 的元件**，主要原因是 `iframe` 的
 scrollbar 以及 `viewport` 大小在不同環境下較難控制，因此部分頁面會使用
 **embedded 方式嵌入**。
 
@@ -24,7 +24,7 @@ scrollbar 以及 `viewport` 大小在不同環境下較難控制，因此部分�
 > 所有 `Dialog / Toast / Tips / Message` 等 UI
 > 訊息，都必須回歸主站統一處理。
 
-因此設計了一個 **Bridge 機制**，讓 embedded 組件將事件 `emit`
+因此設計了一個 **Bridge 機制**，讓 embedded 元件將事件 `emit`
 到主站，由主站負責實際顯示 UI。
 
 由於同時需要支援 `iframe` 與 `embedded` 兩種模式，所以 Bridge 也包含了
@@ -46,7 +46,7 @@ export function emitToHost(event: string, payload?: any) {
 }
 ```
 
-組件內部只需要：
+元件內部只需要：
 
 ```ts
 emitToHost("open-dialog", {
@@ -85,7 +85,7 @@ shadowRoot.appendChild(container);
 
 最近遇到一個特殊情境：
 
-> 組件內需要 **調用主站的 Dialog**，但同時要使用 **embedded 的 CSS
+> 元件內需要 **呼叫主站的 Dialog**，但同時要使用 **embedded 的 CSS
 > 樣式**。
 
 因此在開啟 Dialog 時，會 **動態插入 CSS**：
@@ -145,7 +145,7 @@ export const App = () => {
 但這其實是一個 **不可接受的方案**：
 
 - 只是為了 Tailwind 掃描
-- 汙染組件程式碼
+- 汙染元件程式碼
 - 無法保證未來主站 class 不變
 - 也可能會有其他主站
 
@@ -235,13 +235,13 @@ head.insertBefore(link, head.firstChild);
 
 缺點：
 
-- embedded CSS **不能依賴斷點覆蓋主站**
+- embedded CSS **不能相依斷點覆蓋主站**
 
 ---
 
 ## 最終選擇
 
-由於目前開發的頁面 **並沒有依賴 Tailwind 斷點來做
+由於目前開發的頁面 **並沒有相依 Tailwind 斷點來做
 layout**，因此最終選擇了 **方案三：調整 CSS 插入順序**。
 
 這樣可以在 **不改動主站、不改動 Tailwind、不增加架構複雜度**

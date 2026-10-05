@@ -20,9 +20,9 @@ slug: shader-uniform-attribute-varying
 
 | 變數類型    | 描述                                               | 訪問權限                                 | 常見前綴 |
 | ----------- | -------------------------------------------------- | ---------------------------------------- | -------- |
-| `uniform`   | 全局變數，在整個渲染過程中保持不變                 | vertex 和 fragment shader 均可讀取       | `u`      |
-| `attribute` | 每個頂點特有的數據                                 | 只能在 vertex shader 中讀取              | `a*`     |
-| `varying`   | 從 vertex shader 傳遞到 fragment shader 的插值數據 | vertex shader 寫入，fragment shader 讀取 | `v*`     |
+| `uniform`   | 全域變數，在整個渲染過程中保持不變                 | vertex 和 fragment shader 均可讀取       | `u`      |
+| `attribute` | 每個頂點特有的資料                                 | 只能在 vertex shader 中讀取              | `a*`     |
+| `varying`   | 從 vertex shader 傳遞到 fragment shader 的插值資料 | vertex shader 寫入，fragment shader 讀取 | `v*`     |
 
 > **注意**：在 OpenGL 3.3+ 和 WebGL 2.0 中，`attribute` 被 `in` 取代，`varying` 被 `in`/`out` 取代。
 
@@ -109,9 +109,9 @@ void main() {
 }
 ```
 
-## JavaScript 初始化代碼
+## JavaScript 初始化程式碼
 
-以下是在 WebGL 中如何設置這些變數的 JavaScript 代碼：
+以下是在 WebGL 中如何設定這些變數的 JavaScript 程式碼：
 
 ```javascript
 // 獲取 shader 程序
@@ -187,7 +187,7 @@ void main() {
 
 ### 2. 時間動畫效果
 
-使用 `uniform` 時間變數創建動態效果：
+使用 `uniform` 時間變數建立動態效果：
 
 ```glsl
 // Vertex Shader
@@ -241,18 +241,18 @@ void main() {
 1. **命名規範**：
 
    - 使用前綴來區分不同類型的變數（`u_` 表示 uniform，`a_` 表示 attribute，`v_` 表示 varying）
-   - 保持命名一致性以提高代碼可讀性
+   - 保持命名一致性以提高程式碼可讀性
 
 2. **效能考量**：
 
-   - 盡量減少 uniform 變數的數量，特別是在處理大量對象時
+   - 盡量減少 uniform 變數的數量，特別是在處理大量物件時
    - 考慮使用 uniform buffer objects (UBO) 來組織相關的 uniform 變數
    - 避免在 fragment shader 中進行複雜計算，如果可能，將計算移至 vertex shader
 
-3. **精度聲明**：
+3. **精度宣告**：
 
-   - 在 fragment shader 中明確聲明浮點數精度（`precision highp/mediump/lowp float;`）
-   - 根據需要選擇適當的精度以平衡效能與視覺質量
+   - 在 fragment shader 中明確宣告浮點數精度（`precision highp/mediump/lowp float;`）
+   - 根據需要選擇適當的精度以平衡效能與視覺品質
 
 4. **相容性**：
 
@@ -271,10 +271,10 @@ precision mediump float;
 #endif
 ```
 
-## 常見錯誤與調試技巧
+## 常見錯誤與除錯技巧
 
-1. **未初始化的 uniform**：檢查是否正確獲取和設置了所有 uniform 位置
-2. **attribute 綁定錯誤**：確保正確啟用了 attribute 陣列並設置了正確的數據格式
+1. **未初始化的 uniform**：檢查是否正確取得和設定了所有 uniform 位置
+2. **attribute 繫結錯誤**：確保正確啟用了 attribute 陣列並設定了正確的資料格式
 3. **著色器編譯錯誤**：使用 `gl.getShaderInfoLog()` 檢查著色器編譯錯誤
-4. **著色器連接錯誤**：使用 `gl.getProgramInfoLog()` 檢查程序連接錯誤
-5. **顏色顯示問題**：檢查 fragment shader 是否正確設置了 `gl_FragColor`
+4. **著色器連接錯誤**：使用 `gl.getProgramInfoLog()` 檢查程式連結錯誤
+5. **顏色顯示問題**：檢查 fragment shader 是否正確設定了 `gl_FragColor`
