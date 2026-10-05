@@ -107,7 +107,6 @@ export const POST_TOPICS: Record<string, TopicId[]> = {
 
   // Three.js 基礎：旋轉、紋理、幾何、控制
   "three-euler-vs-quaternion": ["threejs-basics"],
-  "three-euler-quaternion": ["threejs-basics"],
   texture: ["threejs-basics"],
   "galaxy-generator": ["threejs-basics", "shader-glsl"],
   "three-demo": ["threejs-basics", "r3f-showcase"],
@@ -131,10 +130,7 @@ export const POST_TOPICS: Record<string, TopicId[]> = {
  * 內容幾乎相同的文章（同一份筆記的不同版本）。相關文章不會推薦自己的分身，
  * 同一組也只會出現一篇，避免三個推薦裡有兩個是同一篇。
  */
-export const TWINS: string[][] = [
-  // 舊匯出殘留已刪除並轉址（vercel.json）。這組是兩份不同筆記、內容互補，待合併成一篇
-  ["three-euler-vs-quaternion", "three-euler-quaternion"],
-]
+export const TWINS: string[][] = []
 
 const twinGroupOf = new Map(TWINS.flatMap((group, i) => group.map(slug => [slug, i] as const)))
 export const twinGroup = (slug: string) => twinGroupOf.get(slug)
@@ -171,7 +167,7 @@ const NOTE = [
   "anti-three-1-furniture", "anti-three-2-banana", "anti-three-3-lusion", "anti-three-4-bruno-simon-20-k",
   "anti-three-5-monitor-bunny", "chapter-1", "chapter-2-1-2-3", "chapter-2-4-2-6", "chapter-5",
   "enzyme-vs-react-testing-library-rtl", "texture", "galaxy-generator", "three-euler-vs-quaternion",
-  "three-euler-quaternion", "three-demo",
+  "three-demo",
   "react-three-fiber-apple-watch", "shader-uniform-attribute-varying", "shader-color-offset",
   "shader-built-in-variables", "next-images", "ssr-ssg-csr-isr", "js-var-let-const", "js-shallow-copy-deep-copy",
   "js-proxy", "blob-file", "cookie-local-storage", "shadow-dom-web-component", "pnpm-monorepo",

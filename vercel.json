@@ -61,12 +61,12 @@
     },
     {
       "source": "/posts/euler-quaternion",
-      "destination": "/posts/three-euler-quaternion",
+      "destination": "/posts/three-euler-vs-quaternion",
       "permanent": true
     },
     {
       "source": "/en/posts/euler-quaternion",
-      "destination": "/en/posts/three-euler-quaternion",
+      "destination": "/en/posts/three-euler-vs-quaternion",
       "permanent": true
     },
     {
@@ -77,6 +77,16 @@
     {
       "source": "/en/posts/three-texture",
       "destination": "/en/posts/texture",
+      "permanent": true
+    },
+    {
+      "source": "/posts/three-euler-quaternion",
+      "destination": "/posts/three-euler-vs-quaternion",
+      "permanent": true
+    },
+    {
+      "source": "/en/posts/three-euler-quaternion",
+      "destination": "/en/posts/three-euler-vs-quaternion",
       "permanent": true
     }
   ]
