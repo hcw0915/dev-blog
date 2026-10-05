@@ -129,6 +129,7 @@ export const translations = {
       title: '遊戲場',
       vanilla: 'Vanilla',
       react: 'React',
+      scene: '3D 場景',
       edit: '編輯',
       preview: '預覽',
       openInNewWindow: '在新視窗開啟',
@@ -194,8 +195,7 @@ export const translations = {
     // Navigation
     nav: {
       about: '關於',
-      blog: '部落格',
-      scene: '3D 場景'
+      blog: '部落格'
     },
     // Accessibility labels
     aria: {
@@ -362,6 +362,7 @@ export const translations = {
       title: 'Playground',
       vanilla: 'Vanilla',
       react: 'React',
+      scene: '3D Scene',
       edit: 'Edit',
       preview: 'Preview',
       openInNewWindow: 'Open in new window',
@@ -427,8 +428,7 @@ export const translations = {
     // Navigation
     nav: {
       about: 'About',
-      blog: 'Blog',
-      scene: '3D Scene'
+      blog: 'Blog'
     },
     // Accessibility labels
     aria: {

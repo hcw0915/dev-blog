@@ -56,7 +56,8 @@ export default function PlaygroundDropdown({ locale = "zh" }: PlaygroundDropdown
 
   const menuItems = [
     { label: translations.playground.vanilla, href: `${basePath}/playground/vanilla` },
-    { label: translations.playground.react, href: `${basePath}/playground/react` }
+    { label: translations.playground.react, href: `${basePath}/playground/react` },
+    { label: translations.playground.scene, href: `${basePath}/playground/scene` }
   ]
 
   // 檢查當前是否在 playground 頁面

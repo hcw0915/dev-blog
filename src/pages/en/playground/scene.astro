@@ -6,14 +6,14 @@ import SceneContent from "@/components/SceneContent.astro"
 import { SITE_TITLE } from "@/config"
 import { getTranslations } from "@/i18n/translations"
 
-const locale = "zh"
+const locale = "en"
 const t = getTranslations(locale)
 ---
 
 <!doctype html>
-<html lang="zh-TW">
+<html lang="en">
   <head>
-    <BaseHead title={`${t.nav.scene} - ${SITE_TITLE}`} description="用 Spline 重建的葉里溫 Cascade 大階梯，可以用鍵盤、按鈕或手機體感一層層上下樓。" />
+    <BaseHead title={`${t.playground.scene} - ${SITE_TITLE}`} description="The Yerevan Cascade rebuilt in Spline — climb it level by level with the keyboard, buttons or your phone's tilt." />
   </head>
   <Body>
     <Header />

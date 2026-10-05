@@ -18,6 +18,16 @@
       "source": "/sitemap.xml",
       "destination": "/sitemap-index.xml",
       "permanent": true
+    },
+    {
+      "source": "/scene",
+      "destination": "/playground/scene",
+      "permanent": true
+    },
+    {
+      "source": "/en/scene",
+      "destination": "/en/playground/scene",
+      "permanent": true
     }
   ]
 }
