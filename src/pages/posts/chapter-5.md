@@ -54,7 +54,7 @@ pnpm add -D cypress
 },
 ```
 
-![clipboard.png](/posts/chapter-5_140.png)
+![clipboard.png](/posts/chapter-5_16.png)
 
 會出現這個問題, 請把 `cypress.config.ts` -> `cypress.config.js`, 或是繼續維持 `ts`, 但是需要針對 TS 的部分做額外配置, 詳情可以參考這個 issue [cypress-issue/23552](https://github.com/cypress-io/cypress/issues/23552)
 
@@ -86,9 +86,9 @@ pnpm add -D @percy/cypress
 
 由於 視覺測試 他是截圖上傳到 percy 專案內, 所以需要登入官網建立 project, 把對應 project 的 token 註記在環境中
 
-![clipboard.png](/posts/chapter-5_139.png)
+![clipboard.png](/posts/chapter-5_15.png)
 
-![clipboard.png](/posts/chapter-5_138.png)
+![clipboard.png](/posts/chapter-5_14.png)
 
 關於 percy in Cypress 配置, 可以參考 [Integrate your Cypress tests with Percy](https://www.browserstack.com/docs/percy/integrate/cypress)
 
@@ -144,21 +144,21 @@ describe("Index Page", () => {
 
 - 執行 `npm cy:open` / 執行 `npm cy:percy`
 
-![clipboard.png](/posts/chapter-5_137.png)
-![clipboard.png](/posts/chapter-5_136.png)
+![clipboard.png](/posts/chapter-5_13.png)
+![clipboard.png](/posts/chapter-5_12.png)
 
-![clipboard.png](/posts/chapter-5_135.png)
+![clipboard.png](/posts/chapter-5_11.png)
 
 此串網址就是執行 Percy build 後的網址, 可以看到內部有兩張圖
 
-![clipboard.png](/posts/chapter-5_134.png)
+![clipboard.png](/posts/chapter-5_10.png)
 
 > [!NOTE]
 > 如果是第一次執行, 只有一張, 我理圖片裡的並不是第一次, 再跑一次就好
 
 點擊上放的 `</>` icon, 可以看到內部的比對內容, 實際上不應該有不一樣, 可能是網頁在渲染的過程
 被 Percy 捕捉到差異顯示 `0.02% diff`
-![clipboard.png](/posts/chapter-5_133.png)
+![clipboard.png](/posts/chapter-5_9.png)
 
 ### 快照比對原理
 
@@ -309,17 +309,17 @@ export const Default: Story = {
 
 執行 `pnpm percy`, 就可以看到剛剛新增的 `Button` 元件納入 Percy snapshot
 
-![clipboard.png](/posts/chapter-5_132.png)
+![clipboard.png](/posts/chapter-5_8.png)
 
 訪問連結網站可以看到 component 的比對測試, 內容皆與頁面測試相同.
 
-![clipboard.png](/posts/chapter-5_131.png)
+![clipboard.png](/posts/chapter-5_7.png)
 
 頁面可找到對應的寬度, 瀏覽器切換
 
-![clipboard.png](/posts/chapter-5_130.png)
+![clipboard.png](/posts/chapter-5_6.png)
 
-![clipboard.png](/posts/chapter-5_129.png)
+![clipboard.png](/posts/chapter-5_5.png)
 
 - 建立 `.percy.json`
 
@@ -333,14 +333,14 @@ export const Default: Story = {
 }
 ```
 
-![clipboard.png](/posts/chapter-5_128.png)
+![clipboard.png](/posts/chapter-5_4.png)
 
 > [!WARNING]
 >
 > - 書上說是 `percy.json`, 但事實上是 `.percy.json`, 有一個 `.` 前綴
 > - 需要 `"version": 2`
 
-![clipboard.png](/posts/chapter-5_127.png)
+![clipboard.png](/posts/chapter-5_3.png)
 
 ---
 
@@ -384,9 +384,9 @@ describe("Index Page", () => {
 
 分別執行 `pnpm cy:open` `pnpm cy:percy` 可以看到對應的畫面皆有按照測試案例去做顯示與截圖.
 
-![clipboard.png](/posts/chapter-5_126.png)
+![clipboard.png](/posts/chapter-5_2.png)
 
-![clipboard.png](/posts/chapter-5_124.png)
+![clipboard.png](/posts/chapter-5_1.png)
 
 #### 配合 CI workflow 的整合, 結合 CI tools 做測試
 
@@ -422,7 +422,7 @@ jobs:
 > [!WARNING]
 > 好奇怪 XD, `visual testing` 沒有跑出連結 `Run Component visual Testing`
 
-![clipboard.png](/posts/chapter-5_122.png)
+![clipboard.png](/posts/chapter-5_0.png)
 
 ---
 
