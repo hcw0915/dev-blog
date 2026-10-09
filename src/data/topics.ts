@@ -56,6 +56,10 @@ export const POST_TOPICS: Record<string, TopicId[]> = {
   // 瀏覽器平台：儲存、快取、容器、Web API
   "webview-shell-detection": ["browser-platform", "frontend-architecture"],
   "ssr-login-token-layers": ["browser-platform", "nextjs-rendering"],
+  "document-title-mutation-observer-loop": ["browser-platform", "javascript-core"],
+  "iframe-session-history-pitfalls": ["browser-platform", "nextjs-rendering"],
+  "nextjs-ssr-behind-cdn": ["nextjs-rendering", "browser-platform"],
+  "snapshot-freshness-tradeoff": ["frontend-architecture", "nextjs-rendering"],
   "cookie-local-storage": ["browser-platform"],
   browser: ["browser-platform"],
   "blob-file": ["browser-platform", "javascript-core"],
@@ -157,6 +161,8 @@ const DEEP = [
   "startup-measurement-pitfalls", "knowledge-keyword-rag", "knowledge-optimization",
   "popup-queue-soft-navigation", "error-code-event-bus", "dev-panel", "webview-shell-detection",
   "ssr-login-token-layers", "tailwind-embedded-ui-css", "css", "language-source-priority-strategy",
+  "document-title-mutation-observer-loop", "nextjs-ssr-behind-cdn", "iframe-session-history-pitfalls",
+  "snapshot-freshness-tradeoff",
 ]
 const TIP = [
   "browser", "eslint-plugin-simple-import-sort", "customize-eslint-rules", "js-new-url-url-search-params",
