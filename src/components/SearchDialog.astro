@@ -15,7 +15,8 @@ export interface Props {
 }
 
 const { locale } = Astro.props
-const t = getTranslations(locale).search
+const tr = getTranslations(locale)
+const t = tr.search
 ---
 
 <button
@@ -38,7 +39,11 @@ const t = getTranslations(locale).search
   data-empty={t.empty}
   data-unavailable={t.unavailable}
   data-hint={t.hint}
-  class="site-search m-0 mx-auto mt-[12vh] w-[min(640px,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-zinc-200 bg-white p-0 text-zinc-800 shadow-2xl dark:border-white/10 dark:bg-zinc-900 dark:text-zinc-200"
+  data-latest={tr.home.latestPosts}
+  data-deep={tr.home.deepPosts}
+  data-min-read={tr.post.minRead}
+  data-read-more={t.readMore}
+  class="site-search m-0 mx-auto mt-[12vh] w-[min(640px,calc(100vw-2rem))] md:w-[min(880px,calc(100vw-4rem))] overflow-hidden rounded-2xl border border-zinc-200 bg-white p-0 text-zinc-800 shadow-2xl dark:border-white/10 dark:bg-zinc-900 dark:text-zinc-200"
 >
   <div class="flex items-center gap-3 border-b border-zinc-200 px-4 dark:border-white/10">
     <svg viewBox="0 0 20 20" class="h-4 w-4 shrink-0 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -56,8 +61,25 @@ const t = getTranslations(locale).search
     />
     <kbd class="rounded border border-zinc-200 px-1.5 font-mono text-[10px] leading-5 text-zinc-400 dark:border-white/10">Esc</kbd>
   </div>
-  <ul id="site-search-results" role="listbox" class="max-h-[60vh] overflow-y-auto p-2"></ul>
-  <p id="site-search-status" class="px-4 py-8 text-center text-sm text-zinc-400 dark:text-zinc-500">{t.hint}</p>
+  <div class="md:grid md:grid-cols-[minmax(0,1fr)_340px]">
+    <div class="min-w-0">
+      <ul id="site-search-results" role="listbox" class="max-h-[60vh] overflow-y-auto p-2"></ul>
+      <p id="site-search-status" class="px-4 py-8 text-center text-sm text-zinc-400 dark:text-zinc-500">{t.hint}</p>
+    </div>
+    <aside
+      id="site-search-preview"
+      aria-live="polite"
+      class="hidden max-h-[60vh] overflow-y-auto border-l border-zinc-200 md:block dark:border-white/10"
+    >
+    </aside>
+  </div>
+  <div
+    class="hidden items-center gap-4 border-t border-zinc-200 px-4 py-2 text-[11px] text-zinc-400 md:flex dark:border-white/10 dark:text-zinc-500"
+  >
+    <span><kbd class="sk">↑</kbd><kbd class="sk">↓</kbd> {t.select}</span>
+    <span><kbd class="sk">↵</kbd> {t.go}</span>
+    <span><kbd class="sk">esc</kbd> {t.close}</span>
+  </div>
 </dialog>
 
 <style is:global>
@@ -82,6 +104,79 @@ const t = getTranslations(locale).search
   }
   .site-search [aria-selected="true"] {
     background: color-mix(in srgb, #a78bfa 12%, transparent);
+  }
+  .site-search .sk {
+    display: inline-block;
+    min-width: 1.25rem;
+    margin-right: 2px;
+    padding: 0 4px;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    font-family: ui-monospace, monospace;
+    text-align: center;
+    opacity: 0.8;
+  }
+  /* 預覽卡：主標籤色做右上角的光暈與頂端色條，切換時淡入 */
+  .site-search .sp {
+    --tag-color: #a78bfa;
+    min-height: 100%;
+    background: radial-gradient(120% 55% at 100% 0%, color-mix(in srgb, var(--tag-color) 16%, transparent), transparent 65%);
+    animation: sp-in 0.18s ease-out;
+  }
+  .site-search .sp::before {
+    content: "";
+    display: block;
+    height: 3px;
+    background: linear-gradient(90deg, var(--tag-color), transparent);
+  }
+  @keyframes sp-in {
+    from {
+      opacity: 0;
+      transform: translateX(6px);
+    }
+  }
+  .site-search .sp-chip {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--tag-ink, #7c3aed);
+    border: 1px solid color-mix(in srgb, var(--tag-color) 45%, transparent);
+    background: color-mix(in srgb, var(--tag-color) 12%, transparent);
+    border-radius: 9999px;
+    padding: 1px 7px;
+  }
+  .dark .site-search .sp-chip {
+    color: var(--tag-ink-dark, #c4b5fd);
+  }
+  /* 目錄編號用 counter：清單的 marker 會被全域樣式與 line-clamp 吃掉 */
+  .site-search .sp-toc {
+    counter-reset: sp;
+  }
+  .site-search .sp-toc li {
+    display: flex;
+    gap: 8px;
+  }
+  .site-search .sp-toc li:not(.sp-more)::before {
+    counter-increment: sp;
+    content: counter(sp, decimal-leading-zero);
+    flex-shrink: 0;
+    color: var(--tag-color);
+    font-family: ui-monospace, monospace;
+    font-size: 11px;
+    line-height: inherit;
+  }
+  .site-search .sp-group {
+    padding: 10px 12px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: rgb(161 161 170);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .site-search .sp {
+      animation: none;
+    }
   }
 </style>
 
@@ -139,6 +234,10 @@ const t = getTranslations(locale).search
     /** 把文字拆成文字節點與 <mark>，完全不經過 innerHTML */
     const highlight = (text, terms) => {
       const frag = document.createDocumentFragment()
+      if (!terms.length) {
+        frag.append(text)
+        return frag
+      }
       const re = new RegExp(`(${terms.map(escRe).join("|")})`, "gi")
       text.split(re).forEach((part, i) => {
         if (!part) return
@@ -177,20 +276,72 @@ const t = getTranslations(locale).search
     }
 
     const items = () => [...($("site-search-results")?.querySelectorAll("[role=option]") ?? [])]
-    const select = i => {
+    const select = (i, scroll = true) => {
       const list = items()
       if (!list.length) return
       active = (i + list.length) % list.length
       list.forEach((el, j) => el.setAttribute("aria-selected", j === active ? "true" : "false"))
-      list[active].scrollIntoView({ block: "nearest" })
+      if (scroll) list[active].scrollIntoView({ block: "nearest" })
+      preview(docOf.get(list[active]))
+    }
+
+    /** 每個選項對應的文件，給預覽用 */
+    const docOf = new WeakMap()
+    let shown = null
+
+    const el = (tag, cls, text) => {
+      const n = document.createElement(tag)
+      if (cls) n.className = cls
+      if (text != null) n.textContent = text
+      return n
+    }
+
+    /** 右側預覽：摘要＋目錄，讓人不用點進去就知道這篇在講什麼 */
+    function preview(doc) {
+      const box = $("site-search-preview")
+      const d = $("site-search")
+      if (!box || !d || (doc && doc === shown)) return
+      shown = doc
+      if (!doc) return box.replaceChildren()
+      const card = el("div", "sp")
+      if (doc.s) card.setAttribute("style", doc.s)
+      const inner = el("div", "p-5")
+      const meta = el("div", "flex flex-wrap items-center gap-2 text-[11px] text-zinc-500 dark:text-zinc-400")
+      const label = doc.k ?? doc.g[0]
+      if (label) meta.append(el("span", "sp-chip", label))
+      meta.append(el("span", "font-mono", doc.d))
+      if (doc.m) meta.append(el("span", "", `· ${doc.m} ${d.dataset.minRead}`))
+      inner.append(
+        meta,
+        el("h3", "mt-3 font-serif text-lg font-semibold leading-snug text-zinc-900 dark:text-zinc-50", doc.t)
+      )
+      const excerpt = doc.x || doc.b.slice(0, 160)
+      if (excerpt) inner.append(el("p", "mt-2 line-clamp-5 text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-400", excerpt))
+      if (doc.h?.length) {
+        const ol = el("ol", "sp-toc mt-4 space-y-1 text-[12.5px] leading-snug text-zinc-600 dark:text-zinc-300")
+        // line-clamp 會把 li 變成 -webkit-box、吃掉編號，所以截斷放在內層 span
+        doc.h.slice(0, 7).forEach(h => {
+          const li = el("li")
+          li.append(el("span", "line-clamp-1", h.replace(/^[一二三四五六七八九十]+、\s*/, "")))
+          ol.append(li)
+        })
+        if (doc.h.length > 7) ol.append(el("li", "sp-more pl-[26px] text-zinc-400", "…"))
+        inner.append(ol)
+      }
+      const a = el("a", "mt-5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-zinc-900 hover:underline dark:text-zinc-100", `${d.dataset.readMore} ↵`)
+      a.href = doc.u
+      inner.append(a)
+      card.append(inner)
+      box.replaceChildren(card)
     }
 
     function open() {
       const d = $("site-search")
       if (!d || d.open) return
       d.showModal()
-      $("site-search-input")?.select()
-      load()
+      const input = $("site-search-input")
+      input?.select()
+      search(input?.value ?? "")
     }
 
     async function search(raw) {
@@ -198,11 +349,6 @@ const t = getTranslations(locale).search
       const ul = $("site-search-results")
       if (!d || !ul) return
       const terms = raw.toLowerCase().split(/\s+/).filter(Boolean)
-      if (!terms.length) {
-        ul.replaceChildren()
-        active = -1
-        return setStatus(d.dataset.hint)
-      }
       const docs = await load()
       // 等索引時使用者可能又打了字：只處理最新的輸入
       if ($("site-search-input")?.value !== raw) return
@@ -210,42 +356,68 @@ const t = getTranslations(locale).search
         ul.replaceChildren()
         return setStatus(d.dataset.unavailable)
       }
+      // 沒輸入時不是空白：列出最新與專案經驗，配右側預覽就能直接瀏覽
+      if (!terms.length) {
+        const posts = docs.filter(doc => !doc.k)
+        const latest = posts.slice(0, 5)
+        const deep = posts.filter(doc => doc.kind === "deep" && !latest.includes(doc)).slice(0, 5)
+        const group = label => {
+          const li = el("li", "sp-group", label)
+          li.setAttribute("role", "presentation")
+          return li
+        }
+        ul.replaceChildren(
+          group(d.dataset.latest),
+          ...latest.map(doc => option(doc, terms)),
+          group(d.dataset.deep),
+          ...deep.map(doc => option(doc, terms))
+        )
+        shown = null
+        setStatus("")
+        return select(0)
+      }
       const hits = rank(docs, terms).slice(0, 8)
 
-      ul.replaceChildren(
-        ...hits.map(({ doc }, i) => {
-          const li = document.createElement("li")
-          li.setAttribute("role", "option")
-          li.setAttribute("aria-selected", i === 0 ? "true" : "false")
-          li.className = "rounded-xl"
-          const a = document.createElement("a")
-          a.href = doc.u
-          a.className = "block rounded-xl px-3 py-2.5 hover:bg-zinc-900/[0.04] dark:hover:bg-white/[0.05]"
-          const head = document.createElement("div")
-          head.className = "flex items-baseline justify-between gap-3"
-          const title = document.createElement("div")
-          title.className = "min-w-0 truncate text-sm font-semibold text-zinc-900 dark:text-zinc-50"
-          title.append(highlight(doc.t, terms))
-          const date = document.createElement("span")
-          date.className = "shrink-0 font-mono text-[11px] text-zinc-400 dark:text-zinc-500"
-          date.textContent = doc.d
-          if (doc.k) {
-            const kind = document.createElement("span")
-            kind.className =
-              "shrink-0 rounded-full bg-violet-500/10 px-1.5 py-px text-[10px] font-semibold uppercase tracking-wide text-violet-600 dark:text-violet-300"
-            kind.textContent = doc.k
-            head.append(title, kind, date)
-          } else head.append(title, date)
-          const ex = document.createElement("div")
-          ex.className = "mt-0.5 line-clamp-2 text-[13px] leading-relaxed text-zinc-500 dark:text-zinc-400"
-          ex.append(highlight(snippet(doc, terms), terms))
-          a.append(head, ex)
-          li.append(a)
-          return li
-        })
-      )
-      active = hits.length ? 0 : -1
+      ul.replaceChildren(...hits.map(({ doc }) => option(doc, terms)))
+      shown = null
+      if (hits.length) select(0)
+      else {
+        active = -1
+        preview(null)
+      }
       setStatus(hits.length ? "" : d.dataset.empty)
+    }
+
+    function option(doc, terms) {
+      const li = document.createElement("li")
+      li.setAttribute("role", "option")
+      li.setAttribute("aria-selected", "false")
+      li.className = "rounded-xl"
+      const a = document.createElement("a")
+      a.href = doc.u
+      a.className = "block rounded-xl px-3 py-2.5 hover:bg-zinc-900/[0.04] dark:hover:bg-white/[0.05]"
+      const head = document.createElement("div")
+      head.className = "flex items-baseline justify-between gap-3"
+      const title = document.createElement("div")
+      title.className = "min-w-0 truncate text-sm font-semibold text-zinc-900 dark:text-zinc-50"
+      title.append(highlight(doc.t, terms))
+      const date = document.createElement("span")
+      date.className = "shrink-0 font-mono text-[11px] text-zinc-400 dark:text-zinc-500"
+      date.textContent = doc.d
+      if (doc.k) {
+        const kind = document.createElement("span")
+        kind.className =
+          "shrink-0 rounded-full bg-violet-500/10 px-1.5 py-px text-[10px] font-semibold uppercase tracking-wide text-violet-600 dark:text-violet-300"
+        kind.textContent = doc.k
+        head.append(title, kind, date)
+      } else head.append(title, date)
+      const ex = document.createElement("div")
+      ex.className = (terms.length ? "line-clamp-2" : "line-clamp-1") + " mt-0.5 text-[13px] leading-relaxed text-zinc-500 dark:text-zinc-400"
+      ex.append(highlight(terms.length ? snippet(doc, terms) : doc.x || doc.b.slice(0, 90), terms))
+      a.append(head, ex)
+      li.append(a)
+      docOf.set(li, doc)
+      return li
     }
 
     document.addEventListener("keydown", e => {
@@ -283,6 +455,14 @@ const t = getTranslations(locale).search
       if (!d?.open) return
       // 點到 dialog 本體以外（backdrop）就關；點到結果連結也關，讓 ClientRouter 換頁時不留著
       if (e.target === d || e.target.closest?.("#site-search-results a")) d.close()
+    })
+
+    // 滑鼠移過選項就切換預覽（不捲動清單，避免游標下的東西跑掉）
+    document.addEventListener("pointermove", e => {
+      const li = e.target.closest?.("#site-search-results [role=option]")
+      if (!li) return
+      const i = items().indexOf(li)
+      if (i !== -1 && i !== active) select(i, false)
     })
 
     document.addEventListener("input", e => {

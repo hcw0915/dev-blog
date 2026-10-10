@@ -236,7 +236,11 @@ export const translations = {
       placeholder: '搜尋文章內容…',
       hint: '輸入關鍵字搜尋全部文章的內容',
       empty: '找不到符合的文章',
-      unavailable: '搜尋索引載入失敗，請重新整理再試一次'
+      unavailable: '搜尋索引載入失敗，請重新整理再試一次',
+      select: '選擇',
+      go: '開啟',
+      close: '關閉',
+      readMore: '閱讀全文'
     }
   },
   en: {
@@ -471,7 +475,11 @@ export const translations = {
       placeholder: 'Search post content…',
       hint: 'Type to search the full text of every post',
       empty: 'No matching posts',
-      unavailable: 'Could not load the search index. Please refresh and try again.'
+      unavailable: 'Could not load the search index. Please refresh and try again.',
+      select: 'Select',
+      go: 'Open',
+      close: 'Close',
+      readMore: 'Read post'
     }
   }
 } as const

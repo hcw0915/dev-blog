@@ -6,12 +6,14 @@
  * 「四元數」零命中還抓錯一篇，亂碼查詢回傳 11 筆。中文讀者期待的是「字出現在文章裡就找得到」，
  * 也就是子字串比對；52 篇文章直接 includes() 是精確的，開發模式也能用。
  *
- * ponytail: 索引一次整包載入，第一次按 ⌘K 才抓。含 playground 的檔案內容後是 342KB
- * （brotli 後 87KB）—— 為了能搜到 mask-composite 這類屬性，多付約 21KB 壓縮量。
+ * ponytail: 索引一次整包載入，第一次按 ⌘K 才抓。含 playground 的檔案內容與 ⌘K 預覽用的
+ * 摘要、目錄後是 463KB（brotli 後 130KB，2026-10）—— 為了能搜到 mask-composite 這類屬性，多付約 21KB 壓縮量。
  * 文章到上千篇、或壓縮後超過約 300KB 時，再換回分片索引（Pagefind 之類）。
  */
 import type { APIRoute } from "astro"
-import { displayTags } from "@/lib/tags"
+import { displayTags, primaryTag, tagStyle } from "@/lib/tags"
+import { readingMinutes, excerptOf, headingsOf } from "@/lib/reading"
+import { kindOf } from "@/data/topics"
 import { playgrounds } from "@/data/playgrounds/index"
 import { toPlainText } from "@/lib/plaintext.mjs"
 
@@ -28,6 +30,12 @@ export interface SearchDoc {
   b: string
   /** 非文章的來源標記，目前只有 playground；文章不帶這個欄位 */
   k?: string
+  /** ⌘K 預覽用：摘要、二級標題、閱讀分鐘數、文章類型、主標籤的 inline style */
+  x?: string
+  h?: string[]
+  m?: number
+  kind?: string
+  s?: string
 }
 
 const fmtDate = (ms: number) => {
@@ -45,7 +53,12 @@ export const GET: APIRoute = () => {
       t: p.frontmatter.title,
       g: displayTags(p.frontmatter.tags ?? []),
       d: fmtDate(p.frontmatter.createdAt),
-      b: toPlainText(p.rawContent())
+      b: toPlainText(p.rawContent()),
+      x: excerptOf(p.rawContent()),
+      h: headingsOf(p.rawContent()),
+      m: readingMinutes(p.rawContent()),
+      kind: kindOf(p.frontmatter.slug),
+      s: (tag => (tag ? tagStyle(tag) : undefined))(primaryTag(p.frontmatter.tags ?? []))
     }))
 
   // playground 也進索引：搜「mask-composite」要找得到用到它的範例。
@@ -56,7 +69,8 @@ export const GET: APIRoute = () => {
     g: p.tags,
     d: p.createdAt.replace(/-/g, "."),
     b: [p.description, ...Object.entries(p.files).map(([path, content]) => `${path}\n${content}`)].join("\n"),
-    k: "playground"
+    k: "playground",
+    x: p.description
   }))
 
   return new Response(JSON.stringify([...docs, ...playgroundDocs]), {
