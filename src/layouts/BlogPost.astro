@@ -305,7 +305,7 @@ const breadcrumbJsonLd = JSON.stringify({
                 </summary>
                 <ol>
                   {seriesPosts.map((p, i) => (
-                    <li>
+                    <li style={`--i:${i}`}>
                       <a href={p.url} aria-current={i === series.index ? 'page' : undefined}>
                         <span class="series-num">{i + 1}</span>
                         <span class="min-w-0 truncate">{p.frontmatter.title}</span>
@@ -514,6 +514,26 @@ const breadcrumbJsonLd = JSON.stringify({
         transition: transform 0.2s;
       }
       .series-box[open] summary::after { transform: rotate(-135deg); }
+      /* 展開動畫：高度用 ::details-content 過渡（Chrome／Safari 18.4+ 才有，其他瀏覽器直接開合），
+         清單項目的淡入是通用的，所有瀏覽器都看得到 */
+      .series-box { interpolate-size: allow-keywords; }
+      .series-box::details-content {
+        block-size: 0;
+        overflow: clip;
+        transition: block-size 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), content-visibility 0.3s allow-discrete;
+      }
+      .series-box[open]::details-content { block-size: auto; }
+      .series-box[open] li {
+        animation: series-in 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        animation-delay: calc(var(--i, 0) * 45ms);
+      }
+      @keyframes series-in {
+        from { opacity: 0; transform: translateY(-6px); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .series-box::details-content { transition: none; }
+        .series-box[open] li { animation: none; }
+      }
       main article.markdown-content .series-box ol {
         list-style: none;
         margin: 0;
