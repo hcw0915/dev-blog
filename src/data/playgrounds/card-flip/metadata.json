@@ -1,6 +1,7 @@
 {
   "title": "Card Flip",
   "description": "點一下卡片：先上浮、連轉兩圈半翻到另一面、放大再落回。兩段 @keyframes 加上 preserve-3d 與 backface-visibility，支援鍵盤操作與減少動態效果。",
+  "descriptionEn": "Click the card: it lifts, spins two and a half turns to the other side, scales up and settles. Two @keyframes with preserve-3d and backface-visibility, keyboard accessible and respecting reduced motion.",
   "tags": [
     "CSS",
     "3D",

@@ -1,5 +1,6 @@
 ---
 import type { PlaygroundItem } from "@/data/playgrounds/types"
+import { describe } from "@/data/playgrounds/index"
 import { buildPreview } from "@/lib/sandbox/bundle"
 import { getTranslations } from "@/i18n/translations"
 import type { Locale } from "@/i18n/translations"
@@ -56,7 +57,7 @@ const fileCount = Object.keys(playground.files).length
       {playground.title}
     </h3>
     <p class="mt-1.5 line-clamp-2 text-sm text-zinc-500 dark:text-zinc-400">
-      {playground.description}
+      {describe(playground, locale)}
     </p>
     <div class="mt-auto flex items-center justify-between pt-4 text-xs text-zinc-400 dark:text-zinc-500">
       <span class="font-mono">{fileCount} files</span>

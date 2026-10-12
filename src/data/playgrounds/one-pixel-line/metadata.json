@@ -1,6 +1,7 @@
 {
   "title": "1px Line at Fractional DPR",
   "description": "同樣寫 1px，border 和 height: 1px 在 125%、150% 這類非整數縮放下畫出來的粗細不同。用 ⌘+／⌘− 改縮放、拖動位移，看哪一種會在 1 與 2 個實體像素之間跳動。",
+  "descriptionEn": "Both written as 1px, border and height: 1px render at different thicknesses under fractional zoom like 125% or 150%. Change the zoom with ⌘+/⌘− and drag the offset to see which one jumps between 1 and 2 device pixels.",
   "tags": [
     "CSS",
     "Rendering"

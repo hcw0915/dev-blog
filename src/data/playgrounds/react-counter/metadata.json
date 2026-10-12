@@ -1,7 +1,12 @@
 {
   "title": "React Counter",
   "description": "多檔案 React 專案：元件拆檔、CSS import、useState。從 src/main.jsx 進入。",
-  "tags": ["React", "Hooks", "多檔案"],
+  "descriptionEn": "A multi-file React project: components in separate files, CSS imports, useState. Starts from src/main.jsx.",
+  "tags": [
+    "React",
+    "Hooks",
+    "Multi-file"
+  ],
   "author": "Antonio",
   "createdAt": "2026-09-10",
   "template": "react"

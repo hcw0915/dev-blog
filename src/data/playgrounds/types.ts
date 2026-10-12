@@ -3,6 +3,8 @@ export type PlaygroundTemplate = "vanilla" | "react"
 export interface PlaygroundMeta {
   title: string
   description: string
+  /** 英文頁用；缺了 build 會失敗 */
+  descriptionEn: string
   tags: string[]
   author: string
   createdAt: string

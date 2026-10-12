@@ -1,6 +1,7 @@
 {
   "title": "Warning Bar",
   "description": "純 CSS 斜紋進度條。條紋底圖寬度用 sin() 從角度與週期算出來，動畫剛好移動一格底圖，循環時不會跳、交界也對得上；顏色變體只換 CSS 變數。",
+  "descriptionEn": "A pure-CSS striped progress bar. The stripe tile width is computed from the angle and period with sin(), and the animation moves exactly one tile so the loop never jumps; color variants only swap CSS variables.",
   "tags": [
     "CSS",
     "Animation",

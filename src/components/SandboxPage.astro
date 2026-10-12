@@ -4,6 +4,7 @@
  */
 import Sandbox from "@/components/Sandbox.tsx"
 import type { PlaygroundItem } from "@/data/playgrounds/types"
+import { describe } from "@/data/playgrounds/index"
 import { getTranslations } from "@/i18n/translations"
 import type { Locale } from "@/i18n/translations"
 
@@ -29,7 +30,7 @@ const jsonLd = playground
       "@context": "https://schema.org",
       "@type": "SoftwareSourceCode",
       name: playground.title,
-      description: playground.description,
+      description: describe(playground, locale),
       url: new URL(Astro.url.pathname, Astro.site).href,
       programmingLanguage: playground.template === "react" ? ["TypeScript", "React"] : ["HTML", "CSS", "JavaScript"],
       keywords: playground.tags.join(", "),
@@ -58,7 +59,7 @@ const jsonLd = playground
             {playground.title}
           </h1>
           <p class="hidden truncate text-xs text-zinc-400 dark:text-zinc-500 md:block">
-            {playground.description}
+            {describe(playground, locale)}
           </p>
           {postUrl && (
             <a

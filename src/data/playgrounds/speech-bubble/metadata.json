@@ -1,6 +1,7 @@
 {
   "title": "Speech Bubble",
   "description": "單一元素的對話泡泡，尾巴是 ::after 的 border 三角形，有左、右、右下三種方向。原本用 LESS mixin 做顏色變體，改成 CSS 變數，換色只要改 --bubble。",
+  "descriptionEn": "A single-element speech bubble whose tail is an ::after border triangle, pointing left, right or bottom-right. Color variants moved from a LESS mixin to a CSS variable — change --bubble to recolor.",
   "tags": [
     "CSS",
     "Pseudo-element",

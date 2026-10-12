@@ -1,6 +1,7 @@
 {
   "title": "Card Blur Gradient",
   "description": "卡片底部用 backdrop-filter 加 mask 漸層，做出從清楚到模糊的過渡；滑鼠移上去模糊帶會升高。類似 Apple 2025 的卡片風格。",
+  "descriptionEn": "backdrop-filter plus a mask gradient at the bottom of a card, fading from sharp to blurred; the blur band rises on hover. Similar to Apple's 2025 card style.",
   "tags": [
     "CSS",
     "backdrop-filter",

@@ -33,5 +33,11 @@ export const playgrounds: PlaygroundItem[] = Object.entries(metas)
   })
   .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
 
+// 英文頁不能退回中文說明：少寫 descriptionEn 直接 build 失敗
+const missingEn = playgrounds.filter(p => !p.descriptionEn).map(p => p.id)
+if (missingEn.length) throw new Error(`playground 缺 descriptionEn：${missingEn.join(", ")}`)
+
+export const describe = (p: PlaygroundMeta, locale: string) => (locale === "en" ? p.descriptionEn : p.description)
+
 export const playgroundsByTemplate = (template: PlaygroundItem["template"]) =>
   playgrounds.filter(p => p.template === template)

@@ -1,6 +1,7 @@
 {
   "title": "Gradient Borders",
   "description": "同一個漸層邊框的四種做法並排比較：border-image 最短但沒有圓角、background-clip 內部要實心底、mask-composite 有圓角且內部真正透明，再加上用 @property 讓 conic-gradient 旋轉的光邊。",
+  "descriptionEn": "Four ways to draw the same gradient border side by side: border-image is shortest but has no radius, background-clip needs a solid fill, mask-composite keeps the radius with a truly transparent inside, plus a rotating conic-gradient glow driven by @property.",
   "tags": [
     "CSS",
     "mask-composite",

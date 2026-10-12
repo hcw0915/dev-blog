@@ -4,7 +4,7 @@
  */
 import PlaygroundCard from "@/components/PlaygroundCard.astro"
 import { tagStyle } from "@/lib/tags"
-import { playgroundsByTemplate } from "@/data/playgrounds/index"
+import { playgroundsByTemplate, describe } from "@/data/playgrounds/index"
 import type { PlaygroundTemplate } from "@/data/playgrounds/types"
 import { getTranslations } from "@/i18n/translations"
 import type { Locale } from "@/i18n/translations"
@@ -81,7 +81,7 @@ const tBlog = getTranslations(locale).blog
 
           <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {items.map(p => (
-              <li data-pg-title={p.title} data-pg-desc={p.description} data-pg-tags={p.tags.join("|")}>
+              <li data-pg-title={p.title} data-pg-desc={describe(p, locale)} data-pg-tags={p.tags.join("|")}>
                 <PlaygroundCard playground={p} baseUrl={baseUrl} locale={locale} />
               </li>
             ))}

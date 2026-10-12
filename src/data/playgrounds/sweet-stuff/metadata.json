@@ -1,6 +1,7 @@
 {
   "title": "Sweet Stuff",
   "description": "多層 text-shadow 疊出立體標題，::before 讀 data-text 再疊一層描邊，整組用 skew 斜切。靈感來自 makesweetbeats。",
+  "descriptionEn": "Stacked text-shadows build a 3D title, ::before reads data-text for an extra outline layer, and the whole thing is skewed. Inspired by makesweetbeats.",
   "tags": [
     "CSS",
     "Typography",
