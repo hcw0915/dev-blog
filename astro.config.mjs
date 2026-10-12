@@ -49,6 +49,12 @@ export default defineConfig({
         "@/pages": path.resolve(__dirname, "./src/pages"),
         "@/styles": path.resolve(__dirname, "./src/styles")
       }
+    },
+    // 只在少數頁面動態載入的大套件：開發時啟動就先預打包。
+    // 否則第一次進那頁時 Vite 才發現它、重新打包、換掉版本雜湊，已開著的頁面拿舊雜湊去抓就 404
+    // （「Failed to fetch dynamically imported module」，3D 場景、playground 編輯器、mermaid 都踩過）
+    optimizeDeps: {
+      include: ["@splinetool/runtime", "@monaco-editor/react", "react-resizable-panels", "mermaid"]
     }
   },
   integrations: [
