@@ -60,6 +60,7 @@ export const POST_TOPICS: Record<string, TopicId[]> = {
   "iframe-session-history-pitfalls": ["browser-platform", "nextjs-rendering"],
   "nextjs-ssr-behind-cdn": ["nextjs-rendering", "browser-platform"],
   "snapshot-freshness-tradeoff": ["frontend-architecture", "nextjs-rendering"],
+  "hairline-fractional-dpr": ["css-styling", "browser-platform"],
   "cookie-local-storage": ["browser-platform"],
   browser: ["browser-platform"],
   "blob-file": ["browser-platform", "javascript-core"],
@@ -162,7 +163,7 @@ const DEEP = [
   "popup-queue-soft-navigation", "error-code-event-bus", "dev-panel", "webview-shell-detection",
   "ssr-login-token-layers", "tailwind-embedded-ui-css", "css", "language-source-priority-strategy",
   "document-title-mutation-observer-loop", "nextjs-ssr-behind-cdn", "iframe-session-history-pitfalls",
-  "snapshot-freshness-tradeoff",
+  "snapshot-freshness-tradeoff", "hairline-fractional-dpr",
 ]
 const TIP = [
   "browser", "eslint-plugin-simple-import-sort", "customize-eslint-rules", "js-new-url-url-search-params",

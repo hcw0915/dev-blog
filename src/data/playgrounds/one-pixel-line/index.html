@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1px Line at Fractional DPR</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="bar">
+  <div>
+    <div class="dpr">DPR <strong id="dpr">1</strong></div>
+    <p class="hint" id="hint"></p>
+  </div>
+  <label class="offset">
+    整體位移 <output id="offset-out">0.00px</output>
+    <input id="offset" type="range" min="0" max="1" step="0.01" value="0">
+  </label>
+</header>
+
+<main class="grid">
+  <section class="col" data-kind="border">
+    <h2><code>border-top: 1px</code></h2>
+    <div class="lines"></div>
+    <p class="note">寬度先取整到整數個實體像素，再畫出來。每條一樣粗。</p>
+  </section>
+  <section class="col" data-kind="height">
+    <h2><code>height: 1px</code></h2>
+    <div class="lines"></div>
+    <p class="note">上下兩個邊各自四捨五入到實體像素，粗細看它落在哪個位置。</p>
+  </section>
+  <section class="col" data-kind="shadow">
+    <h2><code>box-shadow: inset 0 1px</code></h2>
+    <div class="lines"></div>
+    <p class="note">不對齊像素，邊緣用反鋸齒補：常是一條實線加一條半透明的線，看起來比較糊。</p>
+  </section>
+</main>
+
+<p class="legend">border 與 height 兩欄右邊的數字，是依目前 DPR 推算這條線佔幾個實體像素，比 border 粗的標成黃色。DPR 是 1、2、3 時三欄看起來一樣；換成 1.25、1.5、1.75 再看一次。</p>
+
+<script src="script.js"></script>
+</body>
+</html>

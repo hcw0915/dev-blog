@@ -10,6 +10,8 @@ export interface PlaygroundMeta {
   template?: PlaygroundTemplate
   /** 預覽入口，預設 index.html */
   entry?: string
+  /** 對應文章的 slug；文章已發佈時，playground 頁會連過去 */
+  post?: string
 }
 
 export interface PlaygroundItem extends PlaygroundMeta {

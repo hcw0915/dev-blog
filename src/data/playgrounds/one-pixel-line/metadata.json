@@ -1,0 +1,11 @@
+{
+  "title": "1px Line at Fractional DPR",
+  "description": "同樣寫 1px，border 和 height: 1px 在 125%、150% 這類非整數縮放下畫出來的粗細不同。用 ⌘+／⌘− 改縮放、拖動位移，看哪一種會在 1 與 2 個實體像素之間跳動。",
+  "tags": [
+    "CSS",
+    "Rendering"
+  ],
+  "author": "Antonio",
+  "createdAt": "2026-10-12",
+  "post": "hairline-fractional-dpr"
+}

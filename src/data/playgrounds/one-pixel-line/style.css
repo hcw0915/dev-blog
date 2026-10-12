@@ -1,0 +1,78 @@
+:root {
+  --bg: #0b0b0f;
+  --card: #15151b;
+  --line: #ffffff;
+  --muted: #8b8b98;
+  --accent: #a78bfa;
+  --warn: #fbbf24;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 20px;
+  background: var(--bg);
+  color: #e4e4e7;
+  font: 14px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; }
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.dpr { font-size: 13px; color: var(--muted); }
+.dpr strong { font-size: 28px; color: #fff; margin-left: 6px; font-variant-numeric: tabular-nums; }
+.dpr.fractional strong { color: var(--warn); }
+.hint { margin: 2px 0 0; color: var(--muted); font-size: 12.5px; }
+
+.offset { display: grid; gap: 4px; font-size: 12.5px; color: var(--muted); min-width: 220px; }
+.offset output { color: #fff; font-variant-numeric: tabular-nums; }
+.offset input { accent-color: var(--accent); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.col {
+  padding: 14px 16px 16px;
+  border-radius: 14px;
+  background: var(--card);
+}
+
+.col h2 { margin: 0 0 10px; font-size: 13px; font-weight: 600; }
+.note { margin: 12px 0 0; font-size: 12px; color: var(--muted); }
+
+/* 每條線用絕對定位放在 top = 起點 + i × 間距（含小數），讓它們落在不同的次像素位置 */
+.lines { position: relative; height: 190px; }
+
+.line {
+  position: absolute;
+  left: 0;
+  right: 34px;
+}
+[data-kind="border"] .line { height: 0; border-top: 1px solid var(--line); }
+[data-kind="height"] .line { height: 1px; background: var(--line); }
+[data-kind="shadow"] .line { height: 1px; box-shadow: inset 0 1px 0 0 var(--line); }
+
+.px {
+  position: absolute;
+  right: 0;
+  width: 26px;
+  transform: translateY(-50%);
+  text-align: right;
+  font: 11px/1 ui-monospace, Menlo, monospace;
+  color: var(--muted);
+}
+.px.thick { color: var(--warn); font-weight: 700; }
+
+.legend { margin: 16px 2px 0; font-size: 12.5px; color: var(--muted); }

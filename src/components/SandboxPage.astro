@@ -16,6 +16,13 @@ export interface Props {
 const { playground, locale, listUrl } = Astro.props
 const t = getTranslations(locale).playground
 
+// 對應文章：只在文章已發佈時才連，草稿階段不會出現死連結
+const posts = import.meta.glob<any>("../pages/posts/*.md", { eager: true })
+const post = playground?.post
+  ? Object.values(posts).find(p => p.frontmatter.public && p.frontmatter.slug === playground.post)
+  : undefined
+const postUrl = post && `${locale === "en" ? "/en" : ""}/posts/${playground!.post}`
+
 // 結構化資料：標明這是一份可執行的程式碼範例，搜尋引擎與 AI 搜尋才知道它不是一般文章
 const jsonLd = playground
   ? JSON.stringify({
@@ -53,7 +60,16 @@ const jsonLd = playground
           <p class="hidden truncate text-xs text-zinc-400 dark:text-zinc-500 md:block">
             {playground.description}
           </p>
-          <div class="ml-auto flex shrink-0 gap-1">
+          {postUrl && (
+            <a
+              href={postUrl}
+              title={post.frontmatter.title}
+              class="ml-auto shrink-0 rounded-full border border-violet-400/40 px-2.5 py-0.5 text-xs font-medium text-violet-600 transition-colors hover:bg-violet-500/10 dark:text-violet-300"
+            >
+              {t.relatedPost} →
+            </a>
+          )}
+          <div class:list={["flex shrink-0 gap-1", !postUrl && "ml-auto"]}>
             {playground.tags.map(tag => (
               <span class="rounded-full bg-zinc-900/[0.05] px-1.5 py-px text-[10px] leading-[14px] text-zinc-500 dark:bg-white/[0.06] dark:text-zinc-400">
                 {tag}
