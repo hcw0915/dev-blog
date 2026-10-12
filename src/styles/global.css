@@ -7,6 +7,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&display=swap');
+/* 內文：jf open 粉圓（Huninn），圓體、台灣字形；Google Fonts 依 unicode-range 分片，只抓用到的字 */
+@import url('https://fonts.googleapis.com/css2?family=Huninn&display=swap');
+/* 等寬：Operator Mono 是付費字體，不放上站；有安裝的人直接用本機的，其他人退到同樣是草寫斜體的 Victor Mono */
+@import url('https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,400;0,600;1,400&display=swap');
 
 /*
   整頁載入時（進出 playground 編輯頁、重新整理）瀏覽器在新文件畫出第一幀前用「畫布底色」填畫面，
@@ -22,8 +26,20 @@ html.dark {
   color-scheme: dark;
 }
 
+
+:root {
+  --font-mono: 'Operator Mono', 'Victor Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: var(--font-mono);
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+  font-family: 'Huninn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
     sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
