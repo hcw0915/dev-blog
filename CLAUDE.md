@@ -87,3 +87,14 @@ tree-shaking、CSS 自訂屬性的 computed 值）、以及可以帶走的判斷
   dev-panel 曾掛 `React · Next · General`，首頁顯示成 React，實際是通用概念。
 - 標籤同時決定文章的主題色與「相關文章」配對（見 `src/config.ts` 的 `TAG_WEIGHT`），
   掛錯會讓不相干的文章被配在一起
+
+## 履歷（Canva）
+
+履歷放在 Canva，透過 Canva MCP 讀寫（`.mcp.json` 已設定，第一次使用時用 `/mcp` 登入授權）。
+
+| 文件 | Canva design ID |
+|---|---|
+| 中文履歷「侯承緯 Antonio」（主要版本） | `DAGhwJ3QIwQ` |
+| 英文履歷（2023，待更新） | `DAFXb2_tti4` |
+
+用 design ID 呼叫 `read-design` 讀內容。改履歷前先問，改完要他在 Canva 確認。
