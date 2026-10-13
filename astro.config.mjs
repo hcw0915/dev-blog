@@ -7,6 +7,7 @@ import tailwind from "@astrojs/tailwind"
 import path from "path"
 import { fileURLToPath } from "url"
 import remarkAlerts from "./src/lib/remark-alerts.mjs"
+import remarkSingleH1 from "./src/lib/remark-single-h1.mjs"
 
 // sitemap 的 lastmod 來源：直接讀文章 md 的 frontmatter（config 階段還沒有 Astro 的內容 API）
 const postUpdatedAt = Object.fromEntries(
@@ -78,7 +79,8 @@ export default defineConfig({
     // mermaid 圍欄不交給 Shiki 上色，原文留給文章頁在瀏覽器渲染成圖（見 BlogPost.astro）
     syntaxHighlight: { type: "shiki", excludeLangs: ["mermaid"] },
     // > [!NOTE] / [!TIP] / [!IMPORTANT] / [!WARNING] / [!CAUTION] 提示框
-    remarkPlugins: [remarkAlerts],
+    // 內文自帶的 H1 拿掉／降級，整頁只留版型那個（見 remark-single-h1.mjs）
+    remarkPlugins: [remarkAlerts, remarkSingleH1],
     extendDefaultPlugins: true
   }
 })
