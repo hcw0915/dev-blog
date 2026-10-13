@@ -22,6 +22,13 @@ while sleep 120; do
   # 只會 commit、永遠拉不到新笔记的殭屍迴圈
   kill -0 "$IMPORT_PID" 2>/dev/null || exit 1
 
+  # 站內連結壞了就不推（例如連到還沒公開的文章）；修好之後下一輪自動推
+  if ! ERR=$("$NODE_BIN" tools/check-links.mjs 2>&1); then
+    echo "[watch-publish] $ERR" >&2
+    osascript -e "display notification \"有文章的站內連結壞了，暫停發佈：node tools/check-links.mjs\" with title \"dev-blog\"" 2>/dev/null
+    continue
+  fi
+
   # 只圈 inkdrop 產出的檔案。兩個地方都必須帶 pathspec：
   #   1. src/pages/posts/ 底下除了 .md 還有手寫的 index.astro，整個目錄 add 會把
   #      正在改的頁面推上線。

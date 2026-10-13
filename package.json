@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "predev": "node tools/fetch-og-font.mjs",
-    "prebuild": "node tools/fetch-og-font.mjs",
+    "prebuild": "node tools/fetch-og-font.mjs && node tools/check-links.mjs",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
