@@ -1,7 +1,8 @@
 ---
 public: true
+slug: shader-uniform-attribute-varying
 layout: ../../layouts/BlogPost.astro
-title: Shader - uniform/attribute/varying
+title: GLSL 中 uniform、attribute 與 varying 的用法
 createdAt: 1743577743844
 updatedAt: 1744088069213
 tags:
@@ -9,7 +10,6 @@ tags:
   - Shader
   - Blog
 heroImage: /placeholder-hero.png
-slug: shader-uniform-attribute-varying
 ---
 
 # GLSL 著色器中 uniform、attribute 和 varying 的使用指南

@@ -1,7 +1,8 @@
 ---
 public: true
+slug: enzyme-vs-react-testing-library-rtl
 layout: ../../layouts/BlogPost.astro
-title: Enzyme vs React Testing Library (RTL)
+title: Enzyme vs React Testing Library (RTL) 差異比較
 createdAt: 1741707508104
 updatedAt: 1742357501464
 tags:
@@ -9,7 +10,6 @@ tags:
   - Javascript
   - Blog
 heroImage: /placeholder-hero.png
-slug: enzyme-vs-react-testing-library-rtl
 ---
 
 # Enzyme vs React Testing Library (RTL) 差異比較

@@ -1,7 +1,8 @@
 ---
 public: true
+slug: shader-built-in-variables
 layout: ../../layouts/BlogPost.astro
-title: Shader - Built-in Variables
+title: GLSL 內建變數筆記
 createdAt: 1744087968894
 updatedAt: 1744088077329
 tags:
@@ -9,7 +10,6 @@ tags:
   - Shader
   - Blog
 heroImage: /placeholder-hero.png
-slug: shader-built-in-variables
 ---
 
 # GLSL 內建變數筆記

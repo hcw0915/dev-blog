@@ -1,14 +1,14 @@
 ---
 public: true
+slug: next-images
 layout: ../../layouts/BlogPost.astro
-title: Next (Images)
+title: Next.js Image 元件筆記
 createdAt: 1741750197583
 updatedAt: 1742357553687
 tags:
   - Next
   - Blog
 heroImage: /placeholder-hero.png
-slug: next-images
 ---
 
 # Next.js Image 元件筆記

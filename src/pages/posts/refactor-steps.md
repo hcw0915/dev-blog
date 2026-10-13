@@ -1,7 +1,8 @@
 ---
 public: true
+slug: refactor-steps
 layout: ../../layouts/BlogPost.astro
-title: Refactor Steps
+title: 專案重構的基礎流程
 createdAt: 1742274558342
 updatedAt: 1742275023187
 tags:
@@ -9,7 +10,6 @@ tags:
   - Blog
   - General
 heroImage: /placeholder-hero.png
-slug: refactor-steps
 ---
 # [心得] 專案重構基礎流程
 

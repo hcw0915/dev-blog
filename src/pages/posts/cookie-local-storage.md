@@ -1,14 +1,14 @@
 ---
 public: true
+slug: cookie-local-storage
 layout: ../../layouts/BlogPost.astro
-title: Cookie & LocalStorage
+title: Cookie、LocalStorage 與 SessionStorage
 createdAt: 1742228736901
 updatedAt: 1742228902284
 tags:
   - General
   - Blog
 heroImage: /placeholder-hero.png
-slug: cookie-local-storage
 ---
 
 # [心得] Cookie LocalStorage SessionStorage
