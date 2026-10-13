@@ -42,11 +42,11 @@ heroImage: /placeholder-hero.png
 
 我在同一頁放了三欄，各 12 條線，每條的 `top` 間隔 15.37px（刻意用小數，讓每條線落在不同的次像素位置）。DPR 1.6 下的截圖：
 
-![DPR 1.6 下的 demo：border 那欄每條粗細相同；height: 1px 那欄右側的推算值在 1 和 2 之間交錯，粗的那幾條肉眼就看得出來](/posts/hairline-fractional-dpr_57.png)
+![DPR 1.6 下的 demo：border 那欄每條粗細相同；height: 1px 那欄右側的推算值在 1 和 2 之間交錯，粗的那幾條肉眼就看得出來](/posts/hairline-fractional-dpr_1.png)
 
 把每欄前三條線放大 7 倍，用最近鄰縮放保留像素格：
 
-![放大後的實體像素：border 每條都是 1 個實體像素；height: 1px 有的是 1 個、有的是 2 個；box-shadow 是一條全亮的線加一條半透明的線](/posts/hairline-fractional-dpr_56.png)
+![放大後的實體像素：border 每條都是 1 個實體像素；height: 1px 有的是 1 個、有的是 2 個；box-shadow 是一條全亮的線加一條半透明的線](/posts/hairline-fractional-dpr_0.png)
 
 三種寫法畫出三種結果。把截圖逐列數實體像素，換不同 DPR 各跑一次（每格是同一欄 10 條線各自的實體像素數）：
 
