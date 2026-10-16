@@ -14,6 +14,7 @@ import SocialButton from "@/components/SocialButton.astro"
 import HeroShader from "@/components/HeroShader.astro"
 import { IoDownloadOutline, IoLogoGithub, IoMailOutline, IoArrowForward } from "react-icons/io5"
 import { SITE_URL } from "@/config"
+import { tenure } from "@/lib/tenure"
 import { assignKinds, thumbSvg } from "@/lib/thumb"
 import { slugOf } from "@/lib/post"
 import { getTranslations } from "@/i18n/translations"
@@ -140,7 +141,7 @@ const personJsonLd = JSON.stringify({
         {
           a.highlights.map(h => (
             <BentoCard class="p-4 md:p-5">
-              <div class="font-mono text-2xl font-bold text-zinc-900 dark:text-zinc-50 md:text-3xl">{h.value}</div>
+              <div class="font-mono text-2xl font-bold text-zinc-900 dark:text-zinc-50 md:text-3xl" data-since={"since" in h ? h.since : undefined}>{"since" in h ? tenure(h.since) : h.value}</div>
               <div class="mt-1 text-sm font-medium text-zinc-700 dark:text-zinc-200">{h.label}</div>
               <div class="mt-0.5 text-xs text-zinc-400 dark:text-zinc-500">{h.note}</div>
             </BentoCard>
@@ -307,3 +308,11 @@ const personJsonLd = JSON.stringify({
     color: #fff;
   }
 </style>
+
+<script>
+  // 靜態頁在兩次部署之間會過期：瀏覽器用當天日期重算一次年資
+  import { tenure } from "@/lib/tenure"
+  document.addEventListener("astro:page-load", () => {
+    document.querySelectorAll<HTMLElement>("[data-since]").forEach(el => (el.textContent = tenure(el.dataset.since!)))
+  })
+</script>

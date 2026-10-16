@@ -88,6 +88,11 @@
       "source": "/en/posts/three-euler-quaternion",
       "destination": "/en/posts/three-euler-vs-quaternion",
       "permanent": true
+    },
+    {
+      "source": "/Antonio_Hou_260228.pdf",
+      "destination": "/Antonio_Hou_resume.pdf",
+      "permanent": false
     }
   ]
 }

@@ -20,7 +20,7 @@ export const translations = {
       scanQRCode: '掃描二維碼訪問',
       highlightsTitle: '成果',
       highlights: [
-        { value: '3+', label: '年前端開發經驗', note: '2022 年 12 月起' },
+        { value: '', since: '2022-12', label: '前端開發經驗', note: '2022 年 12 月起' },
         { value: 'Keyword RAG', label: '團隊 AI 知識庫', note: '四層架構 · 五類知識' },
         { value: 'SDK', label: '活動私有包', note: 'SDK 導出 · iframe 方案' },
         { value: '0 → 1', label: '多環境網站平台', note: 'Next.js 15 SSR' }
@@ -260,7 +260,7 @@ export const translations = {
       scanQRCode: 'Scan QR Code to Visit',
       highlightsTitle: 'Highlights',
       highlights: [
-        { value: '3+', label: 'years in frontend', note: 'since December 2022' },
+        { value: '', since: '2022-12', label: 'in frontend', note: 'since December 2022' },
         { value: 'Keyword RAG', label: 'team AI knowledge base', note: 'four layers · five categories' },
         { value: 'SDK', label: 'private campaign packages', note: 'SDK exports · iframe integration' },
         { value: '0 → 1', label: 'multi-environment web platform', note: 'Next.js 15 SSR' }

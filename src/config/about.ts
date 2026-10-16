@@ -3,7 +3,7 @@ import { IoMailOutline, IoLogoGithub } from "react-icons/io5"
 
 export const GITHUB_URL = "https://github.com/hcw0915"
 export const EMAIL = "love233031@gmail.com"
-export const PDF_PATH = "/Antonio_Hou_260228.pdf"
+export const PDF_PATH = "/Antonio_Hou_resume.pdf"
 
 export interface SocialMedia {
   label: string
