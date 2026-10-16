@@ -9,7 +9,7 @@ export const translations = {
     about: {
       title: 'Antonio Hou',
       subtitle: '前端工程師',
-      intro: '化學材料工程系畢業，自學轉職前端，2022 年 12 月開始前端工程師生涯，目前在 Brilliant Gaming 擔任中高階前端工程師。工作重心是 Next.js 服務端渲染、首屏效能與多語系 SEO，也負責活動 SDK 與嵌入式 UI 的樣式隔離。工作之外研究 Three.js 與 Shader，並在團隊裡推動 AI 輔助開發流程。',
+      intro: '化學材料工程系畢業，自學轉職前端，2022 年 12 月開始前端工程師生涯，目前在 Brilliant Gaming 擔任中高階前端工程師。工作重心是 Next.js 服務端渲染、首屏效能與多語系 SEO；除了日常業務開發，近期聚焦在架構調整、效能優化與 AI 應用，建立了個人的 AI 工作流程，並在團隊裡推動 AI 輔助開發。',
       downloadResume: '下載履歷 PDF',
       contact: '聯絡方式',
       skills: '技能',
@@ -249,7 +249,7 @@ export const translations = {
     about: {
       title: 'Antonio Hou',
       subtitle: 'Frontend Engineer',
-      intro: "I studied Chemical and Materials Engineering, taught myself frontend development, and have been a frontend engineer since December 2022. I'm currently a mid-to-senior frontend engineer at Brilliant Gaming, where I focus on Next.js server-side rendering, first-load performance, and multilingual SEO, and also own the campaign SDK and style isolation for embedded UIs. Outside of work, I explore Three.js and shaders and help my team adopt AI-assisted development workflows.",
+      intro: "I studied Chemical and Materials Engineering, taught myself frontend, and have worked as a frontend engineer since December 2022; I am now a mid-to-senior frontend engineer at Brilliant Gaming. My focus is Next.js server-side rendering, first-screen performance and multilingual SEO. Beyond day-to-day feature work, I have recently concentrated on architecture refactoring, performance optimization and applied AI, building my own AI workflow and championing AI-assisted development within the team.",
       downloadResume: 'Download Resume PDF',
       contact: 'Contact',
       skills: 'Skills',
