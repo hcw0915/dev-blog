@@ -10,7 +10,9 @@
 1. Inkdrop 筆記寫 `public: false`
 2. 放一份預覽到 `src/pages/drafts/<slug>.md`（已 gitignore，watcher 只推 `posts/`，不會上線），
    請他在 `http://localhost:5000/drafts/<slug>` 看。這份是快照，Inkdrop 改了要重新產生
-3. 他確認沒問題，才把 `public` 翻成 `true`
+3. 他確認沒問題，才把 `public` 翻成 `true`。翻之前先在 `src/data/topics.ts` 補兩樣：
+   `POST_TOPICS`（主題，給相關文章）與 `POST_KIND`（性質：專案經驗 deep／學習筆記 note／小技巧 tip）。
+   沒標性質會被當成學習筆記，工作上做過的事就不會出現在首頁「專案經驗」
 
 指令不確定指本機還是正式站時（例如「上到 dev」「放上去」），**先問，不要自己解讀成上線**。
 

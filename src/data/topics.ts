@@ -167,7 +167,8 @@ const DEEP = [
   "popup-queue-soft-navigation", "error-code-event-bus", "dev-panel", "webview-shell-detection",
   "ssr-login-token-layers", "tailwind-embedded-ui-css", "css", "language-source-priority-strategy",
   "document-title-mutation-observer-loop", "nextjs-ssr-behind-cdn", "iframe-session-history-pitfalls",
-  "snapshot-freshness-tradeoff", "hairline-fractional-dpr",
+  "snapshot-freshness-tradeoff", "hairline-fractional-dpr", "ui-media-format-tradeoffs",
+  "short-loop-video-encoding-spec", "sticky-wrapper-same-height", "find-condition-operator-precedence",
 ]
 const TIP = [
   "browser", "eslint-plugin-simple-import-sort", "customize-eslint-rules", "js-new-url-url-search-params",
