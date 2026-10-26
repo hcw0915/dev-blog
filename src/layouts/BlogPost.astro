@@ -840,8 +840,18 @@ const breadcrumbJsonLd = JSON.stringify({
       if (jobs.length === 0) return
 
       renderedDark = isDark()
+      // 標籤的框是 mermaid 畫圖當下量字寬決定的：量的字型跟最後顯示的字型不同，字一變寬就溢出被裁掉。
+      // 所以圖一律用內文字型（Huninn），而且要等圖裡用到的字載完才畫 —— Huninn 依 unicode-range 分片下載，
+      // 還沒載到的字會先用後備字型量
+      const fontFamily = getComputedStyle(article).fontFamily
+      await Promise.all(jobs.map(job => document.fonts.load(`16px ${fontFamily}`, job.source))).catch(() => {})
       const { default: mermaid } = await (mermaidModule ??= import("mermaid"))
-      mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: renderedDark ? "dark" : "default" })
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: "strict",
+        theme: renderedDark ? "dark" : "default",
+        themeVariables: { fontFamily },
+      })
 
       for (const { host, source } of jobs) {
         const figure = document.createElement("div")
