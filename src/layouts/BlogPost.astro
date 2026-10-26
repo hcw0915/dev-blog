@@ -851,6 +851,10 @@ const breadcrumbJsonLd = JSON.stringify({
         securityLevel: "strict",
         theme: renderedDark ? "dark" : "default",
         themeVariables: { fontFamily },
+        // 標籤用 SVG 文字，不用 foreignObject 裡的 HTML：HTML 標籤要不要換行，是拿 getBoundingClientRect 的寬度
+        // 跟上限 200px「全等」比較。頁面有縮放時量出來不會剛好 200（實測 zoom 0.9 量到 180），
+        // 於是判成不用換行，長字整行溢出、被框裁掉
+        htmlLabels: false,
       })
 
       for (const { host, source } of jobs) {
