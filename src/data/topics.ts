@@ -46,6 +46,8 @@ export const POST_TOPICS: Record<string, TopicId[]> = {
   // 效能與排程：首屏之後的工作怎麼排、預載怎麼不搶當前頁
   "page-startup-scheduling": ["perf-scheduling", "frontend-architecture"],
   "preload-scheduling-tradeoffs": ["perf-scheduling", "frontend-architecture"],
+  "ui-media-format-tradeoffs": ["perf-scheduling", "browser-platform"],
+  "short-loop-video-encoding-spec": ["perf-scheduling", "browser-platform"],
 
   // 架構：共用機制的職責邊界、契約與擴充方式
   "popup-queue-soft-navigation": ["frontend-architecture", "nextjs-rendering"],
@@ -61,6 +63,7 @@ export const POST_TOPICS: Record<string, TopicId[]> = {
   "nextjs-ssr-behind-cdn": ["nextjs-rendering", "browser-platform"],
   "snapshot-freshness-tradeoff": ["frontend-architecture", "nextjs-rendering"],
   "hairline-fractional-dpr": ["css-styling", "browser-platform"],
+  "sticky-wrapper-same-height": ["css-styling"],
   "cookie-local-storage": ["browser-platform"],
   browser: ["browser-platform"],
   "blob-file": ["browser-platform", "javascript-core"],
@@ -109,6 +112,7 @@ export const POST_TOPICS: Record<string, TopicId[]> = {
   "js-var-let-const": ["javascript-core"],
   "js-shallow-copy-deep-copy": ["javascript-core"],
   "js-proxy": ["javascript-core"],
+  "find-condition-operator-precedence": ["javascript-core"],
 
   // Three.js 基礎：旋轉、紋理、幾何、控制
   "three-euler-vs-quaternion": ["threejs-basics"],

@@ -1,0 +1,12 @@
+{
+  "title": "Sticky Inside a Same-Height Wrapper",
+  "description": "同一個吸頂導覽列放在三種結構裡：直接放在捲動容器、包一層等高的 div、讓包裝層用 :has() 自己吸頂。三欄同步捲動，虛線框是包裝層的範圍；第三欄可以切換是否補回子元素的負 margin。",
+  "descriptionEn": "The same sticky nav in three structures: placed directly in the scroll container, wrapped in a same-height div, and with the wrapper made sticky via :has(). The three columns scroll in sync, the dashed box marks the wrapper, and the third column toggles compensating for the child's negative margin.",
+  "tags": [
+    "CSS",
+    "Layout"
+  ],
+  "author": "Antonio",
+  "createdAt": "2026-10-26",
+  "post": "sticky-wrapper-same-height"
+}

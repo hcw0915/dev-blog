@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sticky Inside a Same-Height Wrapper</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<p class="hint">在任一欄裡捲動，三欄會一起捲。虛線框是包裝層，數字是導覽列頂端距離捲動容器頂端多少 px（header 高 44px）。</p>
+
+<main class="grid">
+  <section class="col">
+    <h2>A. 沒有包裝層</h2>
+    <p class="note">父層是整個捲動容器，吸得住。</p>
+    <div class="box" data-case="a"></div>
+  </section>
+  <section class="col">
+    <h2>B. 包一層等高的 div</h2>
+    <p class="note">父層跟導覽列一樣高，沒有空間可吸，跟著捲走。</p>
+    <div class="box" data-case="b"></div>
+  </section>
+  <section class="col">
+    <h2>C. 包裝層 <code>:has()</code> 自己吸頂</h2>
+    <label class="note toggle"><input type="checkbox" id="fix"> top 補回子元素的 <code>margin-top: -8px</code></label>
+    <div class="box" data-case="c"></div>
+  </section>
+</main>
+
+<template id="content">
+  <header class="site-header">Header</header>
+  <div class="block tall">Banner</div>
+  <div class="slot"></div>
+  <div class="block">區塊 1</div>
+  <div class="block">區塊 2</div>
+  <div class="block">區塊 3</div>
+  <div class="block">區塊 4</div>
+  <div class="block">區塊 5</div>
+  <div class="block">區塊 6</div>
+</template>
+
+<script src="script.js"></script>
+</body>
+</html>
