@@ -1,0 +1,78 @@
+:root {
+  --fill-top: #20272d;
+  --fill-bottom: #343b41;
+  /* 預設誇張化描邊，方便看出差異；勾「還原設計稿數值」回到 1px、5%→10% */
+  --white-5: rgb(255 255 255 / 0.2);
+  --white-10: rgb(255 255 255 / 0.5);
+  --bw: 6px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 16px;
+  font: 14px/1.6 system-ui, sans-serif;
+  color: #d6dde3;
+  background: #0f1418;
+}
+
+body:has(#real:checked) {
+  --bw: 1px;
+  --white-5: rgb(255 255 255 / 0.05);
+  --white-10: rgb(255 255 255 / 0.1);
+}
+body:has(#stripes:checked) .card {
+  background: repeating-linear-gradient(45deg, #0f1418 0 8px, #3a1f4a 8px 16px);
+}
+
+.toggle { display: block; margin-bottom: 6px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.card {
+  padding: 16px;
+  border-radius: 12px;
+  background: #151b20;
+  outline: 1px solid #263038;
+}
+.card.bad h2::after { content: " ✗"; color: #ff7a7a; }
+.card h2 { margin: 0 0 12px; font-size: 14px; }
+.card p { margin: 12px 0 6px; }
+.card code { font-size: 12px; color: #9fb3c2; }
+
+.btn {
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 16px;
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* 1、2：漸層描邊 */
+.auth-secondary {
+  --end: 100%;
+  border: var(--bw) solid transparent;
+  background:
+    linear-gradient(180deg, var(--fill-top) 0%, var(--fill-bottom) var(--end)) padding-box,
+    linear-gradient(180deg, var(--white-5) 0%, var(--white-10) 100%) border-box;
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+.auth-secondary.end-130 { --end: 130%; }
+
+/* 3、4：半透明實色描邊 */
+.close {
+  border: var(--bw) solid var(--white-5);
+  background: linear-gradient(180deg, var(--fill-top) 0%, var(--fill-bottom) 100%);
+  background-clip: padding-box;
+}
+.close.no-clip { background-clip: border-box; }

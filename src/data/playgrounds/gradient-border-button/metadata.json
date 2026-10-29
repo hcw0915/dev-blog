@@ -1,0 +1,10 @@
+{
+  "title": "Gradient Fill vs Gradient Border on a Button",
+  "description": "同一顆深色按鈕的四種寫法：漸層描邊要用雙 background + background-clip 分層；半透明實色描邊要留 background-clip: padding-box；以及漸層終點寫 130% 時底色到不了終點色。描邊預設放大加亮方便比較，可切回設計稿的原始數值。",
+  "descriptionEn": "Four ways to style the same dark button: a gradient border needs two layered backgrounds with background-clip; a translucent solid border needs background-clip: padding-box; and a gradient ending at 130% never reaches its end colour. The border is exaggerated by default for comparison; switch back to the original design values.",
+  "tags": [
+    "CSS"
+  ],
+  "author": "Antonio",
+  "createdAt": "2026-10-29"
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gradient Fill vs Gradient Border on a Button</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<label class="toggle"><input type="checkbox" id="real"> 還原設計稿數值（描邊 1px、白 5%→10%；預設放大到 6px、20%→50% 方便看）</label>
+<label class="toggle"><input type="checkbox" id="stripes"> 背後換成條紋（看描邊有沒有透出底色）</label>
+
+<main class="grid">
+  <section class="card">
+    <h2>1. 漸層描邊：雙 background 分層</h2>
+    <button class="btn auth-secondary">✕</button>
+    <p>底色漸層只畫在 padding-box，描邊漸層畫在 border-box，border 本身 transparent。</p>
+    <code>background: &lt;填色&gt; padding-box, &lt;描邊&gt; border-box;</code>
+  </section>
+
+  <section class="card bad">
+    <h2>2. 同上，但填色終點寫 130%</h2>
+    <button class="btn auth-secondary end-130">✕</button>
+    <p>終點落在按鈕下緣之外，底部只到約 #2D343A，整顆偏暗、描邊對比變小。</p>
+    <code>#20272D 0% → #343B41 130%</code>
+  </section>
+
+  <section class="card">
+    <h2>3. 半透明實色描邊 + padding-box</h2>
+    <button class="btn close">✕</button>
+    <p>漸層只畫到 padding 邊緣，那圈 5% 白是疊在「後面的底色」上。</p>
+    <code>background-clip: padding-box;</code>
+  </section>
+
+  <section class="card bad">
+    <h2>4. 同上，但少了 padding-box</h2>
+    <button class="btn close no-clip">✕</button>
+    <p>預設 border-box：漸層延伸到 border 底下，5% 白疊在自己的漸層上，描邊幾乎消失。</p>
+    <code>background-clip: border-box; /* 預設 */</code>
+  </section>
+</main>
+
+</body>
+</html>
