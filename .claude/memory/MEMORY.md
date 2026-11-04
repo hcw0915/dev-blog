@@ -1,0 +1,9 @@
+- [評估內容要實際讀過](judge-content-not-proxies.md) — 字數／章節數是體積不是判斷力，策展決定先給依據別替他拍板
+- [要根除不要補症狀](antonio-wants-root-cause-fixes.md) — 人工挑的常數換成算出來的，重複檔案抽成共用元件，並留下可跑的檢查
+- [在他實際用的 dev server 驗證](verify-in-users-dev-server.md) — island 空白／Failed to fetch dynamically imported module：動態 import 的大套件要列進 optimizeDeps.include，他看的是 dev server 不是 preview
+- [發表前要先問](ask-before-publishing.md) — 先放 drafts/ 給他在 localhost 看、點頭才翻 public: true；模糊指令不等於許可
+- [只在 blog repo 動手](stay-in-blog-repo.md) — 「寫文件」預設是 blog；工作 repo 只讀，要寫入必須他明說
+- [標籤掛主題不掛實作](tag-by-topic-not-implementation.md) — 依序判斷：效能 → 框架獨有才掛框架 → 語言 → General
+- [posts/ 會自動上線](posts-dir-autopublishes.md) — watcher 兩分鐘內推送 posts/ 任何變動（含刪檔）；下架要先推轉址再刪 md
+- [Blog 待辦與 i18n 範圍](blog-backlog.md) — 延後項目（自動檢查、OG）；文章不翻譯，其餘英文頁都要英文
+- [不要卡在等部署](dont-block-on-deploy-polling.md) — 小改動推完就回報，正式站輪詢只在高風險時背景跑

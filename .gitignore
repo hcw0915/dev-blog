@@ -28,7 +28,8 @@ pnpm-debug.log*
 .superpowers/
 
 # local dev
-.claude/
+.claude/*
+!.claude/memory/
 
 # 本機預覽用的未公開草稿：不進版控，watch-publish 也只推 posts/
 src/pages/drafts/
