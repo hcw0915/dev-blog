@@ -7,3 +7,5 @@
 - [posts/ 會自動上線](posts-dir-autopublishes.md) — watcher 兩分鐘內推送 posts/ 任何變動（含刪檔）；下架要先推轉址再刪 md
 - [Blog 待辦與 i18n 範圍](blog-backlog.md) — 延後項目（自動檢查、OG）；文章不翻譯，其餘英文頁都要英文
 - [不要卡在等部署](dont-block-on-deploy-polling.md) — 小改動推完就回報，正式站輪詢只在高風險時背景跑
+- [用中文回覆](reply-in-chinese.md) — 回覆一律台灣繁體中文，技術詞可留英文
+- [Relo 作品](relo-project.md) — 他的 personal CRM App：位置、進度來源、寫文章禁區
