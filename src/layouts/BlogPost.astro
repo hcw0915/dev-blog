@@ -244,11 +244,11 @@ const breadcrumbJsonLd = JSON.stringify({
     <main class="pt-[88px] pb-8">
       <!-- 寬螢幕三欄：左 TOC、中內文、右側留給留言區。左右兩欄等寬（1fr）內文才會落在正中間；
            DOM 仍是內文在前，窄螢幕照原本順序往下排 -->
-      <div class="mx-auto max-w-[100rem] px-4 xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,48rem)_minmax(0,1fr)] xl:gap-6">
+      <div class="mx-auto max-w-[100rem] px-4 xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,52rem)_minmax(0,1fr)] xl:gap-6">
         <!-- 內文寬度用 rem 不用 ch：ch 是數字 0 的字寬，68ch 對英文是一行 68 字，
-             對中文只剩約 37 字。48rem = 768px，中文一行約 48 字 -->
+             對中文只剩約 37 字。52rem = 832px，中文一行約 52 字 -->
         <article
-          class="markdown-content w-full max-w-[48rem] mx-auto min-w-0 xl:col-start-2 xl:row-start-1"
+          class="markdown-content w-full max-w-[52rem] mx-auto min-w-0 xl:col-start-2 xl:row-start-1"
           data-copy={t.post.copy}
           data-copied={t.post.copied}
         >
@@ -471,7 +471,7 @@ const breadcrumbJsonLd = JSON.stringify({
           !isDraft && (
             <aside
               id="comments"
-              class="giscus-slot mt-16 w-full max-w-[48rem] mx-auto xl:col-start-2 xl:row-start-2 min-[1400px]:col-start-3 min-[1400px]:row-start-1 min-[1400px]:mt-0 min-[1400px]:mx-0 min-[1400px]:max-w-[360px] min-[1400px]:sticky min-[1400px]:top-24 min-[1400px]:self-start min-[1400px]:max-h-[calc(100vh-7rem)] min-[1400px]:overflow-y-auto"
+              class="giscus-slot mt-16 w-full max-w-[52rem] mx-auto xl:col-start-2 xl:row-start-2 min-[1400px]:col-start-3 min-[1400px]:row-start-1 min-[1400px]:mt-0 min-[1400px]:mx-0 min-[1400px]:max-w-[360px] min-[1400px]:sticky min-[1400px]:top-24 min-[1400px]:self-start min-[1400px]:max-h-[calc(100vh-7rem)] min-[1400px]:overflow-y-auto"
               data-term={slug}
               data-lang={locale === 'en' ? 'en' : 'zh-TW'}
               aria-label={locale === 'en' ? 'Comments' : '留言'}
