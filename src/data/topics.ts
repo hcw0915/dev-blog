@@ -62,6 +62,7 @@ export const POST_TOPICS: Record<string, TopicId[]> = {
   "iframe-session-history-pitfalls": ["browser-platform", "nextjs-rendering"],
   "nextjs-ssr-behind-cdn": ["nextjs-rendering", "browser-platform"],
   "snapshot-freshness-tradeoff": ["frontend-architecture", "nextjs-rendering"],
+  "pwa-start-inline-script": ["browser-platform", "frontend-architecture"],
   "hairline-fractional-dpr": ["css-styling", "browser-platform"],
   "sticky-wrapper-same-height": ["css-styling"],
   "cookie-local-storage": ["browser-platform"],
@@ -169,6 +170,7 @@ const DEEP = [
   "document-title-mutation-observer-loop", "nextjs-ssr-behind-cdn", "iframe-session-history-pitfalls",
   "snapshot-freshness-tradeoff", "hairline-fractional-dpr", "ui-media-format-tradeoffs",
   "short-loop-video-encoding-spec", "sticky-wrapper-same-height", "find-condition-operator-precedence",
+  "pwa-start-inline-script",
 ]
 const TIP = [
   "browser", "eslint-plugin-simple-import-sort", "customize-eslint-rules", "js-new-url-url-search-params",
