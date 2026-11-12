@@ -9,3 +9,4 @@
 - [不要卡在等部署](dont-block-on-deploy-polling.md) — 小改動推完就回報，正式站輪詢只在高風險時背景跑
 - [用中文回覆](reply-in-chinese.md) — 回覆一律台灣繁體中文，技術詞可留英文
 - [Relo 作品](relo-project.md) — 他的 personal CRM App：位置、進度來源、寫文章禁區
+- [先改 Inkdrop 再同步](edit-inkdrop-first.md) — Inkdrop 是來源，drafts/ 是快照；已公開的筆記改了就上線，先講清楚再改
