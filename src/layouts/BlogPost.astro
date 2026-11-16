@@ -191,6 +191,8 @@ const breadcrumbJsonLd = JSON.stringify({
     <Header />
     <style is:global>
       main article.markdown-content {
+        /* 中文段落最後一行常只剩一個字（孤字），交給瀏覽器排；不支援的瀏覽器照舊換行 */
+        text-wrap: pretty;
         h1, h2, h3, h4, h5 {
           @apply font-bold font-serif my-3 text-zinc-900 dark:text-zinc-50 scroll-mt-24;
         }
@@ -210,9 +212,12 @@ const breadcrumbJsonLd = JSON.stringify({
         }
         p { @apply mb-6 leading-loose; }
         a { @apply underline underline-offset-2 text-violet-600 dark:text-violet-300 decoration-violet-400/60; }
-        table { @apply table-auto border border-zinc-200 dark:border-white/10 rounded-lg; }
+        table { @apply table-auto border border-zinc-200 dark:border-white/10 rounded-lg mb-6; }
         th { @apply border dark:border-white/10 font-bold p-4 pb-3 text-left; }
         td { @apply border border-zinc-200 dark:border-white/10 p-4; }
+        /* 中文任何兩字之間都能斷行，短欄（「解析度」）會被長欄擠到一行一字。
+           6em 扣掉左右 padding 約容得下四個字 */
+        th, td { min-width: 6em; }
         hr { @apply border-zinc-200 dark:border-white/10 my-6; }
         blockquote { @apply px-4 my-6 border-l-4 border-l-cyan-400/60 text-zinc-600 dark:text-zinc-400; }
         ul { @apply list-disc list-outside pl-4 mb-4; }
@@ -850,7 +855,15 @@ const breadcrumbJsonLd = JSON.stringify({
         startOnLoad: false,
         securityLevel: "strict",
         theme: renderedDark ? "dark" : "default",
-        themeVariables: { fontFamily },
+        // xychart 預設是整塊灰底、撐滿 700px 寬：底色改透明融進版面，尺寸縮小，長條／折線用站上的紫色
+        xyChart: { width: 560, height: 300 },
+        themeVariables: {
+          fontFamily,
+          xyChart: {
+            backgroundColor: "transparent",
+            plotColorPalette: renderedDark ? "#a78bfa" : "#7c3aed",
+          },
+        },
         // 標籤用 SVG 文字，不用 foreignObject 裡的 HTML：HTML 標籤要不要換行，是拿 getBoundingClientRect 的寬度
         // 跟上限 200px「全等」比較。頁面有縮放時量出來不會剛好 200（實測 zoom 0.9 量到 180），
         // 於是判成不用換行，長字整行溢出、被框裁掉
