@@ -230,6 +230,16 @@ const breadcrumbJsonLd = JSON.stringify({
         /* 流程圖、類別圖的標籤是 foreignObject 裡的 HTML，會吃到上面 p 的 leading-loose 與 mb-6；
            mermaid 用正常行高量框，行高被撐大後字就溢出被裁掉 —— 圖內一律還原 */
         .mermaid-figure p { margin: 0; line-height: 1.5; }
+        /* 流程圖節點：圓角卡片；多行標籤第一行是標題、其後是小字說明（寫法 A["`**標題**
+           說明`"]）。class 標記：hl 主要路徑、warn 關鍵分岔、dim 沒走到的分支 */
+        .mermaid-figure .node rect, .mermaid-figure .node polygon { rx: 8px; ry: 8px; stroke-width: 1.5px; }
+        /* 只淡化不縮字：行距是 mermaid 依原字級排好的，縮字會跟標題疊在一起 */
+        /* 只淡化「粗體標題之後的非粗體行」，一般標籤自動換出來的第二行不受影響 */
+        .mermaid-figure .node .text-outer-tspan:has(> [font-weight="bold"]) ~ .text-outer-tspan:not(:has(> [font-weight="bold"])) { opacity: 0.65; }
+        .mermaid-figure .cluster rect { stroke-dasharray: 4 4; rx: 10px; ry: 10px; }
+        .mermaid-figure .node.hl rect, .mermaid-figure .node.hl polygon { fill: #10b98126 !important; stroke: #34d399 !important; }
+        .mermaid-figure .node.warn rect, .mermaid-figure .node.warn polygon { fill: #f9731626 !important; stroke: #fb923c !important; }
+        .mermaid-figure .node.dim { opacity: 0.35; }
         /* 提示框（> [!NOTE] 等，見 src/lib/remark-alerts.mjs）：色條 + 淡底 + 同色標題 */
         .callout { @apply my-6 rounded-r-xl border-l-4 px-4 py-3; border-color: var(--callout); background: color-mix(in srgb, var(--callout) 9%, transparent); }
         .callout > :last-child { @apply mb-0; }
@@ -854,11 +864,23 @@ const breadcrumbJsonLd = JSON.stringify({
       mermaid.initialize({
         startOnLoad: false,
         securityLevel: "strict",
-        theme: renderedDark ? "dark" : "default",
+        // 流程圖做成「深底圓角卡片 + 直角連線」：base 主題才吃得到下面的顏色變數
+        theme: "base",
+        // neo 外觀自帶陰影與粗虛線群組框，跟卡片風格不搭
+        look: "classic",
+        flowchart: { curve: "step", padding: 14, nodeSpacing: 36, rankSpacing: 44, wrappingWidth: 280 },
         // xychart 預設是整塊灰底、撐滿 700px 寬：底色改透明融進版面，尺寸縮小，長條／折線用站上的紫色
         xyChart: { width: 560, height: 300 },
         themeVariables: {
           fontFamily,
+          fontSize: "14px",
+          ...(renderedDark
+            ? { primaryColor: "#161b22", primaryBorderColor: "#3a4250", primaryTextColor: "#e6edf3", lineColor: "#56606e",
+                clusterBkg: "transparent", clusterBorder: "#3a4250", titleColor: "#9aa4b2", edgeLabelBackground: "#0d1117",
+                noteBkgColor: "#1f2630", noteTextColor: "#e6edf3", noteBorderColor: "#3a4250" }
+            : { primaryColor: "#ffffff", primaryBorderColor: "#d4d4d8", primaryTextColor: "#18181b", lineColor: "#a1a1aa",
+                clusterBkg: "transparent", clusterBorder: "#d4d4d8", titleColor: "#71717a", edgeLabelBackground: "#ffffff",
+                noteBkgColor: "#f4f4f5", noteTextColor: "#18181b", noteBorderColor: "#d4d4d8" }),
           xyChart: {
             backgroundColor: "transparent",
             plotColorPalette: renderedDark ? "#a78bfa" : "#7c3aed",
