@@ -65,6 +65,7 @@ export const POST_TOPICS: Record<string, TopicId[]> = {
   "pwa-start-inline-script": ["browser-platform", "frontend-architecture"],
   "dropdown-in-scroll-container": ["css-styling", "browser-platform"],
   "video-crf-by-display-ratio": ["perf-scheduling", "browser-platform"],
+  "relo-harness-loop-engineering": ["ai-knowledge", "build-tooling"],
   "hairline-fractional-dpr": ["css-styling", "browser-platform"],
   "sticky-wrapper-same-height": ["css-styling"],
   "cookie-local-storage": ["browser-platform"],
@@ -173,7 +174,7 @@ const DEEP = [
   "snapshot-freshness-tradeoff", "hairline-fractional-dpr", "ui-media-format-tradeoffs",
   "short-loop-video-encoding-spec", "sticky-wrapper-same-height", "find-condition-operator-precedence",
   "pwa-start-inline-script",
-  "dropdown-in-scroll-container", "video-crf-by-display-ratio",
+  "dropdown-in-scroll-container", "video-crf-by-display-ratio", "relo-harness-loop-engineering",
 ]
 const TIP = [
   "browser", "eslint-plugin-simple-import-sort", "customize-eslint-rules", "js-new-url-url-search-params",
