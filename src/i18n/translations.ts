@@ -198,7 +198,9 @@ export const translations = {
     // Navigation
     nav: {
       about: '關於',
-      blog: '部落格'
+      blog: '部落格',
+      relo: 'Relo',
+      reloHint: '我做的 App'
     },
     // Accessibility labels
     aria: {
@@ -438,7 +440,9 @@ export const translations = {
     // Navigation
     nav: {
       about: 'About',
-      blog: 'Blog'
+      blog: 'Blog',
+      relo: 'Relo',
+      reloHint: 'My app'
     },
     // Accessibility labels
     aria: {

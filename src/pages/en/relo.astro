@@ -1,0 +1,25 @@
+---
+import BaseHead from "@/components/BaseHead.astro"
+import Header from "@/components/Header.astro"
+import Footer from "@/components/Footer.astro"
+import Body from "@/components/Body.astro"
+import ReloContent from "@/components/ReloContent.astro"
+import { SITE_TITLE } from "@/config"
+
+const locale = "en"
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      title={`Relo · Keep every relationship that matters - ${SITE_TITLE}`}
+      description="Relo, Antonio's side project: a relationship notebook for people whose work runs on relationships. Log each meeting and Relo reminds you who to follow up with. Card scanning, birthday reminders, end-to-end encrypted backups; free on iOS and Android."
+    />
+  </head>
+  <Body>
+    <Header />
+    <ReloContent locale={locale} />
+    <Footer />
+  </Body>
+</html>

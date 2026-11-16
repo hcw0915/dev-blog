@@ -1,0 +1,25 @@
+---
+import BaseHead from "@/components/BaseHead.astro"
+import Header from "@/components/Header.astro"
+import Footer from "@/components/Footer.astro"
+import Body from "@/components/Body.astro"
+import ReloContent from "@/components/ReloContent.astro"
+import { SITE_TITLE } from "@/config"
+
+const locale = "zh"
+---
+
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <BaseHead
+      title={`Relo · 維繫每一段重要的關係 - ${SITE_TITLE}`}
+      description="Antonio 的個人作品 Relo：給靠人脈吃飯的人的關係筆記本。見完面記一筆，Relo 提醒你下一步該聯絡誰。名片掃描、生日提醒、端對端加密備份，iOS 與 Android 免費使用。"
+    />
+  </head>
+  <Body>
+    <Header />
+    <ReloContent locale={locale} />
+    <Footer />
+  </Body>
+</html>

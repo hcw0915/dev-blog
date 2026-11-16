@@ -1,0 +1,193 @@
+---
+/**
+ * 個人作品 Relo 的介紹頁，/relo 與 /en/relo 共用。
+ * 只寫官網上公開的功能與技術選型；上架狀態、方案額度會變，不寫進來，交給官網。
+ */
+import SkillTag from "@/components/SkillTag.astro"
+import { IoArrowForward, IoOpenOutline } from "react-icons/io5"
+import type { Locale } from "@/i18n/translations"
+
+export interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const SITE = "https://getrelo.app"
+
+const content = {
+  zh: {
+    eyebrow: "個人作品",
+    mascots: ["小藍", "小橘"],
+    tagline: "維繫每一段重要的關係",
+    intro: "給靠人脈吃飯的人的關係筆記本：見完面記一筆，Relo 提醒你下一步該聯絡誰。iOS 與 Android App，4 種語言，免費使用。",
+    site: "前往官網",
+    download: "下載 App",
+    featuresTitle: "它做什麼",
+    features: [
+      { title: "見面前的重點", body: "記錄每次互動，見面前由 AI 整理上次聊過什麼，不用翻舊訊息。" },
+      { title: "該聯絡誰", body: "生日、紀念日，以及好久沒聯絡的人，Relo 主動提醒，而不是等你想起來。" },
+      { title: "名片掃描", body: "拍名片或截圖，AI 自動整理成聯絡人；只把真正重要的人放進來。" },
+      { title: "隱私優先", body: "資料存在你的手機上，不登入也能用；雲端備份端對端加密，伺服器看不到內容。" }
+    ],
+    forTitle: "適合誰",
+    for: "業務、創業者、自由工作者：見完客戶記一筆，Relo 提醒你什麼時候該跟進。也適合想記得朋友與家人生日、近況的人。",
+    buildTitle: "怎麼做的",
+    build: "一個人開發與營運。規劃、實作、驗收與每日巡檢由一組 AI agent 分工，我負責決定要做什麼、看結果。",
+    stackLabel: "技術選型"
+  },
+  en: {
+    eyebrow: "Side project",
+    mascots: ["Blue", "Orange"],
+    tagline: "Keep every relationship that matters",
+    intro: "A relationship notebook for people whose work runs on relationships: log each meeting, and Relo reminds you who to follow up with. iOS and Android, 4 languages, free to use.",
+    site: "Visit website",
+    download: "Get the app",
+    featuresTitle: "What it does",
+    features: [
+      { title: "Before you meet", body: "Log every interaction; AI recaps what you talked about last time, so you never dig through old messages." },
+      { title: "Who to reach out to", body: "Birthdays, anniversaries and people you haven't talked to in a while — Relo reminds you, instead of waiting for you to remember." },
+      { title: "Card scanning", body: "Snap a business card or screenshot and AI turns it into a contact; keep only the people who matter." },
+      { title: "Privacy first", body: "Data lives on your phone and works without an account; cloud backups are end-to-end encrypted, so the server never sees the content." }
+    ],
+    forTitle: "Who it's for",
+    for: "Sales, founders and freelancers: log a note after each client meeting and Relo tells you when to follow up. It also suits anyone who wants to remember friends' and family's birthdays and what's going on in their lives.",
+    buildTitle: "How it's built",
+    build: "Built and run solo. Planning, implementation, verification and daily checks are split across a team of AI agents; I decide what to build and review the results.",
+    stackLabel: "Stack"
+  }
+}[locale === "en" ? "en" : "zh"]
+
+const stack = ["React Native", "Expo", "Supabase", "Claude API", "Next.js"]
+---
+
+<main class="pt-[88px] pb-16">
+  <div class="mx-auto max-w-5xl px-4">
+    <!-- 第一屏：左文右吉祥物；手機吉祥物排在文字下面 -->
+    <section class="relo-hero relative overflow-hidden rounded-3xl p-6 md:p-10">
+      <div class="flex flex-col gap-8 md:flex-row md:items-center">
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center gap-3">
+            <img src="/projects/relo-icon.svg" alt="" width="56" height="56" class="h-12 w-12 rounded-xl shadow-md md:h-14 md:w-14" />
+            <div class="text-[11px] font-bold uppercase tracking-[0.18em] text-[#3069ee] dark:text-[#8fb0ff]">{content.eyebrow}</div>
+          </div>
+          <h1 class="mt-5 font-serif text-4xl font-bold text-zinc-900 dark:text-zinc-50 md:text-5xl">Relo</h1>
+          <p class="mt-2 font-serif text-xl font-bold text-zinc-700 dark:text-zinc-200 md:text-2xl">{content.tagline}</p>
+          <p class="mt-5 max-w-xl text-lg leading-relaxed text-zinc-600 dark:text-zinc-300">{content.intro}</p>
+          <div class="mt-7 flex flex-wrap gap-2">
+            <a href={SITE} target="_blank" rel="noopener noreferrer" class="relo-cta relo-cta-primary">
+              {content.site}
+              <IoOpenOutline className="text-base" />
+            </a>
+            <a href={`${SITE}/go`} target="_blank" rel="noopener noreferrer" class="relo-cta">
+              {content.download}
+              <IoArrowForward className="text-base" />
+            </a>
+          </div>
+        </div>
+        <div class="flex shrink-0 items-end justify-center md:pr-4">
+          <img src="/projects/relo-mascot-blue.webp" alt={content.mascots[0]} width="327" height="360" class="mascot mascot-blue" />
+          <img src="/projects/relo-mascot-orange.webp" alt={content.mascots[1]} width="334" height="360" class="mascot mascot-orange" />
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-12">
+      <h2 class="font-serif text-2xl font-bold text-zinc-900 dark:text-zinc-50">{content.featuresTitle}</h2>
+      <ul class="mt-5 grid gap-4 sm:grid-cols-2">
+        {
+          content.features.map((f, i) => (
+            <li class="relo-feature rounded-2xl p-5">
+              <div class="font-mono text-xs text-[#3069ee] dark:text-[#8fb0ff]">{String(i + 1).padStart(2, "0")}</div>
+              <div class="mt-1 text-base font-semibold text-zinc-900 dark:text-zinc-50">{f.title}</div>
+              <div class="mt-1.5 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{f.body}</div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <div class="mt-12 grid gap-8 md:grid-cols-2">
+      <section>
+        <h2 class="font-serif text-2xl font-bold text-zinc-900 dark:text-zinc-50">{content.forTitle}</h2>
+        <p class="mt-3 leading-relaxed text-zinc-600 dark:text-zinc-300">{content.for}</p>
+      </section>
+      <section>
+        <h2 class="font-serif text-2xl font-bold text-zinc-900 dark:text-zinc-50">{content.buildTitle}</h2>
+        <p class="mt-3 leading-relaxed text-zinc-600 dark:text-zinc-300">{content.build}</p>
+        <div class="mt-4 text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-600">{content.stackLabel}</div>
+        <div class="mt-2 flex flex-wrap gap-1.5">
+          {stack.map(s => <SkillTag name={s} />)}
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<style>
+  /* Relo 自己的品牌藍，跟站上的紫色區隔開，一看就知道是另一個產品 */
+  .relo-hero {
+    background: linear-gradient(135deg, rgb(74 128 244 / 0.12), rgb(48 105 238 / 0.04));
+    border: 1px solid rgb(48 105 238 / 0.25);
+  }
+  :global(.dark) .relo-hero {
+    background: linear-gradient(135deg, rgb(74 128 244 / 0.18), rgb(48 105 238 / 0.05));
+    border-color: rgb(143 176 255 / 0.22);
+  }
+  .mascot {
+    height: 9rem;
+    width: auto;
+    transform-origin: 50% 100%;
+  }
+  .mascot-blue { transform: rotate(-6deg); }
+  .mascot-orange { transform: rotate(5deg); margin-left: -1.25rem; }
+  @media (min-width: 768px) {
+    .mascot { height: 13rem; }
+    .mascot-orange { margin-left: -2rem; }
+  }
+  /* 進場時輕輕揮一下手；減少動態時不動 */
+  @media (prefers-reduced-motion: no-preference) {
+    .mascot-blue { animation: mascot-wave 2.4s ease-in-out 0.3s 2; }
+    .mascot-orange { animation: mascot-wave-r 2.4s ease-in-out 0.6s 2; }
+  }
+  @keyframes mascot-wave { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(-1deg) translateY(-4px); } }
+  @keyframes mascot-wave-r { 0%, 100% { transform: rotate(5deg); } 50% { transform: rotate(0deg) translateY(-4px); } }
+  .relo-feature {
+    background: rgb(255 255 255 / 0.7);
+    border: 1px solid rgb(48 105 238 / 0.14);
+  }
+  :global(.dark) .relo-feature {
+    background: rgb(255 255 255 / 0.03);
+    border-color: rgb(255 255 255 / 0.08);
+  }
+  .relo-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    height: 2.75rem;
+    padding: 0 1.125rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgb(48 105 238 / 0.35);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #2553c9;
+    transition: background-color 0.15s, border-color 0.15s;
+  }
+  .relo-cta:hover {
+    background: rgb(48 105 238 / 0.08);
+  }
+  :global(.dark) .relo-cta {
+    color: #b4c9ff;
+    border-color: rgb(143 176 255 / 0.35);
+  }
+  .relo-cta-primary,
+  :global(.dark) .relo-cta-primary {
+    background: #3069ee;
+    border-color: #3069ee;
+    color: #fff;
+  }
+  .relo-cta-primary:hover,
+  :global(.dark) .relo-cta-primary:hover {
+    background: #2553c9;
+    border-color: #2553c9;
+  }
+</style>
