@@ -897,12 +897,19 @@ const breadcrumbJsonLd = JSON.stringify({
         figure.className = "mermaid-figure"
         figure.dataset.source = source
         try {
-          figure.innerHTML = (await mermaid.render(`mermaid-${++renderSeq}`, source)).svg
+          figure.innerHTML = (await mermaid.render(`mermaid-${++renderSeq}`, asCardFlowchart(source))).svg
         } catch {
           continue
         }
         host.replaceWith(figure)
       }
+    }
+
+    // 流程圖的判斷節點 A{...} 畫成菱形會又大又擠，連線也從菱形的角斜著出去；一律改成跟其他節點一樣的方框。
+    // 只動 flowchart／graph，六角形 A{{...}} 不受影響；文章原始碼照舊寫 {}，Inkdrop 預覽仍是菱形
+    function asCardFlowchart(source: string) {
+      if (!/^\s*(flowchart|graph)\b/.test(source)) return source
+      return source.replace(/(\b[\w-]+)\{(?!\{)("[^"]*"|[^{}"]*)\}(?!\})/g, "$1[$2]")
     }
 
     document.addEventListener("astro:page-load", renderMermaid)
