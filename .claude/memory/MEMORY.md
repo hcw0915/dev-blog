@@ -11,3 +11,4 @@
 - [Relo 作品](relo-project.md) — 他的 personal CRM App：位置、進度來源、寫文章禁區
 - [先改 Inkdrop 再同步](edit-inkdrop-first.md) — Inkdrop 是來源，drafts/ 是快照；已公開的筆記改了就上線，先講清楚再改
 - [版面改動後查換行](check-wrapping-after-layout.md) — 截整篇看孤字、表格短欄一行一字、圖表過大，不只看第一屏
+- [履歷手動同步](resume-sync-manual.md) — Canva 改完要同步換 public/ 的 PDF 與 About 頁文字，他選手動不自動
