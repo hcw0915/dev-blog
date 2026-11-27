@@ -38,7 +38,7 @@ export const translations = {
       work: {
         brilliantGaming: {
           company: 'Brilliant Gaming (Armenia)',
-          title: 'Mid–Sr. Frontend Developer',
+          title: 'Sr. Frontend Developer',
           period: 'May 2025 - Present',
           responsibilities: [
             'Solidjs 網站開發，組件整合與溝通建議 (舊專案)',
@@ -280,7 +280,7 @@ export const translations = {
       work: {
         brilliantGaming: {
           company: 'Brilliant Gaming (Armenia)',
-          title: 'Mid–Sr. Frontend Developer',
+          title: 'Sr. Frontend Developer',
           period: 'May 2025 - Present',
           responsibilities: [
             'Maintained a SolidJS site, handling component integration and technical recommendations (legacy project)',
